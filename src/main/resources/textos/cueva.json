@@ -1,0 +1,182 @@
+{
+    "compressionlevel": -1,
+    "height": 8,
+    "infinite": false,
+    "layers": [
+        {
+            "data": [500, 500, 500, 500, 500, 500, 500, 500,
+                500, 500, 500, 500, 500, 500, 500, 500,
+                500, 500, 500, 500, 500, 500, 500, 500,
+                500, 500, 500, 500, 500, 500, 500, 500,
+                500, 500, 500, 500, 500, 500, 500, 500,
+                500, 500, 500, 500, 500, 500, 500, 500,
+                500, 500, 500, 500, 500, 500, 500, 500,
+                500, 500, 500, 500, 500, 500, 500, 500],
+            "height": 8,
+            "id": 1,
+            "name": "Capa de patrones 1",
+            "opacity": 1,
+            "type": "tilelayer",
+            "visible": true,
+            "width": 8,
+            "x": 0,
+            "y": 0
+        }, 
+        {
+            "data": [371, 372, 373, 374, 374, 372, 372, 375,
+                411, 412, 413, 414, 413, 0, 0, 415,
+                451, 452, 453, 454, 413, 0, 0, 455,
+                411, 412, 413, 413, 413, 0, 0, 415,
+                451, 452, 0, 0, 0, 0, 0, 455,
+                411, 412, 0, 0, 0, 0, 0, 415,
+                451, 452, 0, 0, 0, 0, 0, 455,
+                491, 492, 493, 493, 492, 493, 494, 495],
+            "height": 8,
+            "id": 2,
+            "name": "Capa de patrones 2",
+            "opacity": 1,
+            "type": "tilelayer",
+            "visible": true,
+            "width": 8,
+            "x": 0,
+            "y": 0
+        }, 
+        {
+            "draworder": "topdown",
+            "id": 3,
+            "name": "Capa de Objetos 1",
+            "objects": [
+                {
+                    "height": 223.986275350775,
+                    "id": 1,
+                    "name": "",
+                    "rotation": 0,
+                    "type": "",
+                    "visible": true,
+                    "width": 11.9208381839348,
+                    "x": 18.8223760798971,
+                    "y": 9.72489430794682
+                }, 
+                {
+                    "height": 19.7634948838919,
+                    "id": 2,
+                    "name": "",
+                    "rotation": 0,
+                    "type": "",
+                    "visible": true,
+                    "width": 33.8802769438147,
+                    "x": 30.7432142638319,
+                    "y": 8.1563629679554
+                }, 
+                {
+                    "height": 22.5868512958765,
+                    "id": 3,
+                    "name": "",
+                    "rotation": 0,
+                    "type": "",
+                    "visible": true,
+                    "width": 127.678451075302,
+                    "x": 96.3078242754733,
+                    "y": 6.27412535996569
+                }, 
+                {
+                    "height": 227.437044298756,
+                    "id": 4,
+                    "name": "",
+                    "rotation": 0,
+                    "type": "",
+                    "visible": true,
+                    "width": 8.78377550395197,
+                    "x": 224.92739415477,
+                    "y": 5.9604190919674
+                }, 
+                {
+                    "height": 9.09748177195024,
+                    "id": 5,
+                    "name": "",
+                    "rotation": 0,
+                    "type": "",
+                    "visible": true,
+                    "width": 191.674529746952,
+                    "x": 31.998039335825,
+                    "y": 224.613687886772
+                }, 
+                {
+                    "height": 7.84265669995711,
+                    "id": 13,
+                    "name": "",
+                    "rotation": 0,
+                    "type": "",
+                    "visible": true,
+                    "width": 30.1158017278353,
+                    "x": 64.9371974756449,
+                    "y": 5.33300655597084
+                }],
+            "opacity": 1,
+            "type": "objectgroup",
+            "visible": true,
+            "x": 0,
+            "y": 0
+        }],
+    "nextlayerid": 4,
+    "nextobjectid": 14,
+    "orientation": "orthogonal",
+    "renderorder": "right-down",
+    "tiledversion": "1.10.2",
+    "tileheight": 32,
+    "tilesets": [
+        {
+            "columns": 40,
+            "firstgid": 1,
+            "image": "apocalypse.png",
+            "imageheight": 800,
+            "imagewidth": 1280,
+            "margin": 0,
+            "name": "apocalypse",
+            "spacing": 0,
+            "tilecount": 1000,
+            "tileheight": 32,
+            "tilewidth": 32
+        }],
+    "tilewidth": 32,
+    "type": "map",
+    "version": 1.1,
+    "width": 8,
+    "enemigos": [
+
+    ],
+    "objetos": [
+
+        {
+            "id": 500,
+            "cantidad": 1,
+            "x": 700,
+            "y": 640
+        }
+    ],
+
+    "salidas": [{
+            "codigo": 1,
+            "codigo referencia": 10,
+            "x": 85,
+            "y": 0,
+            "mapaDestino": "cueva.json",
+            "punto inicial":
+                    {
+                        "x": 160,
+                        "y": 160
+                    }
+        }, {
+            "codigo": 2,
+            "codigo referencia": 20,
+            "x": 102,
+            "y": 102,
+            "mapaDestino": "cueva2.json",
+            "punto inicial":
+                    {
+                        "x": 64,
+                        "y": 32
+                    }
+        }
+    ]
+}
