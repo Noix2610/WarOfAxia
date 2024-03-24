@@ -55,6 +55,7 @@ public class TiendaComida extends SeccionTienda {
 
     private final ArrayList<Objeto> canastaCompra;
     private final ArrayList<Objeto> canastaVenta;
+    private ArrayList<Objeto> objetosTienda;
 
     private final int anteriorXVenta;
     private final int anteriorYVenta;
@@ -134,6 +135,7 @@ public class TiendaComida extends SeccionTienda {
 
     @Override
     public void actualizar() {
+        objetosTienda = ElementosPrincipales.mapa.objetosTiendaActual;
         actualizarPosicionesMenu();
         actualizarPosicionesCompraVenta();
         actualizarSeleccionRaton();
@@ -148,10 +150,10 @@ public class TiendaComida extends SeccionTienda {
         Rectangle posicionRaton = GestorPrincipal.sd.getRaton().getPosicionRectangle();
         if (objetoSeleccionadoCompra == null) {
             if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(panelComprar))) {
-                if (ElementosPrincipales.inventario.getObjetosTienda().isEmpty()) {
+                if (objetosTienda.isEmpty()) {
                     return;
                 }
-                for (Objeto objeto : ElementosPrincipales.inventario.getObjetosTienda()) {
+                for (Objeto objeto : objetosTienda) {
                     if (objeto instanceof Consumible) {
                         if (GestorPrincipal.sd.getRaton().isClick() && posicionRaton
                                 .intersects(EscaladorElementos.escalarRectangleArriba(objeto.getPosicionTienda()))) {
@@ -190,9 +192,9 @@ public class TiendaComida extends SeccionTienda {
         int contadorArmasInventario = 0;
         int margenX = 8; // Nuevo margen desde el borde del panel
 
-        if (!ElementosPrincipales.inventario.getObjetosTienda().isEmpty()) {
+        if (!objetosTienda.isEmpty()) {
 
-            for (Objeto objetoActual : ElementosPrincipales.inventario.getObjetosTienda()) {
+            for (Objeto objetoActual : objetosTienda) {
                 if (objetoActual instanceof Consumible) {
                     // Cálculo de la posición X ajustado para el margen desde el borde del panel
                     int posX = piObjetosTienda.x + margenX + (contadorArmasTienda % 3) * (lado + margenGeneral / 2);
@@ -691,7 +693,7 @@ public class TiendaComida extends SeccionTienda {
     }
 
     private void dibujarElementosTienda(final Graphics g) {
-        List<Objeto> objetos = ElementosPrincipales.inventario.getObjetosTienda();
+        List<Objeto> objetos = objetosTienda;
         int lado = Constantes.LADO_SPRITE;
 
         dibujarElementosEnPanelTienda(g, objetos, lado);

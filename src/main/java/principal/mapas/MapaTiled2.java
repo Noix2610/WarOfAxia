@@ -39,6 +39,7 @@ import principal.inventario.armaduras.Armadura;
 import principal.inventario.armas.Arma;
 import principal.inventario.consumibles.Claves;
 import principal.inventario.consumibles.Consumible;
+import principal.inventario.joyas.Accesorio;
 import principal.inventario.joyas.Joya;
 import principal.maquinaestado.juego.menu_tienda.Tienda;
 import principal.sprites.HojaSprites;
@@ -128,7 +129,6 @@ public class MapaTiled2 {
         objetosTiendaMapa = new ArrayList<>();
         objetosTiendaActual = new ArrayList<>();
         tiendaActiva = new Tienda();
-        
 
     }
 
@@ -1092,6 +1092,20 @@ public class MapaTiled2 {
             case "Armas":
                 for (Objeto objetoMapa : objetosTiendaMapa) {
                     if (objetoMapa instanceof Arma) {
+                        objetosTiendaActual.add(objetoMapa);
+                    }
+                }
+                break;
+            case "Accesorios":
+                for (Objeto objetoMapa : objetosTiendaMapa) {
+                    if (objetoMapa instanceof Accesorio) {
+                        objetosTiendaActual.add(objetoMapa);
+                    }
+                }
+                break;
+            case "Comida":
+                for (Objeto objetoMapa : objetosTiendaMapa) {
+                    if (objetoMapa instanceof Consumible) {
                         objetosTiendaActual.add(objetoMapa);
                     }
                 }
