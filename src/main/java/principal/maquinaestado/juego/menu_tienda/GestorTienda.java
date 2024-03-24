@@ -7,12 +7,18 @@ package principal.maquinaestado.juego.menu_tienda;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.util.ArrayList;
 import principal.Constantes;
 import principal.ElementosPrincipales;
 import principal.control.GestorControles;
 import principal.graficos.SuperficieDibujo;
 import principal.herramientas.DibujoDebug;
 import principal.herramientas.EscaladorElementos;
+import principal.inventario.Objeto;
+import principal.inventario.RegistroObjetos;
+import principal.inventario.RegistroTiendas;
+import principal.inventario.armaduras.Armadura;
+import principal.inventario.armas.Arma;
 import principal.maquinaestado.EstadoJuego;
 
 /**
@@ -41,7 +47,8 @@ public class GestorTienda implements EstadoJuego {
         estructuraTienda = new EstructuraTienda();
 
         secciones = new SeccionTienda[7]; // Ajusta la longitud del arreglo según la cantidad de secciones
-
+        
+        
         etiquetaArmas = new Rectangle(estructuraTienda.BANNER_LATERAL.x
                 + estructuraTienda.MARGEN_HORIZONTAL_ETIQUETAS, estructuraTienda.BANNER_LATERAL.y
                 + estructuraTienda.MARGEN_VERTICAL_ETIQUETAS, estructuraTienda.ANCHO_ETIQUETAS,
@@ -98,41 +105,18 @@ public class GestorTienda implements EstadoJuego {
                 estructuraTienda.ANCHO_ETIQUETAS, estructuraTienda.ALTO_ETIQUETAS);
 
         seccionActual = secciones[0];
-        ElementosPrincipales.inventario.objetosTienda = ElementosPrincipales.mapa.getTienda
-        (ElementosPrincipales.mapa.idTiendaAbierta).getObjetosTienda();
-        System.out.println("id tienda abierta: "+ ElementosPrincipales.mapa.idTiendaAbierta);
+
     }
 
     @Override
     public void actualizar() {
+        
+        
         for (int i = 0; i < secciones.length; i++) {
             if (sd.getRaton().isClick()
                     && sd.getRaton().getPosicionRectangle().intersects(secciones[i].getEtiquetaMenuEscalada())) {
 
-                if (secciones[i] instanceof TiendaArmas) {
-                    TiendaArmas seccion = (TiendaArmas) secciones[i];
-                    if (seccion.getObjetoSeleccionadoCompra() != null || seccion.getObjetoSeleccionadoVenta() != null) {
-                        seccion.eliminarObjetoSeleccionado();
-                    }
-                }
-                else if (secciones[i] instanceof TiendaArmaduras) {
-                    TiendaArmaduras seccion = (TiendaArmaduras) secciones[i];
-                    if (seccion.getObjetoSeleccionadoCompra() != null || seccion.getObjetoSeleccionadoVenta() != null) {
-                        seccion.eliminarObjetoSeleccionado();
-                    }
-                }
-                else if (secciones[i] instanceof TiendaAccesorios) {
-                    TiendaAccesorios seccion = (TiendaAccesorios) secciones[i];
-                    if (seccion.getObjetoSeleccionadoCompra() != null || seccion.getObjetoSeleccionadoVenta() != null) {
-                        seccion.eliminarObjetoSeleccionado();
-                    }
-                }
-                else if (secciones[i] instanceof TiendaComida) {
-                    TiendaComida seccion = (TiendaComida) secciones[i];
-                    if (seccion.getObjetoSeleccionadoCompra() != null || seccion.getObjetoSeleccionadoVenta() != null) {
-                        seccion.eliminarObjetoSeleccionado();
-                    }
-                }/*else if(secciones[i] instanceof MenuInventario){
+                /*else if(secciones[i] instanceof MenuInventario){
                     MenuInventario seccion = (MenuInventario) secciones[i];
                     if(seccion.getObjetoSeleccionado() != null){
                         seccion.eliminarObjetoSeleccionado();
@@ -190,5 +174,7 @@ public class GestorTienda implements EstadoJuego {
                     salir.y + salir.height - Constantes.LADO_SPRITE / 4, Color.black);
         }
     }
+
+    
 
 }

@@ -55,6 +55,7 @@ public class TiendaArmas extends SeccionTienda {
 
     private final ArrayList<Objeto> canastaCompra;
     private final ArrayList<Objeto> canastaVenta;
+    private ArrayList<Objeto> objetosTienda;
 
     private final int anteriorXVenta;
     private final int anteriorYVenta;
@@ -80,6 +81,7 @@ public class TiendaArmas extends SeccionTienda {
 
     public TiendaArmas(String nombreSeccion, Rectangle etiquetaMenu, EstructuraTienda et) {
         super(nombreSeccion, etiquetaMenu, et);
+        
         panelComprar = new Rectangle(et.FONDO.x + margenGeneral * 2,
                 barraPeso.y + barraPeso.height + margenGeneral,
                 anchoPaneles, altoPaneles);
@@ -114,12 +116,23 @@ public class TiendaArmas extends SeccionTienda {
         cantidadObjetos = 0;
         totalTransaccionCompra = 0;
         totalTransaccionVenta = 0;
+
+    }
+
+    private boolean abrirTienda(int idTienda) {
+        if (idTienda == 0) {
+            return true;
+        }
+        return false;
     }
 
     @Override
+
     public void dibujar(Graphics g, SuperficieDibujo sd) {
+
         dibujarLimitePeso(g);
         dibujarPaneles(g);
+
         dibujarVentanaParaCompra(g, sd);
         dibujarVentanaParaVenta(g, sd);
         if (MenuEquipo.mostrarTooltip) {
@@ -130,6 +143,7 @@ public class TiendaArmas extends SeccionTienda {
 
     @Override
     public void actualizar() {
+        objetosTienda = ElementosPrincipales.mapa.objetosTiendaActual;
         actualizarPosicionesMenu();
         actualizarPosicionesCompraVenta();
         actualizarSeleccionRaton();
@@ -138,16 +152,17 @@ public class TiendaArmas extends SeccionTienda {
         calcularPesoFuturo();
         actualizarCanastaCompra();
         actualizarCanastaVenta();
+
     }
 
     private void actualizarSeleccionRaton() {
         Rectangle posicionRaton = GestorPrincipal.sd.getRaton().getPosicionRectangle();
         if (objetoSeleccionadoCompra == null) {
             if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(panelComprar))) {
-                if (ElementosPrincipales.inventario.getObjetosTienda().isEmpty()) {
+                if (objetosTienda.isEmpty()) {
                     return;
                 }
-                for (Objeto objeto : ElementosPrincipales.inventario.getObjetosTienda()) {
+                for (Objeto objeto : objetosTienda) {
                     if (objeto instanceof Arma) {
                         if (GestorPrincipal.sd.getRaton().isClick() && posicionRaton
                                 .intersects(EscaladorElementos.escalarRectangleArriba(objeto.getPosicionTienda()))) {
@@ -185,12 +200,10 @@ public class TiendaArmas extends SeccionTienda {
         int contadorArmasTienda = 0;
         int contadorArmasInventario = 0;
         int margenX = 8; // Nuevo margen desde el borde del panel
-        
 
-        if (!ElementosPrincipales.inventario.getObjetosTienda().isEmpty()) {
-            
+        if (!objetosTienda.isEmpty()) {
 
-            for (Objeto objetoActual : ElementosPrincipales.inventario.getObjetosTienda()) {
+            for (Objeto objetoActual : objetosTienda) {
                 if (objetoActual instanceof Arma) {
                     // Cálculo de la posición X ajustado para el margen desde el borde del panel
                     int posX = piObjetosTienda.x + margenX + (contadorArmasTienda % 3) * (lado + margenGeneral / 2);
@@ -198,7 +211,7 @@ public class TiendaArmas extends SeccionTienda {
                     Rectangle nuevaPosicionTienda = new Rectangle(posX, posY, lado, lado);
                     objetoActual.setPosicionTienda(nuevaPosicionTienda);
                     contadorArmasTienda++;
-                   
+
                 }
             }
         }
@@ -206,8 +219,8 @@ public class TiendaArmas extends SeccionTienda {
         if (!ElementosPrincipales.inventario.getArmas().isEmpty()) {
 
             for (Objeto objetoActual : ElementosPrincipales.inventario.getArmas()) {
-                if(objetoNoVendible(objetoActual.getId())) {
-                    objetoActual.setPosicionMochila(new Rectangle(0,0,lado,lado));
+                if (objetoNoVendible(objetoActual.getId())) {
+                    objetoActual.setPosicionMochila(new Rectangle(0, 0, lado, lado));
                     continue;
                 }
 
@@ -693,7 +706,7 @@ public class TiendaArmas extends SeccionTienda {
     }
 
     private void dibujarElementosTienda(final Graphics g) {
-        List<Objeto> objetos = ElementosPrincipales.inventario.getObjetosTienda();
+        List<Objeto> objetos = objetosTienda;
         int lado = Constantes.LADO_SPRITE;
 
         dibujarElementosEnPanelTienda(g, objetos, lado);
@@ -926,7 +939,7 @@ public class TiendaArmas extends SeccionTienda {
         List<Objeto> objetos = new ArrayList<>();
 
         for (Objeto objetoInventario : ElementosPrincipales.inventario.getArmas()) {
-            if(objetoNoVendible(objetoInventario.getId())){
+            if (objetoNoVendible(objetoInventario.getId())) {
                 continue;
             }
             objetos.add(objetoInventario);
@@ -1017,7 +1030,7 @@ public class TiendaArmas extends SeccionTienda {
         Rectangle posicionRaton = sd.getRaton().getPosicionRectangle();
 
         if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(panelComprar))) {
-            for (Objeto objeto : ElementosPrincipales.inventario.getObjetosTienda()) {
+            for (Objeto objeto : objetosTienda) {
                 if (objeto instanceof Arma) {
                     if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(objeto.getPosicionTienda()))) {
                         if (objetoSeleccionadoCompra == null) {

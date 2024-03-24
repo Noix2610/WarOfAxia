@@ -10,7 +10,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
-
 /**
  *
  * @author GAMER ARRAX
@@ -39,7 +38,7 @@ public class DibujoDebug {
         g.setColor(c);
         g.drawString(s, x, y);
     }
-    
+
     public static void dibujarString(final Graphics g, final String s, final int x, final int y) {
         objetosDibujados++;
         g.drawString(s, x, y);
@@ -90,7 +89,12 @@ public class DibujoDebug {
 
     public static void dibujarRectanguloContorno(final Graphics g, final Rectangle r) {
         objetosDibujados++;
-        g.drawRect(r.x, r.y, r.width, r.height);
+        if(r != null) {
+            g.drawRect(r.x, r.y, r.width, r.height);
+            // Realizar alguna operación para cambiar los valores de r.x, r.y, r.width o r.height
+        }else{
+            return;
+        }
     }
 
     public static void dibujarRectanguloContorno(final Graphics g, final int x, final int y, final int ancho,

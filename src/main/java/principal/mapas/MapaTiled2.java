@@ -9,7 +9,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Iterator;
 import org.json.simple.JSONArray;
@@ -56,6 +55,7 @@ public class MapaTiled2 {
     private String siguienteMapa;
     private Point puntoInicial;
     public Rectangle recMapa;
+    public Tienda tiendaActiva;
 
     long ultimoTiempoRecogida = 0;
     long tiempoDebouncing = 50; // 50 milisegundos de tiempo de debouncing
@@ -79,6 +79,8 @@ public class MapaTiled2 {
     private ArrayList<Rectangle> areaColisionOriginales;
     private Sprite[] paletaSprites1;
     private Sprite[] paletaSprites2;
+    public final ArrayList<Objeto> objetosTiendaMapa;
+    public ArrayList<Objeto> objetosTiendaActual;
     private boolean contenedorAbierto = false;
 
     private Dijkstra dijkstra;
@@ -91,7 +93,6 @@ public class MapaTiled2 {
     public ArrayList<ContenedorObjetos> listaContenedores;
     private ContenedorObjetos contenedorActual;
     public ArrayList<Tienda> tiendas;
-    public int idTiendaAbierta;
 
     public MapaTiled2(final String ruta) {
         Salida.getSalidas().clear();
@@ -122,10 +123,12 @@ public class MapaTiled2 {
         obtenerContenedoresMapa(globalJSON);
 
         obtenerTiendas(globalJSON);
-
         areasColisionActualizadas = new ArrayList<>();
         areasTransparenciaActualizadas = new ArrayList<>();
-        idTiendaAbierta = 0;
+        objetosTiendaMapa = new ArrayList<>();
+        objetosTiendaActual = new ArrayList<>();
+        tiendaActiva = new Tienda();
+        
 
     }
 
@@ -144,6 +147,7 @@ public class MapaTiled2 {
         Point puntoCoincidente = dijkstra.getCoordenadasNodoCoincidente(punto);
         dijkstra.reiniciarYEvaluar(puntoCoincidente);
         mostrarElementoscontenedor();
+
     }
 
     public void dibujar(Graphics2D g) {
@@ -516,7 +520,7 @@ public class MapaTiled2 {
 
     private void obtenerTiendas(JSONObject globalJSON) {
         tiendas = new ArrayList<>();
-        
+
         JSONArray coleccionTiendas = getArrayJson(globalJSON.get("tiendas").toString());
         for (int i = 0; i < coleccionTiendas.size(); i++) {
             JSONObject datosContenedor = getObjetoJson(coleccionTiendas.get(i).toString());
@@ -524,17 +528,13 @@ public class MapaTiled2 {
             int idTienda = getIntJson(datosContenedor, "id");
             int xTienda = getIntJson(datosContenedor, "x");
             int yTienda = getIntJson(datosContenedor, "y");
+            String tipoTienda = getStringFromJsonObject(datosContenedor, "tipo");
             Point posTienda = new Point(xTienda, yTienda);
 
-            Tienda tienda = new Tienda(idTienda, posTienda);
-            ArrayList<String> listaObjetosTienda = RegistroTiendas.obtenerTienda(tienda.getIdTienda());
-            for (String id : listaObjetosTienda) {
-                int idInt = Integer.parseInt(id);
-                Objeto objetoTienda = RegistroObjetos.obtenerObjeto(idInt);
-                tienda.getObjetosTienda().add(objetoTienda);
-                
-            }
+            Tienda tienda = new Tienda(idTienda, posTienda, tipoTienda);
+
             tiendas.add(tienda);
+
         }
     }
 
@@ -956,8 +956,11 @@ public class MapaTiled2 {
 
             if (ElementosPrincipales.jugador.getLIMITE_ABAJO().intersects(tiendaActual.getAreaTienda())
                     && GestorPrincipal.sd.getRaton().isClick2()) {
-                System.out.println("id Tienda: " + idTiendaAbierta);
-                idTiendaAbierta = tiendaActual.getIdTienda();
+                tiendaActiva = tiendaActual;
+                System.out.println("Tipo: " + tiendaActiva.getTipo());
+                obtenerObjetosMapa(tiendas.get(0).getIdTienda());
+                objetosTiendaActual = verificarTipoTienda(tiendaActiva);
+
                 GestorControles.teclado.tiendaActiva = true;
             }
         }
@@ -1011,6 +1014,7 @@ public class MapaTiled2 {
             Object value = jsonObject.get(key);
             // Verificar si el valor es de tipo String
             if (value instanceof String) {
+
                 return (String) value;
             }
             else {
@@ -1065,6 +1069,37 @@ public class MapaTiled2 {
         }
     }
 
+    private void obtenerObjetosMapa(int idMapa) {
+        objetosTiendaMapa.clear();
+        ArrayList<String> listaObjetos = RegistroTiendas.obtenerTienda(idMapa);
+        for (String idObjeto : listaObjetos) {
+            Objeto objeto = RegistroObjetos.obtenerObjeto(Integer.parseInt(idObjeto));
+            objetosTiendaMapa.add(objeto);
+        }
+    }
+
+    private ArrayList<Objeto> verificarTipoTienda(Tienda tienda) {
+        objetosTiendaActual.clear();
+
+        switch (tienda.getTipo()) {
+            case "Armaduras":
+                for (Objeto objetoMapa : objetosTiendaMapa) {
+                    if (objetoMapa instanceof Armadura) {
+                        objetosTiendaActual.add(objetoMapa);
+                    }
+                }
+                break;
+            case "Armas":
+                for (Objeto objetoMapa : objetosTiendaMapa) {
+                    if (objetoMapa instanceof Arma) {
+                        objetosTiendaActual.add(objetoMapa);
+                    }
+                }
+                break;
+        }
+        return objetosTiendaActual;
+    }
+
     public Point getPuntoInicial() {
         return puntoInicial;
     }
@@ -1088,8 +1123,9 @@ public class MapaTiled2 {
     public ArrayList<Nodo> getNodosMapa() {
         return dijkstra.getNodosMapa();
     }
-    
-    public Tienda getTienda(int idTienda){
+
+    /*public Tienda getTienda(){
+        
         Tienda tienda = new Tienda();
         for(Tienda tiendaActual : tiendas){
             if(idTienda == tiendaActual.getIdTienda()){
@@ -1097,6 +1133,5 @@ public class MapaTiled2 {
             }
         }
         return tienda;
-    }
-
+    }*/
 }

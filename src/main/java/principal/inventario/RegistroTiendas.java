@@ -18,7 +18,7 @@ public class RegistroTiendas {
         switch (idTienda) {
             case 0:
                 listaIdsObjetos = new ArrayList<>(List.of("500", "502", "503", "504", "505",
-                        "400","401","402"));
+                        "400","401","402","600", "601", "616", "617", "632","648"));
                 break;
             case 1:
                 listaIdsObjetos = new ArrayList<>(List.of("600", "601", "616", "617", "632","648"));

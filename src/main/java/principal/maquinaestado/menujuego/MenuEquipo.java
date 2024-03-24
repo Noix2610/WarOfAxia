@@ -137,7 +137,6 @@ public class MenuEquipo extends SeccionMenu {
     public void dibujar(final Graphics g, final SuperficieDibujo sd) {
         dibujarLimitePeso(g);
         dibujarPaneles(g);
-        System.out.println("Tamaño equipo Actual: " + ElementosPrincipales.jugador.getAe().getEquipoActual().size());
 
         if (mostrarTooltip) {
             dibujarTooltipEquipo(g, sd);

@@ -151,7 +151,7 @@ public class Jugador implements EntidadCurable {
         }
     }
 
-    public void actualizarAtributos() {
+    private void actualizarAtributos() {
         ga.setVidaMaxima(120 + ga.getNivel() + (int) (ga.getConstitucion() * 1.15));
         ga.setManaMaximo((int) (50 + ga.getNivel() / 2 + (ga.getInteligencia() * 1.15)));
         ga.setAtaque(ga.getFuerza() + ga.getNivel() + calcularAtqFisico());
@@ -540,7 +540,7 @@ public class Jugador implements EntidadCurable {
     private void actualizarAnimacion() {
         // Lógica para determinar la animación del jugador
         if (!enMovimiento) {
-            animacion = 0;
+            animacion = 1;
         }
         else {
             // Ajusta la velocidad de la animación aquí
@@ -554,22 +554,22 @@ public class Jugador implements EntidadCurable {
 
             // Determina el estado de la animación basado en la animación actual
             if (animacion <= 60 && animacion > 50) {
-                estado = 2; // Estado normal
+                estado = 0; // Estado normal
             }
             else if (animacion <= 50 && animacion > 40) {
                 estado = 1; // Estado normal
             }
             else if (animacion <= 40 && animacion > 30) {
-                estado = 0; // Estado normal
+                estado = 2; // Estado normal
             }
             else if (animacion <= 30 && animacion > 20) {
-                estado = 2;
-            }
-            else if (animacion <= 20 && animacion > 10) {
                 estado = 0;
             }
-            else {
+            else if (animacion <= 20 && animacion > 10) {
                 estado = 1;
+            }
+            else {
+                estado = 2;
             }
 
             // Obtiene el sprite correspondiente basado en el estado y la dirección
