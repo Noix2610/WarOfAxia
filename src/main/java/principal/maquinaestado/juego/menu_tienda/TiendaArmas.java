@@ -185,8 +185,10 @@ public class TiendaArmas extends SeccionTienda {
         int contadorArmasTienda = 0;
         int contadorArmasInventario = 0;
         int margenX = 8; // Nuevo margen desde el borde del panel
+        
 
         if (!ElementosPrincipales.inventario.getObjetosTienda().isEmpty()) {
+            
 
             for (Objeto objetoActual : ElementosPrincipales.inventario.getObjetosTienda()) {
                 if (objetoActual instanceof Arma) {
@@ -196,6 +198,7 @@ public class TiendaArmas extends SeccionTienda {
                     Rectangle nuevaPosicionTienda = new Rectangle(posX, posY, lado, lado);
                     objetoActual.setPosicionTienda(nuevaPosicionTienda);
                     contadorArmasTienda++;
+                   
                 }
             }
         }
@@ -203,15 +206,17 @@ public class TiendaArmas extends SeccionTienda {
         if (!ElementosPrincipales.inventario.getArmas().isEmpty()) {
 
             for (Objeto objetoActual : ElementosPrincipales.inventario.getArmas()) {
-
-                if (objetoActual instanceof Arma) {
-                    // Cálculo de la posición X ajustado para el margen desde el borde del panel
-                    int posX = piObjetosInventario.x + margenX + (contadorArmasInventario % 3) * (lado + margenGeneral / 2);
-                    int posY = piObjetosInventario.y + contadorArmasInventario / 3 * (lado + margenGeneral / 2);
-                    Rectangle nuevaPosicionInventario = new Rectangle(posX, posY, lado, lado);
-                    objetoActual.setPosicionMochila(nuevaPosicionInventario);
-                    contadorArmasInventario++;
+                if(objetoNoVendible(objetoActual.getId())) {
+                    objetoActual.setPosicionMochila(new Rectangle(0,0,lado,lado));
+                    continue;
                 }
+
+                // Cálculo de la posición X ajustado para el margen desde el borde del panel
+                int posX = piObjetosInventario.x + margenX + (contadorArmasInventario % 3) * (lado + margenGeneral / 2);
+                int posY = piObjetosInventario.y + contadorArmasInventario / 3 * (lado + margenGeneral / 2);
+                Rectangle nuevaPosicionInventario = new Rectangle(posX, posY, lado, lado);
+                objetoActual.setPosicionMochila(nuevaPosicionInventario);
+                contadorArmasInventario++;
 
             }
         }
@@ -921,6 +926,9 @@ public class TiendaArmas extends SeccionTienda {
         List<Objeto> objetos = new ArrayList<>();
 
         for (Objeto objetoInventario : ElementosPrincipales.inventario.getArmas()) {
+            if(objetoNoVendible(objetoInventario.getId())){
+                continue;
+            }
             objetos.add(objetoInventario);
         }
         int lado = Constantes.LADO_SPRITE;

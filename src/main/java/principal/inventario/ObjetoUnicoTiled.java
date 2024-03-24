@@ -6,8 +6,6 @@ package principal.inventario;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import principal.Constantes;
-import principal.ElementosPrincipales;
 
 /**
  *

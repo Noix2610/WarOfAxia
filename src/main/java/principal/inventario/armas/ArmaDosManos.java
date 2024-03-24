@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import principal.Constantes;
 import principal.entes.Jugador;
 import principal.inventario.TipoObjeto;
-import static principal.inventario.armas.Arma.hojaArmas;
 import principal.sprites.HojaSprites;
 import principal.sprites.Sprite;
 
@@ -24,6 +23,7 @@ public class ArmaDosManos extends Arma {
             final String rutaSonido, String rutaPersonaje,int precioCompra, int precioVenta) {
         super(id, nombre, descripcion, peso, ataqueMin, ataqueMax, alcanceFrontal, alcanceLateral, tipoObjeto, automatica, penetrante,
                 ataquesXSegundo, rutaSonido, rutaPersonaje, precioCompra,  precioVenta);
+        hojaArmas = new HojaSprites(Constantes.RUTA_HOJA_ARCOS, 32, false);
     }
 
     public ArrayList<Rectangle> getAlcance(final Jugador jugador) {
@@ -74,12 +74,8 @@ public class ArmaDosManos extends Arma {
         }
     }
 
-    public static HojaSprites getHojaArmas() {
+    public HojaSprites getHojaArmas() {
         return hojaArmas;
-    }
-
-    public static void setHojaArmas(HojaSprites hojaArmas) {
-        Arma.hojaArmas = hojaArmas;
     }
 
     public int getAtaqueMin() {

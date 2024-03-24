@@ -23,6 +23,7 @@ public class ArmaUnaMano extends Arma {
             final String rutaSonido, String rutaPersonaje,int precioCompra, int precioVenta) {
         super(id, nombre, descripcion, peso, ataqueMin, ataqueMax, alcanceFrontal, alcanceLateral, tipoObjeto, automatica, penetrante,
                 ataquesXSegundo, rutaSonido, rutaPersonaje, precioCompra,  precioVenta);
+        hojaArmas = new HojaSprites(Constantes.RUTA_HOJA_ESPADAS, 32, false);
     }
     
     public ArrayList<Rectangle> getAlcance(final Jugador jugador) {
@@ -65,7 +66,7 @@ public class ArmaUnaMano extends Arma {
 
     public Sprite getSprite() {
         try {
-            return hojaArmas.getSprites(id - 500);
+            return hojaArmas.getSprites(id - 400);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -73,12 +74,8 @@ public class ArmaUnaMano extends Arma {
         }
     }
 
-    public static HojaSprites getHojaArmas() {
+    public HojaSprites getHojaArmas() {
         return hojaArmas;
-    }
-
-    public static void setHojaArmas(HojaSprites hojaArmas) {
-        Arma.hojaArmas = hojaArmas;
     }
 
     public int getAtaqueMin() {

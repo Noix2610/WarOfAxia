@@ -5,6 +5,7 @@
 package principal.inventario;
 
 import java.util.ArrayList;
+import principal.ElementosPrincipales;
 import principal.habilidades.Habilidad;
 import principal.inventario.armaduras.Armadura;
 import principal.inventario.armas.Arma;
@@ -22,14 +23,14 @@ public class Inventario {
 
     public final ArrayList<Objeto> objetos;
     public final ArrayList<Habilidad> habilidades;
-    public final ArrayList<Objeto> objetosTienda;
+    public ArrayList<Objeto> objetosTienda;
     public int dinero;
 
     public Inventario() {
 
         objetos = new ArrayList<>();
         habilidades = new ArrayList<>();
-        objetosTienda = new ArrayList<>();
+        objetosTienda = ElementosPrincipales.mapa.objetosTienda;
         dinero = 20000;
         
 

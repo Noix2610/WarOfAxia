@@ -1094,116 +1094,15 @@
  "version":1.1,
  "width":40,
     "contenedores": [
-        {
-            "idContenedor": 0,
-            "x": 280,
-            "y": 400,
-            "objetos": [
-                {
-                    "idObjeto": 1,
-                    "cantidad": 2
-                },
-                {
-                    "idObjeto": 2,
-                    "cantidad": 3
-                }
-
-            ]
-        }
+        
     ],
     "objetos": [
-        {
-            "id": 616,
-            "cantidad": 1,
-            "x": 280,
-            "y": 440
-        },
-        {
-            "id": 616,
-            "cantidad": 1,
-            "x": 180,
-            "y": 360
-        },
-        {
-            "id": 716,
-            "cantidad": 1,
-            "x": 290,
-            "y": 450
-        },
-        {
-            "id": 700,
-            "cantidad": 1,
-            "x": 180,
-            "y": 360
-        },
-        {
-            "id": 700,
-            "cantidad": 1,
-            "x": 300,
-            "y": 480
-        },
-        {
-            "id": 5,
-            "cantidad": 1,
-            "x": 330,
-            "y": 420
-        },
-        {
-            "id": 6,
-            "cantidad": 1,
-            "x": 310,
-            "y": 460
-        }
-        ,
-        {
-            "id": 8,
-            "cantidad": 2,
-            "x": 350,
-            "y": 480
-        },
-        {
-            "id": 8,
-            "cantidad": 4,
-            "x": 360,
-            "y": 380
-        },
-        {
-            "id": 9,
-            "cantidad": 3,
-            "x": 400,
-            "y": 420
-        },
-        {
-            "id": 616,
-            "cantidad": 1,
-            "x": 420,
-            "y": 460
-        }
-        ,
-        {
-            "id": 617,
-            "cantidad": 1,
-            "x": 430,
-            "y": 460
-        }
-        ,
-        {
-            "id": 500,
-            "cantidad": 1,
-            "x": 500,
-            "y": 480
-        },
-        {
-            "id": 601,
-            "cantidad": 1,
-            "x": 510,
-            "y": 480
-        }
+        
     ],
 
     "enemigos": [
         {
-            "id": "0"
+            
         }
     ],
     "tiendas": [

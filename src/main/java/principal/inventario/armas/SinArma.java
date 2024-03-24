@@ -10,6 +10,7 @@ import principal.Constantes;
 import principal.entes.Jugador;
 import principal.inventario.TipoObjeto;
 import principal.sprites.HojaSprites;
+import principal.sprites.Sprite;
 
 /**
  *
@@ -62,12 +63,8 @@ public class SinArma extends Arma {
         return alcance;
     }
 
-    public static HojaSprites getHojaArmas() {
+    public  HojaSprites getHojaArmas() {
         return hojaArmas;
-    }
-
-    public static void setHojaArmas(HojaSprites hojaArmas) {
-        Arma.hojaArmas = hojaArmas;
     }
 
     public int getAtaqueMin() {
@@ -96,6 +93,11 @@ public class SinArma extends Arma {
 
     public int getAlcanceInt() {
         return alcanceFrontal;
+    }
+
+    @Override
+    public Sprite getSprite() {
+        return null;
     }
 
 }

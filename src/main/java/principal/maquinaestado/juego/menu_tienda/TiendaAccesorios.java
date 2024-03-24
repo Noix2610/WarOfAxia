@@ -20,7 +20,6 @@ import principal.herramientas.EscaladorElementos;
 import principal.herramientas.GeneradorTooltip;
 import principal.herramientas.MedidorString;
 import principal.inventario.Objeto;
-import principal.inventario.armaduras.Armadura;
 import principal.inventario.joyas.Joya;
 import principal.maquinaestado.menujuego.MenuEquipo;
 import static principal.maquinaestado.menujuego.MenuInventario.objetoSeleccionado;
@@ -81,7 +80,7 @@ public class TiendaAccesorios extends SeccionTienda {
 
     public TiendaAccesorios(String nombreSeccion, Rectangle etiquetaMenu, EstructuraTienda et) {
         super(nombreSeccion, etiquetaMenu, et);
-        System.out.println("Alto paneles: " + altoPaneles);
+        //System.out.println("Alto paneles: " + altoPaneles);
         panelComprar = new Rectangle(et.FONDO.x + margenGeneral * 2,
                 barraPeso.y + barraPeso.height + margenGeneral,
                 anchoPaneles, altoPaneles);
@@ -206,15 +205,17 @@ public class TiendaAccesorios extends SeccionTienda {
         if (!ElementosPrincipales.inventario.getJoyas().isEmpty()) {
 
             for (Objeto objetoActual : ElementosPrincipales.inventario.getJoyas()) {
-
-                if (objetoActual instanceof Joya) {
-                    // Cálculo de la posición X ajustado para el margen desde el borde del panel
-                    int posX = piObjetosInventario.x + margenX + (contadorArmasInventario % 3) * (lado + margenGeneral / 2);
-                    int posY = piObjetosInventario.y + contadorArmasInventario / 3 * (lado + margenGeneral / 2);
-                    Rectangle nuevaPosicionInventario = new Rectangle(posX, posY, lado, lado);
-                    objetoActual.setPosicionMochila(nuevaPosicionInventario);
-                    contadorArmasInventario++;
+                if (objetoNoVendible(objetoActual.getId())) {
+                    objetoActual.setPosicionMochila(new Rectangle(0, 0, lado, lado));
+                    continue;
                 }
+
+                // Cálculo de la posición X ajustado para el margen desde el borde del panel
+                int posX = piObjetosInventario.x + margenX + (contadorArmasInventario % 3) * (lado + margenGeneral / 2);
+                int posY = piObjetosInventario.y + contadorArmasInventario / 3 * (lado + margenGeneral / 2);
+                Rectangle nuevaPosicionInventario = new Rectangle(posX, posY, lado, lado);
+                objetoActual.setPosicionMochila(nuevaPosicionInventario);
+                contadorArmasInventario++;
 
             }
         }
@@ -929,6 +930,9 @@ public class TiendaAccesorios extends SeccionTienda {
         List<Objeto> objetos = new ArrayList<>();
 
         for (Objeto objetoInventario : ElementosPrincipales.inventario.getJoyas()) {
+            if (objetoNoVendible(objetoInventario.getId())) {
+                continue;
+            }
             objetos.add(objetoInventario);
         }
         int lado = Constantes.LADO_SPRITE;
@@ -1012,7 +1016,7 @@ public class TiendaAccesorios extends SeccionTienda {
 
         }
     }
-    
+
     private void dibujarTooltipPaneles(final Graphics g, final SuperficieDibujo sd) {
         Rectangle posicionRaton = sd.getRaton().getPosicionRectangle();
 

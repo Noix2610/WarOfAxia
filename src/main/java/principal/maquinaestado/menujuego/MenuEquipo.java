@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Iterator;
 import principal.Constantes;
 import principal.ElementosPrincipales;
 import principal.GestorPrincipal;
@@ -128,6 +129,7 @@ public class MenuEquipo extends SeccionMenu {
         actualizarPosicionesMenu(etiquetaEquipo);
         actualizarSeleccionRaton();
         actualizarObjetoSeleccionado();
+        removerObjetoEquipado();
 
     }
 
@@ -135,6 +137,8 @@ public class MenuEquipo extends SeccionMenu {
     public void dibujar(final Graphics g, final SuperficieDibujo sd) {
         dibujarLimitePeso(g);
         dibujarPaneles(g);
+        System.out.println("Tamaño equipo Actual: " + ElementosPrincipales.jugador.getAe().getEquipoActual().size());
+
         if (mostrarTooltip) {
             dibujarTooltipEquipo(g, sd);
             dibujarTooltipPeso(g, sd);
@@ -155,19 +159,15 @@ public class MenuEquipo extends SeccionMenu {
         Rectangle posicionRaton = GestorPrincipal.sd.getRaton().getPosicionRectangle();
 
         if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(panelEquipo))
-                && objetoSeleccionado != null && objetoSeleccionado instanceof ArmaUnaMano
+                && objetoSeleccionado != null && objetoSeleccionado instanceof Arma
                 && GestorPrincipal.sd.getRaton().isClick()
                 && posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(contenedorArma1))) {
 
             if (!sonMismasArmas((Arma) objetoSeleccionado, ElementosPrincipales.jugador.getAe().getArma1())) {
-                // Verifica si el contenedor de arma2 tiene un arma a distancia
-                if (ElementosPrincipales.jugador.getAe().getArma2() instanceof ArmaDosManos) {
-                    // Remueve el arma a distancia del contenedor 2 y de la lista de equipo actual
-                    Arma armaEnContenedor2 = ElementosPrincipales.jugador.getAe().getArma2();
-                    ElementosPrincipales.jugador.getAe().cambiarArma2(null);
-                    ElementosPrincipales.jugador.getAe().equipoActual.remove(armaEnContenedor2);
+                Objeto arma1 = (Objeto) ElementosPrincipales.jugador.getAe().getArma1();
+                if (ElementosPrincipales.jugador.getAe().equipoActual.contains(arma1)) {
+                    ElementosPrincipales.jugador.getAe().equipoActual.remove(arma1);
                 }
-
                 ElementosPrincipales.jugador.getAe().cambiarArma1((Arma) objetoSeleccionado);
 
                 // Actualiza la lista de equipo actual
@@ -186,7 +186,7 @@ public class MenuEquipo extends SeccionMenu {
         Rectangle posicionRaton = GestorPrincipal.sd.getRaton().getPosicionRectangle();
 
         if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(panelEquipo))
-                && objetoSeleccionado != null && objetoSeleccionado instanceof ArmaDosManos
+                && objetoSeleccionado != null && objetoSeleccionado instanceof Arma
                 && GestorPrincipal.sd.getRaton().isClick()
                 && posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(contenedorArma2))) {
 
@@ -199,14 +199,13 @@ public class MenuEquipo extends SeccionMenu {
                     ElementosPrincipales.jugador.getAe().cambiarArma2(null);
                     ElementosPrincipales.jugador.getAe().equipoActual.remove(armaEnContenedor2);
                 }
-
+                Objeto arma2 = (Objeto) ElementosPrincipales.jugador.getAe().getArma1();
+                if (ElementosPrincipales.jugador.getAe().equipoActual.contains(arma2)) {
+                    ElementosPrincipales.jugador.getAe().equipoActual.remove(arma2);
+                }
                 ElementosPrincipales.jugador.getAe().cambiarArma1((Arma) objetoSeleccionado);
 
                 // Actualiza la lista de equipo actual
-                if (ElementosPrincipales.jugador.getAe().equipoActual.contains(objetoSeleccionado)) {
-                    ElementosPrincipales.jugador.getAe().equipoActual.remove(objetoSeleccionado);
-                }
-                tipoObjetoSeleccionado = ElementosPrincipales.jugador.getTipoObjetoFromEquipoActual(objetoSeleccionado);
                 ElementosPrincipales.jugador.getAe().equipoActual.add(objetoSeleccionado);
                 objetoSeleccionado = null;
             }
@@ -222,25 +221,35 @@ public class MenuEquipo extends SeccionMenu {
                 && posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(contenedor))) {
 
             if (objetoSeleccionado instanceof ProteccionMedia) {
+                Objeto armadura = (Objeto) ElementosPrincipales.jugador.getAe().getArmaduraMedia();
+                if (ElementosPrincipales.jugador.getAe().equipoActual.contains(armadura)) {
+                    ElementosPrincipales.jugador.getAe().equipoActual.remove(armadura);
+                }
                 ElementosPrincipales.jugador.getAe().setArmaduraMedia((Armadura) objetoSeleccionado);
             }
             else if (objetoSeleccionado instanceof ProteccionAlta) {
+                Objeto casco = (Objeto) ElementosPrincipales.jugador.getAe().getCasco();
+                if (ElementosPrincipales.jugador.getAe().equipoActual.contains(casco)) {
+                    ElementosPrincipales.jugador.getAe().equipoActual.remove(casco);
+                }
                 ElementosPrincipales.jugador.getAe().setCasco((Armadura) objetoSeleccionado);
             }
             else if (objetoSeleccionado instanceof ProteccionLateral) {
+                Objeto guantes = (Objeto) ElementosPrincipales.jugador.getAe().getGuante();
+                if (ElementosPrincipales.jugador.getAe().equipoActual.contains(guantes)) {
+                    ElementosPrincipales.jugador.getAe().equipoActual.remove(guantes);
+                }
                 ElementosPrincipales.jugador.getAe().setGuante((Armadura) objetoSeleccionado);
             }
             else if (objetoSeleccionado instanceof ProteccionBaja) {
+                Objeto botas = (Objeto) ElementosPrincipales.jugador.getAe().getBota();
+                if (ElementosPrincipales.jugador.getAe().equipoActual.contains(botas)) {
+                    ElementosPrincipales.jugador.getAe().equipoActual.remove(botas);
+                }
                 ElementosPrincipales.jugador.getAe().setBota((Armadura) objetoSeleccionado);
             }
 
-            if (ElementosPrincipales.jugador.getAe().equipoActual.contains(objetoSeleccionado)) {
-                ElementosPrincipales.jugador.getAe().equipoActual.remove(objetoSeleccionado);
-            }
-
-            tipoObjetoSeleccionado = ElementosPrincipales.jugador.getTipoObjetoFromEquipoActual(objetoSeleccionado);
             ElementosPrincipales.jugador.getAe().equipoActual.add(objetoSeleccionado);
-            System.out.println("Objeto equipado: " + objetoSeleccionado.getNombre());
             objetoSeleccionado = null;
         }
 
@@ -255,14 +264,12 @@ public class MenuEquipo extends SeccionMenu {
                 && GestorPrincipal.sd.getRaton().isClick()
                 && posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(contenedorCollar))) {
 
-            // Cambiar la Armadura1 sin verificar si son las mismas
-            ElementosPrincipales.jugador.getAe().setCollar((Joya) objetoSeleccionado);
-
-            if (ElementosPrincipales.jugador.getAe().equipoActual.contains(objetoSeleccionado)) {
-                ElementosPrincipales.jugador.getAe().equipoActual.remove(objetoSeleccionado);
+            Objeto collar = (Objeto) ElementosPrincipales.jugador.getAe().getCollar();
+            if (ElementosPrincipales.jugador.getAe().equipoActual.contains(collar)) {
+                ElementosPrincipales.jugador.getAe().equipoActual.remove(collar);
             }
 
-            tipoObjetoSeleccionado = ElementosPrincipales.jugador.getTipoObjetoFromEquipoActual(objetoSeleccionado);
+            ElementosPrincipales.jugador.getAe().setCollar((Joya) objetoSeleccionado);
             ElementosPrincipales.jugador.getAe().equipoActual.add(objetoSeleccionado);
             objetoSeleccionado = null;
         }
@@ -278,14 +285,12 @@ public class MenuEquipo extends SeccionMenu {
                 && GestorPrincipal.sd.getRaton().isClick()
                 && posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(contenedorAccesorio))) {
 
-            // Cambiar la Armadura1 sin verificar si son las mismas
+            Objeto accesorio = (Objeto) ElementosPrincipales.jugador.getAe().getAccesorio();
+            if (ElementosPrincipales.jugador.getAe().equipoActual.contains(accesorio)) {
+                ElementosPrincipales.jugador.getAe().equipoActual.remove(accesorio);
+            }
             ElementosPrincipales.jugador.getAe().setAccesorio((Joya) objetoSeleccionado);
 
-            if (ElementosPrincipales.jugador.getAe().equipoActual.contains(objetoSeleccionado)) {
-                ElementosPrincipales.jugador.getAe().equipoActual.remove(objetoSeleccionado);
-            }
-
-            tipoObjetoSeleccionado = ElementosPrincipales.jugador.getTipoObjetoFromEquipoActual(objetoSeleccionado);
             ElementosPrincipales.jugador.getAe().equipoActual.add(objetoSeleccionado);
             objetoSeleccionado = null;
         }
@@ -308,6 +313,9 @@ public class MenuEquipo extends SeccionMenu {
                 Joya anillo2 = ae.getAnillo2();
 
                 if (!sonMismosAnillos((Joya) objetoSeleccionado, anillo1)) {
+                    if (ElementosPrincipales.jugador.getAe().equipoActual.contains(anillo1)) {
+                        ElementosPrincipales.jugador.getAe().equipoActual.remove(anillo1);
+                    }
                     ElementosPrincipales.jugador.getAe().setAnillo((Joya) objetoSeleccionado);
 
                     if (anillo2 != null && sonMismosAnillos(anillo2, (Joya) objetoSeleccionado)) {
@@ -321,6 +329,9 @@ public class MenuEquipo extends SeccionMenu {
                 Joya anillo2 = ae.getAnillo2();
 
                 if (!sonMismosAnillos((Joya) objetoSeleccionado, anillo2)) {
+                    if (ElementosPrincipales.jugador.getAe().equipoActual.contains(anillo2)) {
+                        ElementosPrincipales.jugador.getAe().equipoActual.remove(anillo2);
+                    }
                     ElementosPrincipales.jugador.getAe().setAnillo2((Joya) objetoSeleccionado);
 
                     if (anillo1 != null && sonMismosAnillos(anillo1, (Joya) objetoSeleccionado)) {
@@ -329,12 +340,6 @@ public class MenuEquipo extends SeccionMenu {
                     }
                 }
             }
-
-            if (ElementosPrincipales.jugador.getAe().equipoActual.contains(objetoSeleccionado)) {
-                ElementosPrincipales.jugador.getAe().equipoActual.remove(objetoSeleccionado);
-            }
-
-            tipoObjetoSeleccionado = ElementosPrincipales.jugador.getTipoObjetoFromEquipoActual(objetoSeleccionado);
             ElementosPrincipales.jugador.getAe().equipoActual.add(objetoSeleccionado);
             objetoSeleccionado = null;
         }
@@ -394,7 +399,7 @@ public class MenuEquipo extends SeccionMenu {
 
         }
         actualizarSeleccionArma1();
-        actualizarSeleccionArma2();
+        //actualizarSeleccionArma2();
         actualizarSeleccionArmadura(contenedorArmadura1);
         actualizarSeleccionArmadura(contenedorArmadura2);
         actualizarSeleccionArmadura(contenedorArmadura3);
@@ -424,7 +429,6 @@ public class MenuEquipo extends SeccionMenu {
             if (GestorPrincipal.sd.getRaton().getPosicionRectangle().intersects(EscaladorElementos.escalarRectangleArriba(rectangulo))
                     && GestorPrincipal.sd.getRaton().isClick()) {
                 etiquetaEquipo = i;
-                System.out.println("Etiqueta numero: " + etiquetaEquipo);
                 break;
             }
             i++;
@@ -441,6 +445,123 @@ public class MenuEquipo extends SeccionMenu {
             Point pr = EscaladorElementos.escalarAbajo(GestorPrincipal.sd.getRaton().getPosicion());
             objetoSeleccionado.setPosicionFlotante(
                     new Rectangle(pr.x, pr.y, Constantes.LADO_SPRITE, Constantes.LADO_SPRITE));
+        }
+    }
+
+    private void removerObjetoEquipado() {
+        Rectangle posicionRaton = GestorPrincipal.sd.getRaton().getPosicionRectangle();
+
+        if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(panelEquipo)) && objetoSeleccionado == null) {
+
+            if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(contenedorArma1))
+                    && GestorPrincipal.sd.getRaton().isClick2()) {
+                for (Iterator<Objeto> iterator = ElementosPrincipales.jugador.getAe().getEquipoActual().iterator(); iterator.hasNext();) {
+                    Objeto armaEquipada = iterator.next();
+                    if (armaEquipada.getId() == ElementosPrincipales.jugador.getAe().getArma1().getId()) {
+                        iterator.remove();
+                        break;
+                    }
+                }
+                ElementosPrincipales.jugador.getAe().cambiarArma1(null);
+
+            }
+            else if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(contenedorArmadura1))
+                    && GestorPrincipal.sd.getRaton().isClick2() && ElementosPrincipales.jugador.getAe().getArmaduraMedia()
+                    != null) {
+                for (Iterator<Objeto> iterator = ElementosPrincipales.jugador.getAe().getEquipoActual().iterator(); iterator.hasNext();) {
+                    Objeto armaduraMedia = iterator.next();
+                    if (armaduraMedia.getId() == ElementosPrincipales.jugador.getAe().getArmaduraMedia().getId()) {
+                        iterator.remove();
+                        break;
+                    }
+                }
+                ElementosPrincipales.jugador.getAe().setArmaduraMedia(null);
+            }
+
+            else if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(contenedorArmadura2))
+                    && GestorPrincipal.sd.getRaton().isClick2() && ElementosPrincipales.jugador.getAe().getCasco() != null) {
+                for (Iterator<Objeto> iterator = ElementosPrincipales.jugador.getAe().getEquipoActual().iterator(); iterator.hasNext();) {
+                    Objeto casco = iterator.next();
+                    if (casco.getId() == ElementosPrincipales.jugador.getAe().getCasco().getId()) {
+                        iterator.remove();
+                        break;
+                    }
+                }
+                ElementosPrincipales.jugador.getAe().setCasco(null);
+            }
+
+            else if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(contenedorArmadura3))
+                    && GestorPrincipal.sd.getRaton().isClick2() && ElementosPrincipales.jugador.getAe().getGuante() != null) {
+                for (Iterator<Objeto> iterator = ElementosPrincipales.jugador.getAe().getEquipoActual().iterator(); iterator.hasNext();) {
+                    Objeto guantes = iterator.next();
+                    if (guantes.getId() == ElementosPrincipales.jugador.getAe().getGuante().getId()) {
+                        iterator.remove();
+                        break;
+                    }
+                }
+                ElementosPrincipales.jugador.getAe().setGuante(null);
+            }
+
+            else if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(contenedorArmadura4))
+                    && GestorPrincipal.sd.getRaton().isClick2() && ElementosPrincipales.jugador.getAe().getBota() != null) {
+                for (Iterator<Objeto> iterator = ElementosPrincipales.jugador.getAe().getEquipoActual().iterator(); iterator.hasNext();) {
+                    Objeto bota = iterator.next();
+                    if (bota.getId() == ElementosPrincipales.jugador.getAe().getBota().getId()) {
+                        iterator.remove();
+                        break;
+                    }
+                }
+                ElementosPrincipales.jugador.getAe().setBota(null);
+            }
+
+            else if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(contenedorCollar))
+                    && GestorPrincipal.sd.getRaton().isClick2() && ElementosPrincipales.jugador.getAe().getCollar() != null) {
+                for (Iterator<Objeto> iterator = ElementosPrincipales.jugador.getAe().getEquipoActual().iterator(); iterator.hasNext();) {
+                    Objeto collar = iterator.next();
+                    if (collar.getId() == ElementosPrincipales.jugador.getAe().getCollar().getId()) {
+                        iterator.remove();
+                        break;
+                    }
+                }
+                ElementosPrincipales.jugador.getAe().setCollar(null);
+            }
+
+            else if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(contenedorAccesorio))
+                    && GestorPrincipal.sd.getRaton().isClick2() && ElementosPrincipales.jugador.getAe().getAccesorio() != null) {
+                for (Iterator<Objeto> iterator = ElementosPrincipales.jugador.getAe().getEquipoActual().iterator(); iterator.hasNext();) {
+                    Objeto accesorio = iterator.next();
+                    if (accesorio.getId() == ElementosPrincipales.jugador.getAe().getAccesorio().getId()) {
+                        iterator.remove();
+                        break;
+                    }
+                }
+                ElementosPrincipales.jugador.getAe().setAccesorio(null);
+            }
+
+            else if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(contenedorAnillo1))
+                    && GestorPrincipal.sd.getRaton().isClick2() && ElementosPrincipales.jugador.getAe().getAnillo1() != null) {
+                for (Iterator<Objeto> iterator = ElementosPrincipales.jugador.getAe().getEquipoActual().iterator(); iterator.hasNext();) {
+                    Objeto anillo1 = iterator.next();
+                    if (anillo1.getId() == ElementosPrincipales.jugador.getAe().getAnillo1().getId()) {
+                        iterator.remove();
+                        break;
+                    }
+                }
+                ElementosPrincipales.jugador.getAe().setAnillo(null);
+            }
+
+            else if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(contenedorAnillo2))
+                    && GestorPrincipal.sd.getRaton().isClick2() && ElementosPrincipales.jugador.getAe().getAnillo2() != null) {
+                for (Iterator<Objeto> iterator = ElementosPrincipales.jugador.getAe().getEquipoActual().iterator(); iterator.hasNext();) {
+                    Objeto anillo2 = iterator.next();
+                    if (anillo2.getId() == ElementosPrincipales.jugador.getAe().getAnillo2().getId()) {
+                        iterator.remove();
+                        break;
+                    }
+                }
+                ElementosPrincipales.jugador.getAe().setAnillo2(null);
+
+            }
         }
     }
 
@@ -641,7 +762,7 @@ public class MenuEquipo extends SeccionMenu {
                 if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(objeto.getPosicionMenu()))) {
 
                     // Dibuja el tooltip solo si objetoSeleccionado no es null
-                    dibujarTooltipObjeto(g, sd, objeto);
+                    dibujarTooltipObjetosEquipados(g, sd, objeto);
                 }
             }
         }
@@ -715,12 +836,42 @@ public class MenuEquipo extends SeccionMenu {
             }
         }
         if (etiquetaEquipo == 6 && objeto instanceof Joya) {
-           
+
             DibujoDebug.dibujarRectanguloContorno(g, objeto.getPosicionMenu());
             Joya joya = (Joya) objeto;
             String texto = devolverStringJoyas(joya);
             GeneradorTooltip.dibujarTooltipMejorado(g, sd, joya.getNombre() + texto);
             System.out.println("Joya");
+        }
+    }
+
+    private void dibujarTooltipObjetosEquipados(Graphics g, SuperficieDibujo sd, Objeto objeto) {
+        // Aquí puedes personalizar la apariencia del tooltip según tus necesidades
+
+        if ((objeto instanceof Arma)) {
+
+            DibujoDebug.dibujarRectanguloContorno(g, objeto.getPosicionMenu());
+            Arma arma = (Arma) objeto;
+            GeneradorTooltip.dibujarTooltipMejorado(g, sd, arma.getNombre() + "\nATAQUE: " + arma.getAtaque()
+                    + "\nALCANCE: " + arma.getAlcanceInt() + "\nPESO: " + arma.getPeso() + " oz.");
+
+        }
+
+        else if (objeto instanceof Armadura) {
+
+            DibujoDebug.dibujarRectanguloContorno(g, objeto.getPosicionMenu());
+            Armadura media = (Armadura) objeto;
+            GeneradorTooltip.dibujarTooltipMejorado(g, sd, objeto.getNombre() + "\nDEF FISICA: "
+                    + media.getDefensaF() + "\nDEF MAGICA: " + media.getDefensaM() + "\nPESO: " + objeto.getPeso() + " oz.");
+
+        }
+        else if (objeto instanceof Joya) {
+
+            DibujoDebug.dibujarRectanguloContorno(g, objeto.getPosicionMenu());
+            Joya joya = (Joya) objeto;
+            String texto = devolverStringJoyas(joya);
+            GeneradorTooltip.dibujarTooltipMejorado(g, sd, joya.getNombre() + texto);
+
         }
     }
 

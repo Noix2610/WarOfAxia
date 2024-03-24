@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import principal.Constantes;
+import principal.ElementosPrincipales;
 import principal.control.GestorControles;
 import principal.graficos.SuperficieDibujo;
 import principal.herramientas.DibujoDebug;
@@ -97,6 +98,9 @@ public class GestorTienda implements EstadoJuego {
                 estructuraTienda.ANCHO_ETIQUETAS, estructuraTienda.ALTO_ETIQUETAS);
 
         seccionActual = secciones[0];
+        ElementosPrincipales.inventario.objetosTienda = ElementosPrincipales.mapa.getTienda
+        (ElementosPrincipales.mapa.idTiendaAbierta).getObjetosTienda();
+        System.out.println("id tienda abierta: "+ ElementosPrincipales.mapa.idTiendaAbierta);
     }
 
     @Override

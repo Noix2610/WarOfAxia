@@ -879,16 +879,9 @@ public class Jugador implements EntidadCurable {
         AlmacenEquipo ae = getAe();
 
         Arma arma1 = ae.getArma1();
-        Arma arma2 = ae.getArma2();
 
-        if (arma1 != null && arma2 != null && !(arma1 instanceof ArmaDosManos) && !(arma2 instanceof ArmaDosManos)) {
-            ataqueTotal = arma1.getAtaque() + arma2.getAtaque();
-        }
-        else if (arma1 != null && arma1 instanceof ArmaDosManos) {
+        if (arma1 != null ) {
             ataqueTotal = arma1.getAtaque();
-        }
-        else if (arma2 != null && arma2 instanceof ArmaDosManos) {
-            ataqueTotal = arma2.getAtaque();
         }
 
         Objeto[] objetosEquipados = {ae.getCollar(), ae.getAccesorio(), ae.getAnillo1(), ae.getAnillo2()};

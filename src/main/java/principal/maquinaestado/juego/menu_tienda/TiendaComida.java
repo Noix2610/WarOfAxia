@@ -80,7 +80,6 @@ public class TiendaComida extends SeccionTienda {
 
     public TiendaComida(String nombreSeccion, Rectangle etiquetaMenu, EstructuraTienda et) {
         super(nombreSeccion, etiquetaMenu, et);
-        System.out.println("Alto paneles: " + altoPaneles);
         panelComprar = new Rectangle(et.FONDO.x + margenGeneral * 2,
                 barraPeso.y + barraPeso.height + margenGeneral,
                 anchoPaneles, altoPaneles);

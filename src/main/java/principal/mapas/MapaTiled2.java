@@ -91,9 +91,7 @@ public class MapaTiled2 {
     public ArrayList<ContenedorObjetos> listaContenedores;
     private ContenedorObjetos contenedorActual;
     public ArrayList<Tienda> tiendas;
-    private boolean dibujarX = false;
-    HojaSprites hojaBotonX= new HojaSprites("/icons/RatonClick2.png", 16, 16, false);
-    BufferedImage botonX;
+    public int idTiendaAbierta;
 
     public MapaTiled2(final String ruta) {
         Salida.getSalidas().clear();
@@ -127,8 +125,7 @@ public class MapaTiled2 {
 
         areasColisionActualizadas = new ArrayList<>();
         areasTransparenciaActualizadas = new ArrayList<>();
-        botonX = hojaBotonX.getSprites(0).getImagen();
-        
+        idTiendaAbierta = 0;
 
     }
 
@@ -240,12 +237,7 @@ public class MapaTiled2 {
 
         for (Tienda tiendaActual : tiendas) {
             DibujoDebug.dibujarRectanguloContorno(g, tiendaActual.getAreaTienda());
-        }
 
-        if (dibujarX) {
-            
-            DibujoDebug.dibujarImagen(g, botonX,ElementosPrincipales.jugador.getLIMITE_ABAJO().x,
-                    ElementosPrincipales.jugador.getLIMITE_ABAJO().y);
         }
 
         /*for (Rectangle rectagulo : areasColisionActualizadas) {
@@ -524,6 +516,7 @@ public class MapaTiled2 {
 
     private void obtenerTiendas(JSONObject globalJSON) {
         tiendas = new ArrayList<>();
+        
         JSONArray coleccionTiendas = getArrayJson(globalJSON.get("tiendas").toString());
         for (int i = 0; i < coleccionTiendas.size(); i++) {
             JSONObject datosContenedor = getObjetoJson(coleccionTiendas.get(i).toString());
@@ -539,8 +532,8 @@ public class MapaTiled2 {
                 int idInt = Integer.parseInt(id);
                 Objeto objetoTienda = RegistroObjetos.obtenerObjeto(idInt);
                 tienda.getObjetosTienda().add(objetoTienda);
+                
             }
-
             tiendas.add(tienda);
         }
     }
@@ -695,6 +688,20 @@ public class MapaTiled2 {
             return;
         }
 
+        // Verificar si hay enemigos dentro del alcance del jugador
+        boolean hayEnemigosEnAlcance = false;
+        for (Enemigo enemigo : enemigosMapa) {
+            if (ElementosPrincipales.jugador.getAlcanceActual().get(0).intersects(enemigo.getArea())) {
+                hayEnemigosEnAlcance = true;
+                break;
+            }
+        }
+
+        // Si no hay enemigos en el alcance del jugador, salir del método
+        if (!hayEnemigosEnAlcance) {
+            return;
+        }
+
         if (ElementosPrincipales.jugador.atacando) {
             ArrayList<Enemigo> enemigosAlcanzados = new ArrayList<>();
             if (ElementosPrincipales.jugador.getAe().getArma1() != null && ElementosPrincipales.jugador.getAe().getArma1().isPenetrante()) {
@@ -704,15 +711,13 @@ public class MapaTiled2 {
                     }
                 }
             }
-            else if (ElementosPrincipales.jugador.getAe().getArma2() != null && ElementosPrincipales.jugador.getAe().getArma2().isPenetrante()) {
-                // Verifica si el arma2 no es nulo y es penetrante
-                for (Enemigo enemigo : enemigosMapa) {
-                    if (ElementosPrincipales.jugador.getAlcanceActual().get(0).intersects(enemigo.getArea())) {
-                        enemigosAlcanzados.add(enemigo);
-                    }
-                }
-            }
             else {
+                /*
+                Este fragmento de código se encarga de realizar el proceso de ataque del jugador.
+                Primero, encuentra el enemigo más cercano dentro del alcance del jugador,
+                luego calcula el atributo de ataque del jugador y realiza el ataque con el arma equipada.
+                Finalmente, elimina los enemigos derrotados y marca el fin del ataque.
+                 */
                 Enemigo enemigoCercano = null;
                 Double distanciaCercana = null;
 
@@ -744,11 +749,21 @@ public class MapaTiled2 {
 
             if (arma.getTipoObjeto() == TipoObjeto.ARCO) {
                 atributo = ElementosPrincipales.jugador.getGa().getDestreza();
-                System.out.println("Destreza");
+
             }
             else if (arma.getTipoObjeto() == TipoObjeto.ESPADA_LIGERA) {
-                atributo = ElementosPrincipales.jugador.getGa().getFuerza();
-                System.out.println("Fuerza");
+                atributo = (int) ElementosPrincipales.jugador.getGa().getFuerza() / 2
+                        + (int) ElementosPrincipales.jugador.getGa().getDestreza() / 2;
+
+            }
+            else if (arma.getTipoObjeto() == TipoObjeto.ESPADA_MEDIA) {
+                atributo = (int) ElementosPrincipales.jugador.getGa().getFuerza();
+
+            }
+            else if (arma.getTipoObjeto() == TipoObjeto.ESPADA_PESADA) {
+                atributo = (int) ElementosPrincipales.jugador.getGa().getFuerza()
+                        + (int) ElementosPrincipales.jugador.getGa().getDestreza() / 2;
+
             }
             if (arma != null) {
                 arma.atacar(enemigosAlcanzados, atributo);
@@ -896,8 +911,8 @@ public class MapaTiled2 {
     }
 
     public void actualizarZonaSalida() {
-        int cantidadZonas = zonasSalida.size();
-        for (int i = 0; i < cantidadZonas; i++) {
+
+        for (int i = 0; i < zonasSalida.size(); i++) {
             int puntoX = zonasSalida.get(i).x - ElementosPrincipales.jugador.getPosicionXInt() + Constantes.MARGEN_X;
             int puntoY = zonasSalida.get(i).y - ElementosPrincipales.jugador.getPosicionYInt() + Constantes.MARGEN_Y;
             switch (i) {
@@ -938,20 +953,12 @@ public class MapaTiled2 {
 
             Rectangle nuevaAreaTienda = new Rectangle(puntoX - 18, puntoY, 16, 16);
             tiendaActual.setAreaTienda(nuevaAreaTienda);
-            if (ElementosPrincipales.jugador.getLIMITE_ABAJO().intersects(tiendaActual.getAreaTienda())) {
-                dibujarX = true;
-                if (GestorPrincipal.sd.getRaton().isClick2()) {
 
-                    ElementosPrincipales.inventario.getObjetosTienda().clear();
-                    for (Objeto objetoTienda : tiendaActual.getObjetosTienda()) {
-                        ElementosPrincipales.inventario.getObjetosTienda().add(objetoTienda);
-                    }
-                    GestorControles.teclado.tiendaActiva = true;
-                    break;
-                }
-            }
-            else {
-                dibujarX = false;
+            if (ElementosPrincipales.jugador.getLIMITE_ABAJO().intersects(tiendaActual.getAreaTienda())
+                    && GestorPrincipal.sd.getRaton().isClick2()) {
+                System.out.println("id Tienda: " + idTiendaAbierta);
+                idTiendaAbierta = tiendaActual.getIdTienda();
+                GestorControles.teclado.tiendaActiva = true;
             }
         }
     }
@@ -1080,6 +1087,16 @@ public class MapaTiled2 {
 
     public ArrayList<Nodo> getNodosMapa() {
         return dijkstra.getNodosMapa();
+    }
+    
+    public Tienda getTienda(int idTienda){
+        Tienda tienda = new Tienda();
+        for(Tienda tiendaActual : tiendas){
+            if(idTienda == tiendaActual.getIdTienda()){
+                tienda = tiendaActual;
+            }
+        }
+        return tienda;
     }
 
 }

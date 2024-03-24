@@ -5,7 +5,6 @@
 package principal.inventario;
 
 import java.awt.Rectangle;
-import principal.ElementosPrincipales;
 import principal.sprites.Sprite;
 
 /**

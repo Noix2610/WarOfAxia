@@ -11,6 +11,7 @@ import principal.Constantes;
 import principal.ElementosPrincipales;
 import principal.graficos.SuperficieDibujo;
 import principal.herramientas.DibujoDebug;
+import principal.inventario.Objeto;
 
 /**
  *
@@ -126,6 +127,17 @@ public abstract class SeccionTienda {
         DibujoDebug.dibujarRectanguloRelleno(g, barraPeso, Color.gray);
 
         DibujoDebug.dibujarRectanguloRelleno(g, contenidoBarra, color);
+    }
+    
+    public boolean objetoNoVendible(int idObjeto){
+        boolean flag = false;
+        for(Objeto objetoEquipado : ElementosPrincipales.jugador.getAe().getEquipoActual()){
+            if(objetoEquipado.getId() == idObjeto){
+                flag = true;
+                break;
+            }
+        }
+        return flag;
     }
 
     public Rectangle getEtiquetaMenu() {

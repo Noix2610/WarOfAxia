@@ -26,7 +26,7 @@ public abstract class Arma extends Objeto {
     protected int alcanceFrontal;
     protected int alcanceLateral;
     public SoundThread disparo;
-    public static HojaSprites hojaArmas = new HojaSprites(Constantes.RUTA_HOJA_ARCOS, 32, false);
+    public HojaSprites hojaArmas;
     public int ataqueMin;
     public int ataqueMax;
     protected boolean automatica;
@@ -67,37 +67,36 @@ public abstract class Arma extends Objeto {
 
     public void atacar(final ArrayList<Enemigo> enemigos, int atributo) {
 
-        if (actualizacionesParaSgteAtaque > 0) {
-            return;
-        }
-        actualizacionesParaSgteAtaque = (int) (ataqueXSegundo * 60);
-        disparo.reproducir(0.8f);
+        if (!enemigos.isEmpty()) {
+            if (actualizacionesParaSgteAtaque > 0) {
+                return;
+            }
+            actualizacionesParaSgteAtaque = (int) (ataqueXSegundo * 60);
+            disparo.reproducir(0.8f);
 
-        if (enemigos.isEmpty()) {
-            return;
-        }
-        ElementosPrincipales.jugador.getCronometro().reiniciar();
-        ElementosPrincipales.jugador.preparado = true;
-        // Generar un número aleatorio entre 1 y 100
-        double numeroAleatorio = new Random().nextDouble(100) + 1;
-        int multiplicadorCritico = 1;
+            ElementosPrincipales.jugador.getCronometro().reiniciar();
+            ElementosPrincipales.jugador.preparado = true;
+            // Generar un número aleatorio entre 1 y 100
+            double numeroAleatorio = new Random().nextDouble(100) + 1;
+            int multiplicadorCritico = 1;
 
-        // Verificar si es un golpe crítico
-        boolean esCritico = numeroAleatorio <= ElementosPrincipales.jugador.getGa().getCritico();
-        int rango = this.getAtaqueMax() - this.getAtaqueMin() + 1;
-        int ataquealeatorio = new Random().nextInt(rango) + this.getAtaqueMin();
-        // Calcular el daño base (ajusta según tus necesidades)
-        int danioBase = ataquealeatorio + atributo;
+            // Verificar si es un golpe crítico
+            boolean esCritico = numeroAleatorio <= ElementosPrincipales.jugador.getGa().getCritico();
+            int rango = this.getAtaqueMax() - this.getAtaqueMin() + 1;
+            int ataquealeatorio = new Random().nextInt(rango) + this.getAtaqueMin();
+            // Calcular el daño base (ajusta según tus necesidades)
+            int danioBase = ataquealeatorio + atributo;
 
-        // Aplicar multiplicador si es un golpe crítico
-        if (esCritico) {
-            multiplicadorCritico = 2;
-        }
+            // Aplicar multiplicador si es un golpe crítico
+            if (esCritico) {
+                multiplicadorCritico = 2;
+            }
 
-        float danioTotal = danioBase * multiplicadorCritico;
+            float danioTotal = danioBase * multiplicadorCritico;
 
-        for (Enemigo enemigo : enemigos) {
-            enemigo.perderVida(danioTotal, esCritico);
+            for (Enemigo enemigo : enemigos) {
+                enemigo.perderVida(danioTotal, esCritico);
+            }
         }
 
     }
@@ -153,7 +152,5 @@ public abstract class Arma extends Objeto {
     public int getAtaqueMax() {
         return ataqueMax;
     }
-    
-    
 
 }
