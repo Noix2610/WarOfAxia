@@ -4,17 +4,16 @@
  */
 package principal.mapas;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import principal.Constantes;
 import principal.ElementosPrincipales;
 import principal.GestorPrincipal;
@@ -100,7 +99,7 @@ public class MapaTiled2 {
 
         String contenido = CargadorRecursos.leerArchivoTexto(ruta);
 
-        JSONObject globalJSON = getObjetoJson(contenido);
+        JsonNode globalJSON = getObjetoJson(contenido);
 
         obtenerInformacionSiguienteMapa(globalJSON);
         // Inicializar atributos básicos
@@ -250,7 +249,7 @@ public class MapaTiled2 {
 
         for (Rectangle rectagulo : areasTransparenciaActualizadas) {
             DibujoDebug.dibujarRectanguloContorno(g, rectagulo, Color.white);
-        }*/
+        }
         dibujarTooltipObjetosMapa(g, GestorPrincipal.sd);
 
         /*DibujoDebug.dibujarString(g, zonaSalida1.toString(), 10, 90, Color.white);
@@ -262,67 +261,67 @@ public class MapaTiled2 {
         DibujoDebug.dibujarString(g, zonaSalida7.toString(), 10, 150, Color.white);*/
     }
 
-    private void inicializarAtributosBasicos(JSONObject globalJSON) {
-        anchoMapaTiles = getIntJson(globalJSON, "width");
-        altoMapaTiles = getIntJson(globalJSON, "height");
+    private void inicializarAtributosBasicos(JsonNode globalJSON) {
+        anchoMapaTiles = globalJSON.get("width").asInt();
+        altoMapaTiles = globalJSON.get("height").asInt();
 
         // Obtener el objeto JSON asociado con "start"
-        JSONObject puntoInicialJSON = null;
+        JsonNode puntoInicialJSON = globalJSON.get("start");
 
-        // Verificar si la clave "start" existe en el JSON
-        if (globalJSON.containsKey("start")) {
-            // Si existe, obtener el objeto JSON asociado con la clave "start"
-            puntoInicialJSON = getObjetoJson(globalJSON.get("start").toString());
-        }
-        else {
-
-            puntoInicial = Salida.puntoInicialSiguiente;
-        }
-
-        if (puntoInicialJSON != null) {
-            // Obtener las coordenadas x e y del objeto JSON de "start"
-            int x = getIntJson(puntoInicialJSON, "x");
-            int y = getIntJson(puntoInicialJSON, "y");
+        // Verificar si el nodo "start" existe en el JSON
+        if (puntoInicialJSON != null && puntoInicialJSON.isObject()) {
+            // Si existe, obtener las coordenadas x e y del nodo JSON de "start"
+            int x = puntoInicialJSON.get("x").asInt();
+            int y = puntoInicialJSON.get("y").asInt();
 
             // Actualizar el punto inicial de la instancia de Mapa
             this.puntoInicial = new Point(x, y); // Ajusta el método según la estructura de tu clase Mapa
         }
+        else {
+            // Si no existe, asignar el punto inicial predeterminado
+            this.puntoInicial = Salida.puntoInicialSiguiente; // Ajusta esto según lo que necesites
+        }
     }
 
-    private void inicializarCapas(JSONObject globalJSON) {
-        JSONArray capas = getArrayJson(globalJSON.get("layers").toString());
+    private void inicializarCapas(JsonNode globalJSON) {
+        JsonNode capas = globalJSON.get("layers");
         this.capaSprites1 = new ArrayList<>();
         this.capaSprites2 = new ArrayList<>();
         this.capaColisiones = new ArrayList<>();
         this.capaTransparencias = new ArrayList<>();
 
-        for (int i = 0; i < capas.size(); i++) {
-            JSONObject datosCapa = getObjetoJson(capas.get(i).toString());
-            String tipo = datosCapa.get("id").toString();
+        if (capas != null && capas.isArray()) {
+            for (JsonNode capaNode : capas) {
+                String tipo = capaNode.get("id").asText();
 
-            switch (tipo) {
-                case "1", "2":
-                    inicializarCapaSprites1(datosCapa);
-                    break;
-                case "3", "4":
-                    inicializarCapaSprites2(datosCapa);
-                    break;
+                switch (tipo) {
+                    case "1":
+                    case "2":
+                        inicializarCapaSprites1(capaNode);
+                        break;
+                    case "3":
+                    case "4":
+                        inicializarCapaSprites2(capaNode);
+                        break;
+                }
+            }
+
+            for (JsonNode capaNode : capas) {
+                String tipo = capaNode.get("type").asText();
+
+                switch (tipo) {
+                    case "objectgroup":
+                        inicializarCapaColisiones(capaNode);
+                        break;
+                    case "objectgroup1":
+                        inicializarCapaTransparencia(capaNode);
+                        break;
+                }
             }
         }
-        for (int i = 0; i < capas.size(); i++) {
-            JSONObject datosCapa = getObjetoJson(capas.get(i).toString());
-            String tipo = datosCapa.get("type").toString();
-
-            switch (tipo) {
-                case "objectgroup":
-                    inicializarCapaColisiones(datosCapa);
-                    break;
-                case "objectgroup1":
-                    inicializarCapaTransparencia(datosCapa);
-                    break;
-            }
+        else {
+            System.err.println("La clave 'layers' no está presente o no es un array en el JSON.");
         }
-
     }
 
     private void combinarColisiones() {
@@ -355,332 +354,338 @@ public class MapaTiled2 {
         dijkstra = new Dijkstra(new Point(10, 10), anchoMapaTiles, altoMapaTiles, areaColisionOriginales);
     }
 
-    private void inicializarPaletaSprites(JSONObject globalJSON) {
+    private void inicializarPaletaSprites(JsonNode globalJSON) {
         // Lógica para inicializar la paleta de sprites
-        JSONArray coleccionSprites = getArrayJson(globalJSON.get("tilesets").toString());
-        int totalSprites = 0;
-        for (int i = 0; i < coleccionSprites.size(); i++) {
-            JSONObject datosGrupo = getObjetoJson(coleccionSprites.get(i).toString());
-            totalSprites += getIntJson(datosGrupo, "tilecount");
-        }
-        paletaSprites1 = new Sprite[totalSprites];
-
-        for (int i = 0; i < coleccionSprites.size(); i++) {
-            JSONObject datosGrupo = getObjetoJson(coleccionSprites.get(i).toString());
-            String nombreImagen = datosGrupo.get("image").toString();
-            int anchoTile = getIntJson(datosGrupo, "tilewidth");
-            int altoTile = getIntJson(datosGrupo, "tileheight");
-
-            HojaSprites hoja = new HojaSprites("/mapas/" + nombreImagen, anchoTile, altoTile, false);
-
-            int primerSpriteColeccion = getIntJson(datosGrupo, "firstgid") - 1;
-            int ultimoSpriteColeccion = primerSpriteColeccion + getIntJson(datosGrupo, "tilecount") - 1;
-
-            // Obtener sprites solo una vez
-            Sprite[] sprites = new Sprite[ultimoSpriteColeccion - primerSpriteColeccion + 1];
-            for (int j = 0; j < sprites.length; j++) {
-                sprites[j] = hoja.getSprites(j);
+        JsonNode coleccionSprites = globalJSON.get("tilesets");
+        if (coleccionSprites != null && coleccionSprites.isArray()) {
+            int totalSprites = 0;
+            for (JsonNode datosGrupo : coleccionSprites) {
+                totalSprites += datosGrupo.get("tilecount").asInt();
             }
 
-            for (int j = 0; j < this.capaSprites1.size(); j++) {
-                CapaSprites capaActual = this.capaSprites1.get(j);
-                int[] spritesCapa = capaActual.getSprites();
+            paletaSprites1 = new Sprite[totalSprites];
+            paletaSprites2 = new Sprite[totalSprites];
 
-                for (int k = 0; k < spritesCapa.length; k++) {
-                    int idSpriteActual = spritesCapa[k];
+            int spriteIndex = 0;
+            for (JsonNode datosGrupo : coleccionSprites) {
+                String nombreImagen = datosGrupo.get("image").asText();
+                int anchoTile = datosGrupo.get("tilewidth").asInt();
+                int altoTile = datosGrupo.get("tileheight").asInt();
 
-                    if (idSpriteActual >= primerSpriteColeccion && idSpriteActual <= ultimoSpriteColeccion) {
-                        if (paletaSprites1[idSpriteActual] == null) {
-                            paletaSprites1[idSpriteActual] = sprites[idSpriteActual - primerSpriteColeccion];
+                HojaSprites hoja = new HojaSprites("/mapas/" + nombreImagen, anchoTile, altoTile, false);
+
+                int primerSpriteColeccion = datosGrupo.get("firstgid").asInt() - 1;
+                int ultimoSpriteColeccion = primerSpriteColeccion + datosGrupo.get("tilecount").asInt() - 1;
+
+                Sprite[] sprites = new Sprite[ultimoSpriteColeccion - primerSpriteColeccion + 1];
+                for (int j = 0; j < sprites.length; j++) {
+                    sprites[j] = hoja.getSprites(j);
+                }
+
+                // Asignar sprites a paletaSprites1 y paletaSprites2
+                for (int i = 0; i < this.capaSprites1.size(); i++) {
+                    CapaSprites capaActual = this.capaSprites1.get(i);
+                    int[] spritesCapa = capaActual.getSprites();
+
+                    for (int j = 0; j < spritesCapa.length; j++) {
+                        int idSpriteActual = spritesCapa[j];
+                        if (idSpriteActual >= primerSpriteColeccion && idSpriteActual <= ultimoSpriteColeccion) {
+                            if (paletaSprites1[idSpriteActual] == null) {
+                                paletaSprites1[idSpriteActual] = sprites[idSpriteActual - primerSpriteColeccion];
+                            }
                         }
                     }
                 }
-            }
-        }
-        totalSprites = 0;
-        for (int i = 0; i < coleccionSprites.size(); i++) {
-            JSONObject datosGrupo = getObjetoJson(coleccionSprites.get(i).toString());
-            totalSprites += getIntJson(datosGrupo, "tilecount");
-        }
 
-        paletaSprites2 = new Sprite[totalSprites];
+                for (int i = 0; i < this.capaSprites2.size(); i++) {
+                    CapaSprites capaActual = this.capaSprites2.get(i);
+                    int[] spritesCapa = capaActual.getSprites();
 
-        for (int i = 0; i < coleccionSprites.size(); i++) {
-            JSONObject datosGrupo = getObjetoJson(coleccionSprites.get(i).toString());
-            String nombreImagen = datosGrupo.get("image").toString();
-            int anchoTile = getIntJson(datosGrupo, "tilewidth");
-            int altoTile = getIntJson(datosGrupo, "tileheight");
-
-            HojaSprites hoja = new HojaSprites("/mapas/" + nombreImagen, anchoTile, altoTile, false);
-
-            int primerSpriteColeccion = getIntJson(datosGrupo, "firstgid") - 1;
-            int ultimoSpriteColeccion = primerSpriteColeccion + getIntJson(datosGrupo, "tilecount") - 1;
-
-            // Obtener sprites solo una vez
-            Sprite[] sprites = new Sprite[ultimoSpriteColeccion - primerSpriteColeccion + 1];
-            for (int j = 0; j < sprites.length; j++) {
-                sprites[j] = hoja.getSprites(j);
-            }
-
-            for (int j = 0; j < this.capaSprites2.size(); j++) {
-                CapaSprites capaActual = this.capaSprites2.get(j);
-                int[] spritesCapa = capaActual.getSprites();
-
-                for (int k = 0; k < spritesCapa.length; k++) {
-                    int idSpriteActual = spritesCapa[k];
-
-                    if (idSpriteActual >= primerSpriteColeccion && idSpriteActual <= ultimoSpriteColeccion) {
-                        if (paletaSprites2[idSpriteActual] == null) {
-                            paletaSprites2[idSpriteActual] = sprites[idSpriteActual - primerSpriteColeccion];
+                    for (int j = 0; j < spritesCapa.length; j++) {
+                        int idSpriteActual = spritesCapa[j];
+                        if (idSpriteActual >= primerSpriteColeccion && idSpriteActual <= ultimoSpriteColeccion) {
+                            if (paletaSprites2[idSpriteActual] == null) {
+                                paletaSprites2[idSpriteActual] = sprites[idSpriteActual - primerSpriteColeccion];
+                            }
                         }
                     }
                 }
+
+                spriteIndex += sprites.length;
             }
         }
-
+        else {
+            System.err.println("La clave 'tilesets' no está presente o no es un array en el JSON.");
+        }
     }
 
-    private void obtenerObjetosMapa(JSONObject globalJSON) {
-        // Lógica para obtener objetos del mapa
+    private void obtenerObjetosMapa(JsonNode globalJSON) {
         objetosMapa = new ArrayList<>();
-        JSONArray coleccionObjetos = getArrayJson(globalJSON.get("objetos").toString());
-        for (int i = 0; i < coleccionObjetos.size(); i++) {
-            JSONObject datosObjeto = getObjetoJson(coleccionObjetos.get(i).toString());
+        JsonNode coleccionObjetos = globalJSON.get("objetos");
 
-            int idObjeto = getIntJson(datosObjeto, "id");
-            int cantidad = getIntJson(datosObjeto, "cantidad");
-            int xObjeto = getIntJson(datosObjeto, "x");
-            int yObjeto = getIntJson(datosObjeto, "y");
+        if (coleccionObjetos != null && coleccionObjetos.isArray()) {
+            for (JsonNode objetoNode : coleccionObjetos) {
+                int idObjeto = objetoNode.get("id").asInt();
+                int cantidad = objetoNode.get("cantidad").asInt();
+                int xObjeto = objetoNode.get("x").asInt();
+                int yObjeto = objetoNode.get("y").asInt();
 
-            Point posicionObjeto = new Point(xObjeto, yObjeto);
-            Objeto objeto = RegistroObjetos.obtenerObjeto(idObjeto);
-            objeto.setCantidad(cantidad);
-
-            ObjetoUnicoTiled objetoUnico = new ObjetoUnicoTiled(posicionObjeto, objeto, objeto.getCantidad());
-            objetosMapa.add(objetoUnico);
-
-        }
-    }
-
-    private void obtenerEnemigosMapa(JSONObject globalJSON) {
-        // Lógica para obtener enemigos del mapa
-        enemigosMapa = new ArrayList<>();
-        JSONArray coleccionEnemigos = getArrayJson(globalJSON.get("enemigos").toString());
-        for (int i = 0; i < coleccionEnemigos.size(); i++) {
-            JSONObject datosEnemigo = getObjetoJson(coleccionEnemigos.get(i).toString());
-
-            int idEnemigo = getIntJson(datosEnemigo, "id");
-            int xEnemigo = getIntJson(datosEnemigo, "x");
-            int yEnemigo = getIntJson(datosEnemigo, "y");
-
-            if (idEnemigo != 0) {
-                Point posicionenemigo = new Point(xEnemigo, yEnemigo);
-                Enemigo enemigo = RegistroEnemigos.obtenerEnemigo(idEnemigo);
-
-                enemigo.setPosicion(posicionenemigo.x, posicionenemigo.y);
-
-                enemigosMapa.add(enemigo);
-            }
-
-        }
-    }
-
-    private void obtenerContenedoresMapa(JSONObject globalJSON) {
-        listaContenedores = new ArrayList<>();
-        JSONArray coleccionContenedores = getArrayJson(globalJSON.get("contenedores").toString());
-
-        for (int i = 0; i < coleccionContenedores.size(); i++) {
-            JSONObject datosContenedor = getObjetoJson(coleccionContenedores.get(i).toString());
-
-            int idContenedor = getIntJson(datosContenedor, "idContenedor");
-            int xContenedor = getIntJson(datosContenedor, "x");
-            int yContenedor = getIntJson(datosContenedor, "y");
-
-            Point posicionContenedor = new Point(xContenedor, yContenedor);
-            Rectangle areacontenedor = new Rectangle(xContenedor, yContenedor, 32, 32);
-            ContenedorObjetos contenedor = new ContenedorObjetos(posicionContenedor, idContenedor, areacontenedor);
-
-            JSONArray coleccionObjetos = getArrayJson(datosContenedor.get("objetos").toString());
-            for (int j = 0; j < coleccionObjetos.size(); j++) {
-                JSONObject datosObjeto = getObjetoJson(coleccionObjetos.get(j).toString()); // Cambio aquí
-
-                int idObjeto = getIntJson(datosObjeto, "idObjeto");
-                int cantidadObjeto = getIntJson(datosObjeto, "cantidad");
-
+                Point posicionObjeto = new Point(xObjeto, yObjeto);
                 Objeto objeto = RegistroObjetos.obtenerObjeto(idObjeto);
-                objeto.setCantidad(cantidadObjeto);
+                objeto.setCantidad(cantidad);
 
-                contenedor.getObjetos().add(objeto);
+                ObjetoUnicoTiled objetoUnico = new ObjetoUnicoTiled(posicionObjeto, objeto, objeto.getCantidad());
+                objetosMapa.add(objetoUnico);
             }
-
-            listaContenedores.add(contenedor);
-            areaColisionOriginales.add(contenedor.getArea());
+        }
+        else {
+            System.err.println("La clave 'objetos' no está presente o no es un array en el JSON.");
         }
     }
 
-    private void obtenerTiendas(JSONObject globalJSON) {
+    private void obtenerEnemigosMapa(JsonNode globalJSON) {
+        enemigosMapa = new ArrayList<>();
+        JsonNode coleccionEnemigos = globalJSON.get("enemigos");
+
+        if (coleccionEnemigos != null && coleccionEnemigos.isArray()) {
+            for (JsonNode enemigoNode : coleccionEnemigos) {
+                JsonNode idNode = enemigoNode.get("id");
+                JsonNode xNode = enemigoNode.get("x");
+                JsonNode yNode = enemigoNode.get("y");
+
+                // Verificar si los nodos no son nulos y son valores numéricos
+                if (idNode != null && xNode != null && yNode != null) {
+                    int idEnemigo = getIntJson(enemigoNode, "id");
+                    int xEnemigo = getIntJson(enemigoNode, "x");
+                    int yEnemigo = getIntJson(enemigoNode, "y");
+
+                    if (idEnemigo != 0) {
+                        Point posicionEnemigo = new Point(xEnemigo, yEnemigo);
+                        Enemigo enemigo = RegistroEnemigos.obtenerEnemigo(idEnemigo);
+                        enemigo.setPosicion(posicionEnemigo.x, posicionEnemigo.y);
+                        enemigosMapa.add(enemigo);
+                    }
+                }
+                else {
+                    System.err.println("Uno de los nodos de enemigos es nulo.");
+                }
+            }
+        }
+        else {
+            System.err.println("La clave 'enemigos' no está presente o no es un array en el JSON.");
+        }
+    }
+
+    private void obtenerContenedoresMapa(JsonNode globalJSON) {
+        listaContenedores = new ArrayList<>();
+        JsonNode coleccionContenedores = globalJSON.get("contenedores");
+
+        if (coleccionContenedores != null && coleccionContenedores.isArray()) {
+            for (JsonNode contenedorNode : coleccionContenedores) {
+                int idContenedor = contenedorNode.get("idContenedor").asInt();
+                int xContenedor = contenedorNode.get("x").asInt();
+                int yContenedor = contenedorNode.get("y").asInt();
+
+                Point posicionContenedor = new Point(xContenedor, yContenedor);
+                Rectangle areacontenedor = new Rectangle(xContenedor, yContenedor, 32, 32);
+                ContenedorObjetos contenedor = new ContenedorObjetos(posicionContenedor, idContenedor, areacontenedor);
+
+                JsonNode coleccionObjetos = contenedorNode.get("objetos");
+                if (coleccionObjetos != null && coleccionObjetos.isArray()) {
+                    for (JsonNode objetoNode : coleccionObjetos) {
+                        int idObjeto = objetoNode.get("idObjeto").asInt();
+                        int cantidadObjeto = objetoNode.get("cantidad").asInt();
+
+                        Objeto objeto = RegistroObjetos.obtenerObjeto(idObjeto);
+                        objeto.setCantidad(cantidadObjeto);
+
+                        contenedor.getObjetos().add(objeto);
+                    }
+                }
+
+                listaContenedores.add(contenedor);
+                areaColisionOriginales.add(contenedor.getArea());
+            }
+        }
+        else {
+            System.err.println("La clave 'contenedores' no está presente o no es un array en el JSON.");
+        }
+    }
+
+    private void obtenerTiendas(JsonNode globalJSON) {
         tiendas = new ArrayList<>();
 
-        JSONArray coleccionTiendas = getArrayJson(globalJSON.get("tiendas").toString());
-        for (int i = 0; i < coleccionTiendas.size(); i++) {
-            JSONObject datosContenedor = getObjetoJson(coleccionTiendas.get(i).toString());
+        JsonNode coleccionTiendas = globalJSON.get("tiendas");
+        if (coleccionTiendas != null && coleccionTiendas.isArray()) {
+            for (JsonNode tiendaNode : coleccionTiendas) {
+                int idTienda = getIntJson(tiendaNode, "id");
+                int xTienda = getIntJson(tiendaNode, "x");
+                int yTienda = getIntJson(tiendaNode, "y");
+                int tipo = getIntJson(tiendaNode, "tienda");
 
-            int idTienda = getIntJson(datosContenedor, "id");
-            int xTienda = getIntJson(datosContenedor, "x");
-            int yTienda = getIntJson(datosContenedor, "y");
-            String tipoTienda = getStringFromJsonObject(datosContenedor, "tipo");
-            Point posTienda = new Point(xTienda, yTienda);
-
-            Tienda tienda = new Tienda(idTienda, posTienda, tipoTienda);
-
-            tiendas.add(tienda);
-
+                Point posTienda = new Point(xTienda, yTienda);
+                Tienda tienda = new Tienda(idTienda, posTienda, tipo);
+                tiendas.add(tienda);
+            }
+        }
+        else {
+            System.err.println("La clave 'tiendas' no está presente o no es un array en el JSON.");
         }
     }
 
-    private void obtenerInformacionSiguienteMapa(JSONObject globalJSON) {
-        JSONArray salidasJSON = (JSONArray) globalJSON.get("salidas");
+    private void obtenerInformacionSiguienteMapa(JsonNode globalJSON) {
+        JsonNode salidasJSON = globalJSON.get("salidas");
 
         if (salidasJSON != null && !salidasJSON.isEmpty()) {
+            for (JsonNode salidaJSON : salidasJSON) {
+                // Si no existe, agregar la nueva salida
+                int xSalidaMapa = salidaJSON.get("x").asInt();
+                int ySalidaMapa = salidaJSON.get("y").asInt();
+                Point puntoSalidaMapa = new Point(xSalidaMapa, ySalidaMapa);
 
-            int i = 0;
-            for (Object salidaObj : salidasJSON) {
-                if (salidaObj instanceof JSONObject) {
-                    JSONObject salidaJSON = (JSONObject) salidaObj;
+                String siguienteMapa = salidaJSON.get("mapaDestino").asText();
 
-                    // Si no existe, agregar la nueva salida
-                    int xSalidaMapa = getIntJson(salidaJSON, "x");
-                    int ySalidaMapa = getIntJson(salidaJSON, "y");
+                // Obtener las coordenadas de inicio en el siguiente mapa desde salidaJSON
+                JsonNode puntoInicialJSON = salidaJSON.get("punto inicial");
+                int xInicioSiguienteMapa = puntoInicialJSON.get("x").asInt();
+                int yInicioSiguienteMapa = puntoInicialJSON.get("y").asInt();
+                Point puntoInicioSiguienteMapa = new Point(xInicioSiguienteMapa, yInicioSiguienteMapa);
 
-                    Point puntoSalidaMapa = new Point(xSalidaMapa, ySalidaMapa);
-
-                    siguienteMapa = getStringFromJsonObject(salidaJSON, "mapaDestino");
-
-                    // Obtener las coordenadas de inicio en el siguiente mapa desde salidaJSON
-                    JSONObject puntoInicialJSON = getObjetoJson(salidaJSON.get("punto inicial").toString());
-                    int xInicioSiguienteMapa = getIntJson(puntoInicialJSON, "x");
-                    int yInicioSiguienteMapa = getIntJson(puntoInicialJSON, "y");
-                    Point puntoInicioSiguienteMapa = new Point(xInicioSiguienteMapa, yInicioSiguienteMapa);
-
-                    Salida nuevaSalida = new Salida(puntoInicioSiguienteMapa, puntoSalidaMapa, siguienteMapa);
-                    Rectangle nuevaZonaSalida = new Rectangle(xSalidaMapa, ySalidaMapa, Constantes.LADO_SPRITE, Constantes.LADO_SPRITE);
-                    Salida.getSalidas().add(nuevaSalida);
-                    zonasSalida.add(nuevaZonaSalida);
-
-                }
-                i++;
+                Salida nuevaSalida = new Salida(puntoInicioSiguienteMapa, puntoSalidaMapa, siguienteMapa);
+                Rectangle nuevaZonaSalida = new Rectangle(xSalidaMapa, ySalidaMapa, Constantes.LADO_SPRITE, Constantes.LADO_SPRITE);
+                Salida.getSalidas().add(nuevaSalida);
+                zonasSalida.add(nuevaZonaSalida);
             }
         }
         else {
             System.err.println("La clave 'salidas' no está presente o está vacía en el JSON.");
         }
-
     }
 
-    private void inicializarCapaSprites1(JSONObject datosCapa) {
+    private void inicializarCapaSprites1(JsonNode datosCapa) {
+        int anchoCapa = datosCapa.get("width").asInt();
+        int altoCapa = datosCapa.get("height").asInt();
+        int xCapa = datosCapa.get("x").asInt();
+        int yCapa = datosCapa.get("y").asInt();
+
+        JsonNode spritesNode = datosCapa.get("data");
+        if (spritesNode != null && spritesNode.isArray()) {
+            int[] spriteCapa = new int[spritesNode.size()];
+            for (int j = 0; j < spritesNode.size(); j++) {
+                int codigoSprite = spritesNode.get(j).asInt();
+                spriteCapa[j] = codigoSprite - 1;
+            }
+
+            this.capaSprites1.add(new CapaSprites(anchoCapa, altoCapa, xCapa, yCapa, spriteCapa));
+        }
+        else {
+            System.err.println("No se encontraron datos válidos en la capa de sprites 1.");
+        }
+    }
+
+    private void inicializarCapaSprites2(JsonNode datosCapa) {
+        int anchoCapa = datosCapa.get("width").asInt();
+        int altoCapa = datosCapa.get("height").asInt();
+        int xCapa = datosCapa.get("x").asInt();
+        int yCapa = datosCapa.get("y").asInt();
+
+        JsonNode spritesNode = datosCapa.get("data");
+        if (spritesNode != null && spritesNode.isArray()) {
+            int[] spriteCapa = new int[spritesNode.size()];
+            for (int j = 0; j < spritesNode.size(); j++) {
+                int codigoSprite = spritesNode.get(j).asInt();
+                spriteCapa[j] = codigoSprite - 1;
+            }
+
+            this.capaSprites2.add(new CapaSprites(anchoCapa, altoCapa, xCapa, yCapa, spriteCapa));
+        }
+        else {
+            System.err.println("No se encontraron datos válidos en la capa de sprites 2.");
+        }
+    }
+
+    private void inicializarCapaColisiones(JsonNode datosCapa) {
         int anchoCapa = getIntJson(datosCapa, "width");
         int altoCapa = getIntJson(datosCapa, "height");
         int xCapa = getIntJson(datosCapa, "x");
         int yCapa = getIntJson(datosCapa, "y");
 
-        JSONArray sprites = getArrayJson(datosCapa.get("data").toString());
-        int[] spriteCapa = new int[sprites.size()];
-        for (int j = 0; j < sprites.size(); j++) {
-            int codigoSprite = Integer.parseInt(sprites.get(j).toString());
-            spriteCapa[j] = codigoSprite - 1;
-        }
+        JsonNode rectangulosNode = datosCapa.get("objects");
+        if (rectangulosNode != null && rectangulosNode.isArray()) {
+            Rectangle[] rectangulosCapa = new Rectangle[rectangulosNode.size()];
 
-        this.capaSprites1.add(new CapaSprites(anchoCapa, altoCapa, xCapa, yCapa, spriteCapa));
+            for (int j = 0; j < rectangulosNode.size(); j++) {
+                JsonNode datosRectangulo = rectangulosNode.get(j);
+
+                int x = getIntJson(datosRectangulo, "x");
+                int y = getIntJson(datosRectangulo, "y");
+                int ancho = getIntJson(datosRectangulo, "width");
+                int alto = getIntJson(datosRectangulo, "height");
+
+                if (x == 0) {
+                    x = 1;
+                }
+                if (y == 0) {
+                    y = 1;
+                }
+                if (ancho == 0) {
+                    ancho = 1;
+                }
+                if (alto == 0) {
+                    alto = 1;
+                }
+
+                Rectangle rectangulo = new Rectangle(x, y, ancho, alto);
+                rectangulosCapa[j] = rectangulo;
+            }
+
+            this.capaColisiones.add(new CapaColisiones(anchoCapa, altoCapa, xCapa, yCapa, rectangulosCapa));
+        }
+        else {
+            System.err.println("No se encontraron datos válidos en la capa de colisiones.");
+        }
     }
 
-    private void inicializarCapaSprites2(JSONObject datosCapa) {
+    private void inicializarCapaTransparencia(JsonNode datosCapa) {
         int anchoCapa = getIntJson(datosCapa, "width");
         int altoCapa = getIntJson(datosCapa, "height");
         int xCapa = getIntJson(datosCapa, "x");
         int yCapa = getIntJson(datosCapa, "y");
 
-        JSONArray sprites = getArrayJson(datosCapa.get("data").toString());
-        int[] spriteCapa = new int[sprites.size()];
-        for (int j = 0; j < sprites.size(); j++) {
-            int codigoSprite = Integer.parseInt(sprites.get(j).toString());
-            spriteCapa[j] = codigoSprite - 1;
+        JsonNode rectangulosNode = datosCapa.get("objects");
+        if (rectangulosNode != null && rectangulosNode.isArray()) {
+            Rectangle[] rectangulosCapa = new Rectangle[rectangulosNode.size()];
+
+            for (int j = 0; j < rectangulosNode.size(); j++) {
+                JsonNode datosRectangulo = rectangulosNode.get(j);
+
+                int x = getIntJson(datosRectangulo, "x");
+                int y = getIntJson(datosRectangulo, "y");
+                int ancho = getIntJson(datosRectangulo, "width");
+                int alto = getIntJson(datosRectangulo, "height");
+
+                if (x == 0) {
+                    x = 1;
+                }
+                if (y == 0) {
+                    y = 1;
+                }
+                if (ancho == 0) {
+                    ancho = 1;
+                }
+                if (alto == 0) {
+                    alto = 1;
+                }
+
+                Rectangle rectangulo = new Rectangle(x, y, ancho, alto);
+                rectangulosCapa[j] = rectangulo;
+            }
+
+            this.capaTransparencias.add(new CapaTransparencias(anchoCapa, altoCapa, xCapa, yCapa, rectangulosCapa));
         }
-
-        this.capaSprites2.add(new CapaSprites(anchoCapa, altoCapa, xCapa, yCapa, spriteCapa));
-    }
-
-    private void inicializarCapaColisiones(JSONObject datosCapa) {
-        int anchoCapa = getIntJson(datosCapa, "width");
-        int altoCapa = getIntJson(datosCapa, "height");
-        int xCapa = getIntJson(datosCapa, "x");
-        int yCapa = getIntJson(datosCapa, "y");
-
-        JSONArray rectangulos = getArrayJson(datosCapa.get("objects").toString());
-        Rectangle[] rectangulosCapa = new Rectangle[rectangulos.size()];
-
-        for (int j = 0; j < rectangulos.size(); j++) {
-            JSONObject datosRectangulos = getObjetoJson(rectangulos.get(j).toString());
-
-            int x = getIntJson(datosRectangulos, "x");
-            int y = getIntJson(datosRectangulos, "y");
-            int ancho = getIntJson(datosRectangulos, "width");
-            int alto = getIntJson(datosRectangulos, "height");
-
-            if (x == 0) {
-                x = 1;
-            }
-            if (y == 0) {
-                y = 1;
-            }
-            if (ancho == 0) {
-                ancho = 1;
-            }
-            if (alto == 0) {
-                alto = 1;
-            }
-
-            Rectangle rectangulo = new Rectangle(x, y, ancho, alto);
-            rectangulosCapa[j] = rectangulo;
+        else {
+            System.err.println("No se encontraron datos válidos en la capa de transparencia.");
         }
-
-        this.capaColisiones.add(new CapaColisiones(anchoCapa, altoCapa, xCapa, yCapa, rectangulosCapa));
-    }
-
-    private void inicializarCapaTransparencia(JSONObject datosCapa) {
-        int anchoCapa = getIntJson(datosCapa, "width");
-        int altoCapa = getIntJson(datosCapa, "height");
-        int xCapa = getIntJson(datosCapa, "x");
-        int yCapa = getIntJson(datosCapa, "y");
-
-        JSONArray rectangulos = getArrayJson(datosCapa.get("objects").toString());
-        Rectangle[] rectangulosCapa = new Rectangle[rectangulos.size()];
-
-        for (int j = 0; j < rectangulos.size(); j++) {
-            JSONObject datosRectangulos = getObjetoJson(rectangulos.get(j).toString());
-
-            int x = getIntJson(datosRectangulos, "x");
-            int y = getIntJson(datosRectangulos, "y");
-            int ancho = getIntJson(datosRectangulos, "width");
-            int alto = getIntJson(datosRectangulos, "height");
-
-            if (x == 0) {
-                x = 1;
-            }
-            if (y == 0) {
-                y = 1;
-            }
-            if (ancho == 0) {
-                ancho = 1;
-            }
-            if (alto == 0) {
-                alto = 1;
-            }
-
-            Rectangle rectangulo = new Rectangle(x, y, ancho, alto);
-            rectangulosCapa[j] = rectangulo;
-        }
-
-        this.capaTransparencias.add(new CapaTransparencias(anchoCapa, altoCapa, xCapa, yCapa, rectangulosCapa));
     }
 
     private void actualizarAtaques() {
@@ -805,6 +810,9 @@ public class MapaTiled2 {
                     Constantes.LADO_SPRITE);
 
             if (areaJugador.intersects(posicionObjetoActual) && GestorPrincipal.sd.getRaton().isRecogiendo()) {
+                if (ElementosPrincipales.jugador.isSobrepeso()) {
+                    return;
+                }
                 ElementosPrincipales.inventario.recogerObjetos(objetoActual);
                 iterador.remove();
                 break; // Salir del bucle después de recoger un objeto
@@ -868,44 +876,37 @@ public class MapaTiled2 {
         }
     }
 
-    private JSONObject getObjetoJson(final String codigoJson) {
-        JSONParser lector = new JSONParser();
-        JSONObject objetoJson = null;
+    private JsonNode getObjetoJson(final String codigoJson) {
+        ObjectMapper mapper = new ObjectMapper();
         try {
-            Object recuperado = lector.parse(codigoJson);
-            objetoJson = (JSONObject) recuperado;
+            JsonNode objetoJson = mapper.readTree(codigoJson);
             return objetoJson;
         }
-        catch (ParseException e) {
+        catch (IOException e) {
             System.err.println("Error al analizar el JSON: " + e.getMessage());
             e.printStackTrace();
-            System.out.println(e);
             return null;
         }
     }
 
-    private JSONArray getArrayJson(final String codigoJson) {
-        JSONParser lector = new JSONParser();
-        JSONArray arrayJson = null;
+    private int getIntJson(JsonNode objSon, String clave) {
+        JsonNode valorNode = objSon.get(clave);
+        
 
-        try {
-            Object recuperado = lector.parse(codigoJson);
-            arrayJson = (JSONArray) recuperado;
-        }
-        catch (ParseException e) {
-            e.printStackTrace();
-            System.out.println(e);
-        }
-
-        return arrayJson;
-    }
-
-    private int getIntJson(final JSONObject objSon, final String clave) {
-        Object valorObjeto = objSon.get(clave);
         int valor = 0;
-        if (valorObjeto != null) {
-            valor = (int) Double.parseDouble(valorObjeto.toString());
-
+        if (valorNode != null) {
+            if (valorNode.isNumber()) {
+                valor = valorNode.intValue(); // Convertir el valor del nodo a un entero
+            }
+            else if (valorNode.isTextual()) {
+                // Intenta convertir el valor del nodo a un entero
+                try {
+                    valor = Integer.parseInt(valorNode.asText());
+                }
+                catch (NumberFormatException e) {
+                    System.err.println("No se pudo convertir el valor del nodo a un entero: " + e.getMessage());
+                }
+            }
         }
         return valor;
     }
@@ -1008,26 +1009,17 @@ public class MapaTiled2 {
         return new Rectangle(x, y, ancho, alto);
     }
 
-    public static String getStringFromJsonObject(JSONObject jsonObject, String key) {
+    public static JsonNode getNodeFromJsonObject(JsonNode jsonObject, String key) {
         // Verificar si el JSON contiene la clave
-        if (jsonObject.containsKey(key)) {
-            Object value = jsonObject.get(key);
-            // Verificar si el valor es de tipo String
-            if (value instanceof String) {
-
-                return (String) value;
-            }
-            else {
-                // Manejar el caso en el que el valor no es de tipo String
-                System.out.println("El valor para la clave '" + key + "' no es de tipo String.");
-            }
+        if (jsonObject.has(key)) {
+            return jsonObject.get(key);
         }
         else {
             // Manejar el caso en el que la clave no está presente en el JSON
             System.out.println("La clave '" + key + "' no está presente en el JSON.");
+            // Devolver null u otro valor predeterminado según tus necesidades
+            return null;
         }
-        // En caso de error, devolver una cadena vacía o null según tus necesidades
-        return "";
     }
 
     private void dibujarTooltipObjetosMapa(final Graphics g, final SuperficieDibujo sd) {
@@ -1082,28 +1074,28 @@ public class MapaTiled2 {
         objetosTiendaActual.clear();
 
         switch (tienda.getTipo()) {
-            case "Armaduras":
+            case 1:
                 for (Objeto objetoMapa : objetosTiendaMapa) {
                     if (objetoMapa instanceof Armadura) {
                         objetosTiendaActual.add(objetoMapa);
                     }
                 }
                 break;
-            case "Armas":
+            case 2:
                 for (Objeto objetoMapa : objetosTiendaMapa) {
                     if (objetoMapa instanceof Arma) {
                         objetosTiendaActual.add(objetoMapa);
                     }
                 }
                 break;
-            case "Accesorios":
+            case 3:
                 for (Objeto objetoMapa : objetosTiendaMapa) {
                     if (objetoMapa instanceof Accesorio) {
                         objetosTiendaActual.add(objetoMapa);
                     }
                 }
                 break;
-            case "Comida":
+            case 4:
                 for (Objeto objetoMapa : objetosTiendaMapa) {
                     if (objetoMapa instanceof Consumible) {
                         objetosTiendaActual.add(objetoMapa);
@@ -1138,14 +1130,4 @@ public class MapaTiled2 {
         return dijkstra.getNodosMapa();
     }
 
-    /*public Tienda getTienda(){
-        
-        Tienda tienda = new Tienda();
-        for(Tienda tiendaActual : tiendas){
-            if(idTienda == tiendaActual.getIdTienda()){
-                tienda = tiendaActual;
-            }
-        }
-        return tienda;
-    }*/
 }

@@ -77,7 +77,7 @@ public class Jugador implements EntidadCurable {
     public int estado;
 
     private boolean subirNivel = false;
-    BufferedImage habilidad;
+    private BufferedImage habilidad;
 
     private int recuperacion = 60;
     private int recuperacionVida = 60;
@@ -130,9 +130,6 @@ public class Jugador implements EntidadCurable {
         ga.setMana(ga.getManaMaximo());
         ga.setResistencia(ga.getResistenciaMaxima());
         habilidad = CargadorRecursos.cargarImagenCompatibleTranslucida("/icons/habilidad1.png");
-
-        curacion = new Curacion("Curacion", 0, 0, this, 15, 0,
-                30, 1, 0, TipoObjeto.ACTIVA);
     }
 
     public void ganarExperiencia(int puntos) {
@@ -292,7 +289,7 @@ public class Jugador implements EntidadCurable {
             dibujarCuracionRecibida(g, centroX, centroY + 20);
         }
         dibujarSubirNivel(g, centroX, centroY);
-
+        
         DibujoDebug.dibujarString(g, "AtkF: " + ga.getAtaque(), 10, 90);
         DibujoDebug.dibujarString(g, "Def: " + ga.getDefensaFisica(), 10, 100);
         DibujoDebug.dibujarString(g, "AtkM: " + ga.getMagia(), 10, 110);

@@ -28,11 +28,13 @@ public class GestorJuego implements EstadoJuego {
     BufferedImage logo;
     MenuInferior menuInferior;
     EfectosVisuales ev;
+    public static boolean recargar;
 
     public GestorJuego() {
         menuInferior = new MenuInferior();
         logo = CargadorRecursos.cargarImagenCompatibleTranslucida(Constantes.RUTA_LOGO);
         this.ev = new EfectosVisuales();
+        recargar = false;
     }
 
     @Override
@@ -40,6 +42,7 @@ public class GestorJuego implements EstadoJuego {
         revisarZonaSalida();
         ElementosPrincipales.mapa.actualizar();
         ElementosPrincipales.jugador.actualizar();
+        recargarJuego();
     }
 
     /*private void revisarZonaSalida() {
@@ -118,13 +121,15 @@ public class GestorJuego implements EstadoJuego {
             recargarJuego();
         }
     }*/
-    private void recargarJuego() {
-        
+    public void recargarJuego() {
+        if(recargar){
         ElementosPrincipales.mapa = new MapaTiled2("textos/" + ElementosPrincipales.mapa.getSiguienteMapa());
 
         // Establecer la posición del jugador en el nuevo mapa
         ElementosPrincipales.jugador.setPosicionX(ElementosPrincipales.mapa.getPuntoInicial().x);
         ElementosPrincipales.jugador.setPosicionY(ElementosPrincipales.mapa.getPuntoInicial().y);
+        recargar = false;
+        }
 
     }
 
@@ -153,7 +158,7 @@ public class GestorJuego implements EstadoJuego {
                 Salida.puntoInicialSiguiente = salidaActual.getPuntoInicioSiguienteMapa();
                 ElementosPrincipales.mapa.setSiguienteMapa(salidaActual.getNombreSiguienteMapa());
                 GestorPrincipal.sd.cambioMapa = true;
-                recargarJuego();
+                recargar = true;
                 
                 break;  // Salir del bucle una vez que se ha detectado la intersección
             }

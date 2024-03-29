@@ -19,6 +19,7 @@ import principal.herramientas.Cronometro;
 import principal.herramientas.DatosDebug;
 import principal.herramientas.DibujoDebug;
 import principal.maquinaestado.GestorEstados;
+import principal.maquinaestado.juego.GestorJuego;
 
 /**
  *
@@ -96,6 +97,14 @@ public class SuperficieDibujo extends Canvas {
             int xTexto = (Constantes.ANCHO_JUEGO - anchoTexto) / 2;
             int yTexto = Constantes.ALTO_JUEGO / 2;
             g.drawString(mensajeMuerte, xTexto, yTexto);
+
+            // Verificar si se ha presionado alguna tecla
+            // Establecer la variable de control para mostrar la pantalla de título
+            ElementosPrincipales.jugador.getGa().setVida(ElementosPrincipales.jugador.getGa().getVidaMaxima());
+            GestorJuego.recargar = true;
+            
+            GestorPrincipal.pantallaTitulo = true;
+
         }
         /*if (cambioMapa) {
             efectosVisuales.dibujarTransicionNegro(g, getWidth(), getHeight());
@@ -122,7 +131,7 @@ public class SuperficieDibujo extends Canvas {
         g.dispose();
 
         buffer.show();
-        
+
         g.setFont(g.getFont().deriveFont(8f));
 
     }

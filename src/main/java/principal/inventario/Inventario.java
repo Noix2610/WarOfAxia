@@ -5,7 +5,10 @@
 package principal.inventario;
 
 import java.util.ArrayList;
+import java.util.List;
 import principal.ElementosPrincipales;
+import principal.entes.Enemigo;
+import principal.entes.RegistroEnemigos;
 import principal.habilidades.Habilidad;
 import principal.inventario.armaduras.Armadura;
 import principal.inventario.armas.Arma;
@@ -24,6 +27,8 @@ public class Inventario {
     public final ArrayList<Objeto> objetos;
     public final ArrayList<Habilidad> habilidades;
     public ArrayList<Objeto> objetosTienda;
+    public ArrayList<Enemigo> enemigosEliminados;
+    
     public int dinero;
 
     public Inventario() {
@@ -32,7 +37,9 @@ public class Inventario {
         habilidades = new ArrayList<>();
         objetosTienda = ElementosPrincipales.mapa.objetosTienda;
         dinero = 20000;
-        
+        Enemigo enemigo1 = RegistroEnemigos.obtenerEnemigo(1);
+        Enemigo enemigo2 = RegistroEnemigos.obtenerEnemigo(2);
+        enemigosEliminados = new ArrayList<>(List.of(enemigo1,enemigo2)); 
 
     }
 

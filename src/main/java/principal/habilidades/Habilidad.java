@@ -20,6 +20,7 @@ public abstract class Habilidad {
     private boolean efectoActivado;
     Cronometro cronometro;
     private TipoObjeto tipoHabilidad;
+    private TipoObjeto activaPasiva;
     protected Rectangle posicionMenu;
     protected Rectangle posicionFlotante;
     HojaSprites hojaHabilidad;
@@ -34,7 +35,8 @@ public abstract class Habilidad {
     private int montoTotal;
 
     public Habilidad(String nombre, int duracion, int tiempoReutilizacion,
-            Object objetivo, int manaUtilizado, int vidaUtilizada, int indiceSprite, TipoObjeto tipoHabilidad) {
+            Object objetivo, int manaUtilizado, int vidaUtilizada, int indiceSprite, TipoObjeto activaPasiva,
+            TipoObjeto tipoHabilidad) {
         this.nombre = nombre;
         this.duracion = duracion;
         this.tiempoReutilizacion = tiempoReutilizacion;
@@ -43,6 +45,7 @@ public abstract class Habilidad {
         this.vidaUtilizada = vidaUtilizada;
         hojaHabilidad = new HojaSprites(Constantes.RUTA_HOJA_HABILIDADES, 32, true);
         imagenActual = hojaHabilidad.getSprites(indiceSprite).getImagen();
+        this.activaPasiva = activaPasiva;
         this.tipoHabilidad = tipoHabilidad;
         posicionMenu = new Rectangle(0, 0, 0, 0);
         posicionFlotante = new Rectangle(0, 0, 0, 0);
@@ -52,7 +55,7 @@ public abstract class Habilidad {
     }
 
     // Método abstracto que debe ser implementado por las subclases
-    public abstract void aplicarEfecto(Object object);
+    public abstract void aplicarEfecto(Object object, TipoObjeto tipoHabilidad);
 
     public String getNombre() {
         return nombre;
@@ -165,6 +168,16 @@ public abstract class Habilidad {
     public void setEfectoActivado(boolean efectoActivado) {
         this.efectoActivado = efectoActivado;
     }
+
+    public TipoObjeto getActivaPasiva() {
+        return activaPasiva;
+    }
+
+    public void setActivaPasiva(TipoObjeto activaPasiva) {
+        this.activaPasiva = activaPasiva;
+    }
+    
+    
     
     
     

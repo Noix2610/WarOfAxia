@@ -19,6 +19,7 @@ public class GestorPrincipal {
     private String titulo;
     private int ancho;
     private int alto;
+    public static boolean pantallaTitulo = true;
 
     public static SuperficieDibujo sd;
     private Ventana ventana;
@@ -49,7 +50,7 @@ public class GestorPrincipal {
         
         enFuncionamiento = true;
         inicializar();
-        sonido.repetir(0.6f);
+        sonido.repetir(0.7f);
     }
 
     private void inicializar() {
@@ -101,7 +102,10 @@ public class GestorPrincipal {
     }
 
     private void actualizar() throws InterruptedException {
-        if (GestorControles.teclado.inventarioActivo) {
+        if(pantallaTitulo){
+            ge.cambiarEstadoActual(3);
+        }
+        else if (GestorControles.teclado.inventarioActivo) {
             ge.cambiarEstadoActual(1);
             GestorControles.teclado.tiendaActiva = false;
         }
