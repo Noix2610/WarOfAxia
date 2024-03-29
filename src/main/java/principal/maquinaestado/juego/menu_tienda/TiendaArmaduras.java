@@ -26,7 +26,6 @@ import principal.herramientas.MedidorString;
 import principal.inventario.Objeto;
 import principal.inventario.armaduras.Armadura;
 import principal.maquinaestado.menujuego.MenuEquipo;
-import static principal.maquinaestado.menujuego.MenuInventario.objetoSeleccionado;
 
 public class TiendaArmaduras extends SeccionTienda {
 

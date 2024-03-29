@@ -11,6 +11,8 @@ package principal.inventario;
 public enum TipoObjeto {
     ACTIVA,
     PASIVA,
+    ATM,//Automatica
+    AOT,//Activa en el Tiempo
     ARMADURA_PESADA,
     ARMADURA_MEDIA,
     ARMADURA_LIGERA,
@@ -27,5 +29,6 @@ public enum TipoObjeto {
     ESPADA_PESADA,
     ESPADA_MEDIA,
     ESPADA_LIGERA,
+    
     NINGUNO // Puedes agregar un tipo 'NINGUNO' para representar la ausencia de selección
 }

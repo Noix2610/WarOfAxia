@@ -23,8 +23,8 @@ import principal.sprites.HojaSprites;
 public class MenuInferior {
 
     int xActual;
-    private ArrayList<Rectangle> ranuraObjetos;
-    private Rectangle areaInventario;
+    private final ArrayList<Rectangle> ranuraObjetos;
+    private final Rectangle areaInventario;
     private final BufferedImage areaInvent;
     private final HojaSprites hojaMenuInferior;
     public static HojaSprites bordesRanuras;
@@ -69,6 +69,7 @@ public class MenuInferior {
     }
 
     public void dibujar(final Graphics g) {
+        
         dibujarAreaInventario(g);
         dibujarBarraVitalidad(g);
         dibujarBarraMana(g);

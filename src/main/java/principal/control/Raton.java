@@ -65,8 +65,8 @@ public class Raton extends MouseAdapter {
 
         DatosDebug.recogerDatos("RatonX:  " + posicion.getX());
         DatosDebug.recogerDatos("RatonY:  " + posicion.getY());
-        DibujoDebug.dibujarString(g, "RatonX:  " + posicion.getX(), 30, 60, Color.white);
-        DibujoDebug.dibujarString(g, "RatonX:  " + posicion.getX(), 30, 70, Color.white);
+        /*DibujoDebug.dibujarString(g, "RatonX:  " + posicion.getX(), 30, 60, Color.white);
+        DibujoDebug.dibujarString(g, "RatonX:  " + posicion.getX(), 30, 70, Color.white);*/
 
     }
 

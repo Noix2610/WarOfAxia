@@ -7,7 +7,9 @@ package principal.control;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import principal.ElementosPrincipales;
+import principal.GestorPrincipal;
 import principal.habilidades.GestorHabilidades;
+import principal.habilidades.Habilidad;
 import principal.maquinaestado.menujuego.MenuEquipo;
 import principal.maquinaestado.menujuego.MenuInventario;
 
@@ -23,6 +25,8 @@ public class Teclado implements KeyListener {
     public Tecla derecha = new Tecla();
     public Tecla aumentar = new Tecla();
     public Tecla disminuir = new Tecla();
+    public Tecla enter = new Tecla();
+    public GestorHabilidades  gh = new GestorHabilidades();
 
     public boolean recogiendo = false;
     public boolean corriendo = false;
@@ -68,6 +72,14 @@ public class Teclado implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
+            case KeyEvent.VK_ENTER:
+                if(GestorPrincipal.pantallaTitulo){
+                    GestorPrincipal.pantallaTitulo = false;
+                }else if(!GestorPrincipal.pantallaTitulo && !ElementosPrincipales.jugador.estaVivo){
+                    GestorPrincipal.pantallaTitulo = true;
+                }
+                 
+                break;
             case KeyEvent.VK_W:
                 arriba.teclaPulsada();
                 break;
@@ -85,10 +97,10 @@ public class Teclado implements KeyListener {
                     corriendo = true;
                 }
                 break;
-            case KeyEvent.VK_U:
+            case KeyEvent.VK_UP:
                 aumentar.teclaPulsada();
                 break;
-            case KeyEvent.VK_J:
+            case KeyEvent.VK_DOWN:
                 disminuir.teclaPulsada();
                 break;
             
@@ -98,7 +110,7 @@ public class Teclado implements KeyListener {
             case KeyEvent.VK_I:
                 inventarioActivo = !inventarioActivo;
                 MenuEquipo.objetoSeleccionado = null;
-                MenuInventario.objetoSeleccionado = null;
+                
                 break;
             case KeyEvent.VK_T:
                 tiendaActiva = !tiendaActiva;
@@ -115,8 +127,9 @@ public class Teclado implements KeyListener {
             case KeyEvent.VK_2:
                 GestorHabilidades.usarHabilidad(1);
                 break;
-            case KeyEvent.VK_5:
-                ElementosPrincipales.inventario.setHabilidad(ElementosPrincipales.jugador.curacion);
+            case KeyEvent.VK_F5:
+                Habilidad habilidad = gh.obtenerHabilidadPorNombre("Curacion Avanzada");
+                ElementosPrincipales.inventario.habilidades.add(habilidad);
                 break;
         }
         ultimaTeclaPulsada = e.getKeyCode();
@@ -152,6 +165,8 @@ public class Teclado implements KeyListener {
             case KeyEvent.VK_DOWN:
                 disminuir.teclaLiberada();
                 break;
+                
+                    
         }
 
     }

@@ -25,4 +25,12 @@ public class MedidorString {
 
         return (int) fm.getLineMetrics(s, g).getHeight();
     }
+
+    public static int medirAnchoPixeles(FontMetrics fm, String s) {
+        return fm.stringWidth(s);
+    }
+
+    public static int medirAltoPixeles(FontMetrics fm) {
+        return (int) fm.getHeight();
+    }
 }

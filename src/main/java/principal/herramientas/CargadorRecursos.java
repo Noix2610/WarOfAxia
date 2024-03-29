@@ -103,7 +103,7 @@ public class CargadorRecursos {
     return contenido;
 }
 
-    public static Font cargarFuente(final String ruta, float tamaño) {
+    public static Font cargarFuente(final String ruta, float tamanho) {
         Font fuente = null;
         InputStream entradaBytes = ClassLoader.getSystemResourceAsStream(ruta);
         if (entradaBytes == null) {
@@ -118,7 +118,7 @@ public class CargadorRecursos {
             ge.registerFont(fuente);
 
             // Derivar la fuente con el tamaño proporcionado
-            fuente = fuente.deriveFont(tamaño);
+            fuente = fuente.deriveFont(tamanho);
         }
         catch (FontFormatException | IOException ex) {
             Logger.getLogger(CargadorRecursos.class.getName()).log(Level.SEVERE, null, ex);

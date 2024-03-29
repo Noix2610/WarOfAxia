@@ -236,7 +236,7 @@ public class MenuHabilidades extends SeccionMenu {
 
         for (Habilidad habilidadActual : ElementosPrincipales.inventario.getHabilidades()) {
             Rectangle nuevaPosicion;
-            if (habilidadActual.getTipoHabilidad() == TipoObjeto.ACTIVA) {
+            if (habilidadActual.getActivaPasiva()== TipoObjeto.ACTIVA) {
                 int fila = contadorActivas / 5; // Calcular la fila en base a la cantidad total de activas
                 int columna = contadorActivas % 5; // Calcular la columna
 

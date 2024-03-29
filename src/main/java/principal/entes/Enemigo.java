@@ -32,6 +32,7 @@ public class Enemigo implements EntidadCurable {
     protected double posicionInicialY;
     protected double posicionX;
     protected double posicionY;
+    protected Rectangle posicionMenu;
     protected double distanciaParaMov;
     protected boolean mostrarDanho;
     protected boolean mostrarCritico;
@@ -87,6 +88,7 @@ public class Enemigo implements EntidadCurable {
         imagenActual = hs.getSprites(0).getImagen();
         this.co = contenedor;
         this.indiceContenedor = idxContenedor;
+        this.posicionMenu = new Rectangle();
 
     }
 
@@ -459,5 +461,25 @@ public class Enemigo implements EntidadCurable {
     public void setCo(ContenedorObjetos co) {
         this.co = co;
     }
+
+    public Rectangle getPosicionMenu() {
+        return posicionMenu;
+    }
+
+    public void setPosicionMenu(Rectangle posicionMenu) {
+        this.posicionMenu = posicionMenu;
+    }
+
+    public BufferedImage getImagenActual() {
+        return imagenActual;
+    }
+
+    public void setImagenActual(BufferedImage imagenActual) {
+        this.imagenActual = imagenActual;
+    }
+    
+    
+    
+    
 
 }

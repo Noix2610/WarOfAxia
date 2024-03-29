@@ -24,6 +24,7 @@ public abstract class SeccionTienda {
     protected Rectangle etiquetaMenu;
     protected Rectangle barraPeso;
     protected EstructuraTienda et;
+    protected Objeto objetoSeleccionado;
 
     public SeccionTienda(final String nombreSeccion, final Rectangle etiquetaMenu, final EstructuraTienda et) {
         this.nombreSeccion = nombreSeccion;

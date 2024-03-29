@@ -11,6 +11,7 @@ import principal.Constantes;
 import principal.ElementosPrincipales;
 import principal.graficos.SuperficieDibujo;
 import principal.herramientas.DibujoDebug;
+import principal.inventario.Objeto;
 
 /**
  *
@@ -23,6 +24,7 @@ public abstract class SeccionMenu {
     protected Rectangle etiquetaMenu;
     protected Rectangle barraPeso;
     protected EstructuraMenu em;
+    protected Objeto objetoSeleccionado;
 
     public SeccionMenu(final String nombreSeccion, final Rectangle etiquetaMenu, final EstructuraMenu em) {
         this.nombreSeccion = nombreSeccion;
@@ -31,6 +33,7 @@ public abstract class SeccionMenu {
         this.em = em;
         barraPeso = new Rectangle(Constantes.ANCHO_JUEGO - anchoBarra + margenGeneral - 20, em.BANNER_SUPERIOR.height + margenGeneral,
                 100, 8);
+        
     }
 
     public SeccionMenu() {

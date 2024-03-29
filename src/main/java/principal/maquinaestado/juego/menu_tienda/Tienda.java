@@ -18,9 +18,9 @@ public class Tienda {
     private Point posicion;
     private Rectangle areaTienda;
     private ArrayList<Objeto> objetosTienda;
-    private String tipo;
+    private int tipo;
 
-    public Tienda(int idTienda, Point posicion, String tipo) {
+    public Tienda(int idTienda, Point posicion, int tipo) {
         this.idTienda = idTienda;
         this.posicion = posicion;
         this.objetosTienda = new ArrayList<>();
@@ -28,7 +28,7 @@ public class Tienda {
     }
 
     public Tienda() {
-        this.tipo ="nulo";
+        this.tipo =0;
     }
 
     public int getIdTienda() {
@@ -59,11 +59,11 @@ public class Tienda {
         this.posicion = posicion;
     }
 
-    public String getTipo() {
+    public int getTipo() {
         return tipo;
     }
 
-    public void setTipo(String tipo) {
+    public void setTipo(int tipo) {
         this.tipo = tipo;
     }
     

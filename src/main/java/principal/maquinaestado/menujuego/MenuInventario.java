@@ -52,7 +52,7 @@ public class MenuInventario extends SeccionMenu {
             Constantes.LADO_SPRITE + 2,
             Constantes.LADO_SPRITE + 2);
 
-    public static Objeto objetoSeleccionado = null;
+    
 
     public MenuInventario(String nombreSeccion, Rectangle etiquetaMenu, EstructuraMenu em) {
         super(nombreSeccion, etiquetaMenu, em);

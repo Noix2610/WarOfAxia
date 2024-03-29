@@ -19,18 +19,23 @@ public class Curacion extends Habilidad {
 
     public Curacion(String nombre, int duracion, int tiempoReutilizacion,
             Object objetivo, int manaUtilizado, int vidaUtilizada,
-            int cantidadCuracionBase, int montoAdicionalPorInteligencia, int indiceSprite, TipoObjeto tipoHabilidad) {
-        super(nombre,duracion, tiempoReutilizacion, objetivo, manaUtilizado, vidaUtilizada, indiceSprite, tipoHabilidad);
+            int cantidadCuracionBase, int montoAdicionalPorInteligencia, int indiceSprite, TipoObjeto activaPasiva,
+            TipoObjeto tipoHabilidad) {
+        super(nombre, duracion, tiempoReutilizacion, objetivo, manaUtilizado, vidaUtilizada, indiceSprite,activaPasiva, tipoHabilidad);
         this.cantidadCuracionBase = cantidadCuracionBase;
         this.montoAdicionalPorInteligencia = montoAdicionalPorInteligencia;
-        super.setDescripcion("Restaura 30 pts de VIT + \nun adicional basado en\nla INT del conjurador") ;
-        
+        super.setTiempoReutilizacion(0);
+        super.setDescripcion("Restaura 30 pts de VIT + \nun adicional basado en\nla INT del conjurador");
 
     }
 
     @Override
-    public void aplicarEfecto(Object object) {
+    public void aplicarEfecto(Object object, TipoObjeto tipoCuracion) {
         // Verificar si ha pasado el tiempo de reutilización desde el último uso
+
+    }
+
+    private void curacionAutomatica(Object object) {
         if (cronometro.obtenerTiempoTranscurrido() / 1000 >= getTiempoReutilizacion()) {
             if (object instanceof EntidadCurable entidadCurable) {
 
@@ -44,22 +49,19 @@ public class Curacion extends Habilidad {
                     entidadCurable.curarVida(cantidadTotalCuracion);
 
                     entidadCurable.setMana(entidadCurable.getMana() - getManaUtilizado());
-                    setTiempoReutilizacion(15);
-                    
+                    setTiempoReutilizacion(super.getTiempoReutilizacion());
+
                     cronometro.reiniciar();
                 }
 
             }
 
         }
-
     }
 
     private int calcularMontoAdicionalPorInteligencia(EntidadCurable entidadCurable) {
 
         return (int) (entidadCurable.getInteligencia() * montoAdicionalPorInteligencia);
     }
-    
-    
 
 }

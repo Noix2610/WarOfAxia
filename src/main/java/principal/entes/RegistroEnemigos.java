@@ -21,12 +21,12 @@ public class RegistroEnemigos {
         switch (idEnemigo) {
             case 1:
                 hs = new HojaSprites(Constantes.RUTA_DEMON, Constantes.LADO_SPRITE, false);
-                enemigo = new Enemigo(idEnemigo, "Demon", 60, "/sonidos/Zombie.wav", 10, hs, 400,
+                enemigo = new Enemigo(idEnemigo, "DEMON", 60, "sonidos/Zombie.wav", 30, hs, 400,
                         new ContenedorObjetos(),0);
                 break;
             case 2:
                 hs = new HojaSprites(Constantes.RUTA_SKELETON, Constantes.LADO_SPRITE, false);
-                enemigo = new Enemigo(idEnemigo, "Skeleton", 60, "/sonidos/Zombie.wav", 10, hs,
+                enemigo = new Enemigo(idEnemigo, "SKELETON", 60, "sonidos/Zombie.wav", 30, hs,
                         400, new ContenedorObjetos(),0);
                 break;
 

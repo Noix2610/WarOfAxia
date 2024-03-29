@@ -22,7 +22,6 @@ import principal.herramientas.MedidorString;
 import principal.inventario.Objeto;
 import principal.inventario.consumibles.Consumible;
 import principal.maquinaestado.menujuego.MenuEquipo;
-import static principal.maquinaestado.menujuego.MenuInventario.objetoSeleccionado;
 
 /**
  *
