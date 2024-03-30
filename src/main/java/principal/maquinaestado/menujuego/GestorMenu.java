@@ -67,6 +67,7 @@ public class GestorMenu implements EstadoJuego {
         seccionActual = secciones[0];
     }
 
+    @Override
     public void actualizar() {
         for (int i = 0; i < secciones.length; i++) {
             if (sd.getRaton().isClick()
@@ -96,6 +97,7 @@ public class GestorMenu implements EstadoJuego {
 
     }
 
+    @Override
     public void dibujar(final Graphics2D g) {
         estructuraMenu.dibujar(g);
 

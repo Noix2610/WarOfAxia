@@ -40,9 +40,14 @@ public class Constantes {
     public static String RUTA_MAPA = "textos/prueba";
     public static String RUTA_MAPA2 = "textos/mapa3";
     public static String RUTA_RATON = "/icons/Cursor.png";
-    public static String RUTA_LOGO = "/icons/logo.png";
-    public static String RUTA_SKELETON = "/personajes/enemigos/skeletonAxeShield.png";
+    public static String RUTA_LOGO = "/icons/logo3.png";
+    public static String RUTA_SKELETON_SWORD = "/personajes/enemigos/2.png";
     public static String RUTA_DEMON = "/personajes/enemigos/1.png";
+    public static String RUTA_SKELETON_AXE = "/personajes/enemigos/skeletonAxeShield.png";
+    public static String RUTA_SKELETON_BLODDY = "/personajes/enemigos/skeletonBloddyDagger.png";
+    public static String RUTA_SKELETON_MAGE = "/personajes/enemigos/skeletonMage1.png";
+    public static String RUTA_SKELETON_MAGE2 = "/personajes/enemigos/skeletonMage2.png";
+    
     public static String RUTA_PERSONAJE = "/personajes/personajesJugables/pjinicial.png";
     public static String RUTA_PERSONAJE_TRANSPARENTE = "/personajes/personajesJugables/pj2T.png";
     public static String RUTA_ARMA_ARCO = "/personajes/personajesJugables/PjBow.png";

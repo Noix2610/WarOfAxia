@@ -39,7 +39,12 @@ public class Inventario {
         dinero = 20000;
         Enemigo enemigo1 = RegistroEnemigos.obtenerEnemigo(1);
         Enemigo enemigo2 = RegistroEnemigos.obtenerEnemigo(2);
-        enemigosEliminados = new ArrayList<>(List.of(enemigo1,enemigo2,enemigo1,enemigo2,enemigo1,enemigo2)); 
+        Enemigo enemigo3 = RegistroEnemigos.obtenerEnemigo(3);
+        Enemigo enemigo4 = RegistroEnemigos.obtenerEnemigo(4);
+        Enemigo enemigo5 = RegistroEnemigos.obtenerEnemigo(5);
+        Enemigo enemigo6 = RegistroEnemigos.obtenerEnemigo(6);
+
+        enemigosEliminados = new ArrayList<>(List.of(enemigo1,enemigo2,enemigo3,enemigo4,enemigo5)); 
 
     }
 

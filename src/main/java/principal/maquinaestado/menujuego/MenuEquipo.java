@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Iterator;
 import principal.Constantes;
@@ -15,6 +16,7 @@ import principal.ElementosPrincipales;
 import principal.GestorPrincipal;
 import principal.entes.AlmacenEquipo;
 import principal.graficos.SuperficieDibujo;
+import principal.herramientas.CargadorRecursos;
 import principal.herramientas.DibujoDebug;
 import principal.herramientas.EscaladorElementos;
 import principal.herramientas.GeneradorTooltip;
@@ -45,7 +47,7 @@ public class MenuEquipo extends SeccionMenu {
     private final ArrayList<Rectangle> etiquetasEquipables;
     public static boolean mostrarTooltip = true;
     private int etiquetaEquipo;
-    HojaSprites hojaEtiquetas;
+    
 
     final Rectangle panelObjetos = new Rectangle(em.FONDO.x + margenGeneral,
             barraPeso.y + barraPeso.height + margenGeneral,
@@ -967,8 +969,8 @@ public class MenuEquipo extends SeccionMenu {
             etiquetasEquipables.add(rectangulo);
             z += 23;
         }
-        hojaEtiquetas = new HojaSprites("/icons/EtiquetasEquipables.png", 180, 10, true);
-        DibujoDebug.dibujarImagen(g, hojaEtiquetas.getSprites(0).getImagen(), panelObjetos.x, panelObjetos.y + 14);
+        BufferedImage hojaEtiquetas = CargadorRecursos.cargarImagenCompatibleOpaca("/icons/EtiquetasEquipables.png");
+        DibujoDebug.dibujarImagen(g, hojaEtiquetas, panelObjetos.x, panelObjetos.y + 14);
         if (!ElementosPrincipales.inventario.getEquipo().isEmpty()) {
 
             switch (etiquetaEquipo) {

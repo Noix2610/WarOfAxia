@@ -6,30 +6,23 @@ package principal.maquinaestado.menujuego;
 
 import java.awt.Color;
 import java.awt.FontMetrics;
+import java.util.ArrayList;
+import java.util.List;
+import principal.entes.Enemigo;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.List;
 import principal.Constantes;
 import principal.ElementosPrincipales;
-import principal.entes.Enemigo;
 import principal.graficos.SuperficieDibujo;
 import principal.herramientas.DibujoDebug;
 import principal.herramientas.MedidorString;
-import principal.inventario.Objeto;
-import principal.inventario.consumibles.Claves;
-import principal.inventario.consumibles.Consumible;
 
 /**
  *
  * @author GAMER ARRAX
  */
 public class MenuBestiario extends SeccionMenu {
-
-    private static final int NUM_COLUMNAS = 5;
-    private static final int NUM_FILAS_NORMALES = 6;
-    private static final int NUM_FILA_ESPECIAL = 7;
 
     private Enemigo enemigoSeleccionado;
 
@@ -122,7 +115,7 @@ public class MenuBestiario extends SeccionMenu {
             Enemigo enemigoActual = enemigos.get(i);
             Rectangle posicionMenu = enemigoActual.getPosicionMenu();
 
-            DibujoDebug.dibujarImagen(g, enemigoActual.getImagenActual(), posicionMenu.x, posicionMenu.y);
+            enemigoActual.idlePosition(g, posicionMenu);
 
             String texto = "" + enemigoActual.getNombre();
 
@@ -223,5 +216,4 @@ public class MenuBestiario extends SeccionMenu {
             contadorBestiario++;
         }
     }
-
 }
