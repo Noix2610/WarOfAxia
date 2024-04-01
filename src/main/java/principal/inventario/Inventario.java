@@ -44,7 +44,7 @@ public class Inventario {
         Enemigo enemigo5 = RegistroEnemigos.obtenerEnemigo(5);
         Enemigo enemigo6 = RegistroEnemigos.obtenerEnemigo(6);
 
-        enemigosEliminados = new ArrayList<>(List.of(enemigo1,enemigo2,enemigo3,enemigo4,enemigo5)); 
+        enemigosEliminados = new ArrayList<>(List.of(enemigo1,enemigo2,enemigo3,enemigo4,enemigo5,enemigo6)); 
 
     }
 

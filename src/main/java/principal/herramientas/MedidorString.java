@@ -33,4 +33,14 @@ public class MedidorString {
     public static int medirAltoPixeles(FontMetrics fm) {
         return (int) fm.getHeight();
     }
+    
+    public static int medirAnchoTextoCentrado(Graphics g, String texto, int x, int ancho) {
+        FontMetrics metrics = g.getFontMetrics();
+        return x + (ancho - metrics.stringWidth(texto)) / 2;
+    }
+
+    public static int calcularAlturaTexto(Graphics g, String texto) {
+        FontMetrics metrics = g.getFontMetrics();
+        return metrics.getHeight();
+    }
 }
