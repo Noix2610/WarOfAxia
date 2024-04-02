@@ -108,15 +108,13 @@ public class Jugador implements EntidadCurable {
 
         ga = new GestorAtributos(1, 6, 6, 6, 6, 6, 80, 100);
 
-        hs = new HojaSprites(Constantes.RUTA_PERSONAJE, 32,32, false);
+        hs = new HojaSprites(Constantes.RUTA_PERSONAJE, 32, 32, false);
         ht = new HojaSprites(Constantes.RUTA_PERSONAJE_TRANSPARENTE, Constantes.LADO_SPRITE, false);
         hCuracion = new HojaSprites("/personajes/enemigos/animacionesJugador/brilloCuracion.png", 32, 32, false);
 
-        
-
         animacion = 0;
         estado = 1;
-        imagenActual = hs.getSprites(estado,direccion).getImagen();
+        imagenActual = hs.getSprites(estado, direccion).getImagen();
 
         ae = new AlmacenEquipo();
         ar = new AccesoRapido();
@@ -270,15 +268,16 @@ public class Jugador implements EntidadCurable {
     public void dibujar(Graphics g) {
         final int centroX = Constantes.ANCHO_JUEGO / 2 - Constantes.LADO_SPRITE / 2;
         final int centroY = Constantes.ALTO_JUEGO / 2 - Constantes.LADO_SPRITE / 2;
-        if (!preparado){
-        DibujoDebug.dibujarImagen(g, imagenActual, centroX,centroY);}
+        if (!preparado) {
+            DibujoDebug.dibujarImagen(g, imagenActual, centroX, centroY);
+        }
         dibujarVestimenta(g, centroX, centroY);
 
         /*DibujoDebug.dibujarRectanguloContorno(g, LIMITE_ARRIBA);
         DibujoDebug.dibujarRectanguloContorno(g, LIMITE_ABAJO);
         DibujoDebug.dibujarRectanguloContorno(g, LIMITE_IZQUIERDA);
         DibujoDebug.dibujarRectanguloContorno(g, LIMITE_DERECHA);*/
-        /*if (!alcanceActual.isEmpty()) {
+ /*if (!alcanceActual.isEmpty()) {
             dibujarAlcance(g);
         }*/
         if (danhoRecibido > 0 || mostrarEvadido || mostrarBloqueado) {
@@ -289,7 +288,7 @@ public class Jugador implements EntidadCurable {
             dibujarCuracionRecibida(g, centroX, centroY + 20);
         }
         dibujarSubirNivel(g, centroX, centroY);
-        
+
         DibujoDebug.dibujarString(g, "AtkF: " + ga.getAtaque(), 10, 90);
         DibujoDebug.dibujarString(g, "Def: " + ga.getDefensaFisica(), 10, 100);
         DibujoDebug.dibujarString(g, "AtkM: " + ga.getMagia(), 10, 110);
@@ -342,11 +341,9 @@ public class Jugador implements EntidadCurable {
             HojaSprites hojaCabello = new HojaSprites(Constantes.RUTA_PERSONAJE_CABELLO, 32, false);
             DibujoDebug.dibujarImagen(g, hojaCabello.getSprites(estado, direccion).getImagen(), centroX, centroY);
         }*/
-
         if (preparado) {
-            
+
             int tiempoTranscurrido = (int) cronometro.getTiempoTranscurridoMili();
-            
 
             // Verificar si han pasado menos de 1 segundo desde el inicio de la animación
             if (tiempoTranscurrido < 300) { // 1000 milisegundos = 1 segundo
@@ -357,14 +354,14 @@ public class Jugador implements EntidadCurable {
                 if (tiempoTranscurrido <= 100) {
                     estado = 3;
                     DibujoDebug.dibujarImagen(g, hs.getSprites(estado, direccion).getImagen(), centroX, centroY);
-                    
+
                 }
                 else if (tiempoTranscurrido > 100 && tiempoTranscurrido < 200) {
-                    estado =4;
+                    estado = 4;
                     DibujoDebug.dibujarImagen(g, hs.getSprites(estado, direccion).getImagen(), centroX, centroY);
                 }
                 else {
-                    estado =5;
+                    estado = 5;
                     DibujoDebug.dibujarImagen(g, hs.getSprites(estado, direccion).getImagen(), centroX, centroY);
 
                 }
@@ -404,7 +401,7 @@ public class Jugador implements EntidadCurable {
     }
 
     public void cambiarHojaSprites() {
-        if(getAe().getArma1()!=null){
+        if (getAe().getArma1() != null) {
             hs = getAe().getArma1().getHojaArma();
         }
     }
@@ -482,9 +479,10 @@ public class Jugador implements EntidadCurable {
             if (indiceImagen % 2 == 0) {
                 DibujoDebug.dibujarImagen(g, hCuracion.getSprites(0, 0).getImagen(), puntoX, puntoY - 20);
             }
-            else if(indiceImagen % 2 == 1) {
+            else if (indiceImagen % 2 == 1) {
                 DibujoDebug.dibujarImagen(g, hCuracion.getSprites(1, 0).getImagen(), puntoX, puntoY - 20);
-            }else{
+            }
+            else {
                 DibujoDebug.dibujarImagen(g, hCuracion.getSprites(2, 0).getImagen(), puntoX, puntoY - 20);
             }
             // Si ha pasado el tiempo de duración o el texto ha subido lo suficiente, deja de mostrar la información
@@ -877,14 +875,15 @@ public class Jugador implements EntidadCurable {
 
         Arma arma1 = ae.getArma1();
 
-        if (arma1 != null ) {
+        if (arma1 != null) {
             ataqueTotal = arma1.getAtaque();
         }
 
         Objeto[] objetosEquipados = {ae.getCollar(), ae.getAccesorio(), ae.getAnillo1(), ae.getAnillo2()};
 
         for (Objeto objeto : objetosEquipados) {
-            if (objeto instanceof Joya joya) {
+            if (objeto instanceof Joya) {
+                Joya joya = (Joya) objeto;
                 ataqueTotal += joya.getAtkF();
             }
         }
@@ -913,7 +912,8 @@ public class Jugador implements EntidadCurable {
         Objeto[] objetosEquipados = {ae.getCollar(), ae.getAccesorio(), ae.getAnillo1(), ae.getAnillo2()};
 
         for (Objeto objeto : objetosEquipados) {
-            if (objeto instanceof Joya joya) {
+            if (objeto instanceof Joya) {
+                Joya joya = (Joya) objeto;
                 ataqueTotal += joya.getAtkF();
                 atqMagico += joya.getAtkM();
             }

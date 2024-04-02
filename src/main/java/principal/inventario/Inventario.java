@@ -43,8 +43,13 @@ public class Inventario {
         Enemigo enemigo4 = RegistroEnemigos.obtenerEnemigo(4);
         Enemigo enemigo5 = RegistroEnemigos.obtenerEnemigo(5);
         Enemigo enemigo6 = RegistroEnemigos.obtenerEnemigo(6);
+        Enemigo enemigo7 = RegistroEnemigos.obtenerEnemigo(7);
+        Enemigo enemigo8 = RegistroEnemigos.obtenerEnemigo(8);
+        Enemigo enemigo9 = RegistroEnemigos.obtenerEnemigo(9);
+        Enemigo enemigo10 = RegistroEnemigos.obtenerEnemigo(10);
 
-        enemigosEliminados = new ArrayList<>(List.of(enemigo1,enemigo2,enemigo3,enemigo4,enemigo5,enemigo6)); 
+        enemigosEliminados = new ArrayList<>(List.of(enemigo1,enemigo2,enemigo3,enemigo4,enemigo5,enemigo6,
+                enemigo7,enemigo8,enemigo9,enemigo10)); 
 
     }
 

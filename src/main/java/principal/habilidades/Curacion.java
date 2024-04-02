@@ -21,7 +21,7 @@ public class Curacion extends Habilidad {
             Object objetivo, int manaUtilizado, int vidaUtilizada,
             int cantidadCuracionBase, int montoAdicionalPorInteligencia, int indiceSprite, TipoObjeto activaPasiva,
             TipoObjeto tipoHabilidad) {
-        super(nombre, duracion, tiempoReutilizacion, objetivo, manaUtilizado, vidaUtilizada, indiceSprite,activaPasiva, tipoHabilidad);
+        super(nombre, duracion, tiempoReutilizacion, objetivo, manaUtilizado, vidaUtilizada, indiceSprite, activaPasiva, tipoHabilidad);
         this.cantidadCuracionBase = cantidadCuracionBase;
         this.montoAdicionalPorInteligencia = montoAdicionalPorInteligencia;
         super.setTiempoReutilizacion(0);
@@ -37,7 +37,8 @@ public class Curacion extends Habilidad {
 
     private void curacionAutomatica(Object object) {
         if (cronometro.obtenerTiempoTranscurrido() / 1000 >= getTiempoReutilizacion()) {
-            if (object instanceof EntidadCurable entidadCurable) {
+            if (object instanceof EntidadCurable) {
+                EntidadCurable entidadCurable = (EntidadCurable) object;
 
                 if (entidadCurable.getVidaActual() < entidadCurable.getVidaMaxima() && entidadCurable.getMana() >= getManaUtilizado()) {
                     ElementosPrincipales.jugador.getCronometro().reiniciar();
