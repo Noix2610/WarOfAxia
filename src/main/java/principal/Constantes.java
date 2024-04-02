@@ -47,6 +47,10 @@ public class Constantes {
     public static String RUTA_SKELETON_BLODDY = "/personajes/enemigos/skeletonBloddyDagger.png";
     public static String RUTA_SKELETON_MAGE = "/personajes/enemigos/skeletonMage1.png";
     public static String RUTA_SKELETON_MAGE2 = "/personajes/enemigos/skeletonMage2.png";
+    public static String RUTA_ORC_KNIGHT = "/personajes/enemigos/OrcKnight.png";
+    public static String RUTA_ORC_ARCHER = "/personajes/enemigos/OrcArcher.png";
+    public static String RUTA_ORC_AXE = "/personajes/enemigos/AxeOrc.png";
+    public static String RUTA_SATIRO = "/personajes/enemigos/Satiro.png";
     
     public static String RUTA_PERSONAJE = "/personajes/personajesJugables/pjinicial.png";
     public static String RUTA_PERSONAJE_TRANSPARENTE = "/personajes/personajesJugables/pj2T.png";
