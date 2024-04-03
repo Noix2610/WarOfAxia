@@ -11,7 +11,6 @@ import principal.GestorPrincipal;
 import principal.habilidades.GestorHabilidades;
 import principal.habilidades.Habilidad;
 import principal.maquinaestado.menujuego.MenuEquipo;
-import principal.maquinaestado.menujuego.MenuInventario;
 
 /**
  *
@@ -109,7 +108,6 @@ public class Teclado implements KeyListener {
                 break;
             case KeyEvent.VK_I:
                 inventarioActivo = !inventarioActivo;
-                MenuEquipo.objetoSeleccionado = null;
                 
                 break;
             case KeyEvent.VK_T:
