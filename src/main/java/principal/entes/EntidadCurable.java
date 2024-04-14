@@ -4,6 +4,8 @@
  */
 package principal.entes;
 
+import principal.inventario.TipoObjeto;
+
 /**
  *
  * @author GAMER ARRAX
@@ -16,5 +18,6 @@ public interface EntidadCurable {
     void setMana(int mana);
     int getInteligencia();
     void curarVida(int montoCuracion);
+    void recibirDanho(int danho, TipoObjeto tipoDeHabilidad);
 }
 

@@ -31,7 +31,7 @@ public class Curacion extends Habilidad {
 
     @Override
     public void aplicarEfecto(Object object, TipoObjeto tipoCuracion) {
-        // Verificar si ha pasado el tiempo de reutilización desde el último uso
+        curacionAutomatica(object);
 
     }
 

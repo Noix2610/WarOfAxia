@@ -16,6 +16,7 @@ import principal.dijkstra.Nodo;
 import principal.herramientas.CalculadoraDistancia;
 import principal.herramientas.DibujoDebug;
 import principal.inventario.ContenedorObjetos;
+import principal.inventario.TipoObjeto;
 import principal.sonido.SoundThread;
 import principal.sprites.HojaSprites;
 import principal.sprites.Sprite;
@@ -523,6 +524,11 @@ public class Enemigo implements EntidadCurable {
     public String getDescripcion() {
         return "Los Skeletons son esqueletos reanimados por la magia oscura. Armados con armas oxidadas, "
                 + "acechan en tumbas y ruinas antiguas. Ágiles y resistentes, representan una amenaza para los intrusos temerarios.";
+    }
+
+    @Override
+    public void recibirDanho(int danho, TipoObjeto tipoDeHabilidad) {
+        this.setVidaActual((int)vidaActual - danho);
     }
 
 }

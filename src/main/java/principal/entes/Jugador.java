@@ -1283,4 +1283,15 @@ public class Jugador implements EntidadCurable {
         return cronometro;
     }
 
+    @Override
+    public void recibirDanho(int danho, TipoObjeto tipoDeHabilidad) {
+        if (tipoDeHabilidad == TipoObjeto.FISICO) {
+            danho = (int) (danho * (100 - ga.getResFisica()) - ga.getDefensaFisica());
+        }
+        else if (tipoDeHabilidad == TipoObjeto.MAGIA) {
+            danho = (int) (danho * (1 - ga.getResMagica()) - ga.getDefensaMagica());
+        }
+        this.setVidaActual(ga.getVida() - danho);
+    }
+
 }

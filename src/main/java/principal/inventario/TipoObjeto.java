@@ -13,6 +13,8 @@ public enum TipoObjeto {
     PASIVA,
     ATM,//Automatica
     AOT,//Activa en el Tiempo
+    MAGIA,
+    FISICO,
     ARMADURA_PESADA,
     ARMADURA_MEDIA,
     ARMADURA_LIGERA,
