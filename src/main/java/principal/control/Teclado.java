@@ -126,7 +126,7 @@ public class Teclado implements KeyListener {
                 GestorHabilidades.usarHabilidad(1);
                 break;
             case KeyEvent.VK_F5:
-                Habilidad habilidad = gh.obtenerHabilidadPorNombre("Curacion Avanzada");
+                Habilidad habilidad = gh.obtenerHabilidadPorNombre("Curacion Basica");
                 ElementosPrincipales.inventario.habilidades.add(habilidad);
                 break;
         }

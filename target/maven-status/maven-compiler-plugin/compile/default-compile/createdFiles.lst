@@ -26,6 +26,7 @@ principal\mapas\CapaTransparencias.class
 principal\inventario\armas\Escudo.class
 principal\entes\RegistroEnemigos.class
 principal\inventario\armaduras\Armadura.class
+principal\habilidades\Danho.class
 principal\mapas\CapaTiled.class
 principal\graficos\SuperficieDibujo.class
 principal\GestorPrincipal.class

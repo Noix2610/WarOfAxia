@@ -7,6 +7,7 @@ package principal.habilidades;
 import principal.ElementosPrincipales;
 import principal.entes.EntidadCurable;
 import principal.inventario.TipoObjeto;
+import principal.sonido.SoundThread;
 
 /**
  *
@@ -16,16 +17,20 @@ public class Curacion extends Habilidad {
 
     private final int cantidadCuracionBase;
     private final double montoAdicionalPorInteligencia;
+    private final SoundThread sonido;
+    private int tiempoCarga;
 
-    public Curacion(String nombre, int duracion, int tiempoReutilizacion,
+    public Curacion(String nombre, int duracion, int tiempoCarga,
             Object objetivo, int manaUtilizado, int vidaUtilizada,
             int cantidadCuracionBase, int montoAdicionalPorInteligencia, int indiceSprite, TipoObjeto activaPasiva,
             TipoObjeto tipoHabilidad) {
-        super(nombre, duracion, tiempoReutilizacion, objetivo, manaUtilizado, vidaUtilizada, indiceSprite, activaPasiva, tipoHabilidad);
+        super(nombre, duracion, objetivo, manaUtilizado, vidaUtilizada, indiceSprite, activaPasiva, tipoHabilidad);
         this.cantidadCuracionBase = cantidadCuracionBase;
         this.montoAdicionalPorInteligencia = montoAdicionalPorInteligencia;
         super.setTiempoReutilizacion(0);
+        this.tiempoCarga = tiempoCarga;
         super.setDescripcion("Restaura 30 pts de VIT + \nun adicional basado en\nla INT del conjurador");
+        sonido = new SoundThread("Heal");
 
     }
 
@@ -50,8 +55,8 @@ public class Curacion extends Habilidad {
                     entidadCurable.curarVida(cantidadTotalCuracion);
 
                     entidadCurable.setMana(entidadCurable.getMana() - getManaUtilizado());
-                    setTiempoReutilizacion(super.getTiempoReutilizacion());
-
+                    super.setTiempoReutilizacion(tiempoCarga);
+                    sonido.reproducir(0.7f);
                     cronometro.reiniciar();
                 }
 
@@ -64,5 +69,7 @@ public class Curacion extends Habilidad {
 
         return (int) (entidadCurable.getInteligencia() * montoAdicionalPorInteligencia);
     }
+    
+    
 
 }

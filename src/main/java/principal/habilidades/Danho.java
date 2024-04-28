@@ -6,8 +6,6 @@ package principal.habilidades;
 
 import principal.ElementosPrincipales;
 import principal.entes.EntidadCurable;
-import principal.entes.Jugador;
-import principal.herramientas.EscaladorElementos;
 import principal.inventario.TipoObjeto;
 
 /**
@@ -21,17 +19,16 @@ public class Danho extends Habilidad {
 
     public Danho(String nombre, int duracion, int tiempoReutilizacion, Object objetivo, int manaUtilizado, int vidaUtilizada,
             double montoAdicionalPorInt, int danhoBase, int indiceSprite, TipoObjeto activaPasiva, TipoObjeto tipoHabilidad) {
-        super(nombre, duracion, tiempoReutilizacion, objetivo, manaUtilizado, vidaUtilizada, indiceSprite, activaPasiva, tipoHabilidad);
+        super(nombre, duracion, objetivo, manaUtilizado, vidaUtilizada, indiceSprite, activaPasiva, tipoHabilidad);
         
         montoAdicionalPorInteligencia =montoAdicionalPorInt;
         this.danhoBase = danhoBase;
     }
 
-    @Override
-    public void aplicarEfecto(Object object, TipoObjeto tipoHabilidad) {
+    /*public void aplicarEfecto(Object object, TipoObjeto tipoHabilidad) {
         if(ElementosPrincipales.jugador.getArea()))
         danhar(object, tipoHabilidad);
-    }
+    }*/
 
     private void danhar(Object object, TipoObjeto tipoHabilidad) {
         
@@ -62,6 +59,11 @@ public class Danho extends Habilidad {
     private int calcularMontoAdicionalPorInteligencia(EntidadCurable entidadCurable) {
 
         return (int) (entidadCurable.getInteligencia() * montoAdicionalPorInteligencia);
+    }
+
+    @Override
+    public void aplicarEfecto(Object object, TipoObjeto tipoHabilidad) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

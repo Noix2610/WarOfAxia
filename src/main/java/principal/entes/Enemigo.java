@@ -237,9 +237,9 @@ public class Enemigo implements EntidadCurable {
     }
 
     public void dibujar(final Graphics g, final int puntoX, final int puntoY) {
-        dibujarBarraVida(g, puntoX, puntoY);
-        DibujoDebug.dibujarRectanguloContorno(g, getArea());
-        dibujarVidaActual(g, puntoX, puntoY);
+        //dibujarBarraVida(g, puntoX, puntoY);
+        //DibujoDebug.dibujarRectanguloContorno(g, getArea());
+        //dibujarVidaActual(g, puntoX, puntoY);
         // DibujoDebug.dibujarRectanguloContorno(GestorPrincipal.sd.getGraphics(), ElementosPrincipales.jugador.areaPosicional);
         dibujarDanhoRecibido(g, puntoX, puntoY + 20);
 
@@ -330,10 +330,9 @@ public class Enemigo implements EntidadCurable {
 
     public void perderVida(float danhoRecibido, boolean critico) {
         //gestionar sonidos
-        if (lamentoSiguiente <= 0) {
-            lamento.reproducir(0.8f);
-            lamentoSiguiente = duracionLamento;
-        }
+
+        lamento.reproducir(0.8f);
+
         danhoPorGolpe = (int) danhoRecibido;
         mostrarDanho = true;
         mostrarCritico = critico;
@@ -528,7 +527,7 @@ public class Enemigo implements EntidadCurable {
 
     @Override
     public void recibirDanho(int danho, TipoObjeto tipoDeHabilidad) {
-        this.setVidaActual((int)vidaActual - danho);
+        this.setVidaActual((int) vidaActual - danho);
     }
 
 }

@@ -25,7 +25,7 @@ public class GestorPrincipal {
     private Ventana ventana;
     private GestorEstados ge;
 
-    public static SoundThread sonido = new SoundThread("Fresh-Walk-Balanced-Low");
+    public static SoundThread sonido = new SoundThread("Ala Flair");
 
     private static int fps = 0;
     private static int aps = 0;

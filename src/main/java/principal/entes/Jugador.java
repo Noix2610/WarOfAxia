@@ -25,6 +25,7 @@ import principal.inventario.armas.Arma;
 import principal.inventario.armas.ArmaDosManos;
 import principal.inventario.armas.SinArma;
 import principal.inventario.joyas.Joya;
+import principal.sonido.SoundThread;
 import principal.sprites.HojaSprites;
 import principal.sprites.Sprite;
 
@@ -37,6 +38,9 @@ public class Jugador implements EntidadCurable {
     public long tiempo;
     public Curacion curacion;
     public boolean dibujarHabilidad = false;
+
+    private SoundThread sonidoCaminar1;
+    private SoundThread sonidoCaminar2;
 
     private final GestorAtributos ga;
     public boolean estaVivo = true;
@@ -128,6 +132,8 @@ public class Jugador implements EntidadCurable {
         ga.setMana(ga.getManaMaximo());
         ga.setResistencia(ga.getResistenciaMaxima());
         habilidad = CargadorRecursos.cargarImagenCompatibleTranslucida("/icons/habilidad1.png");
+        sonidoCaminar1 = new SoundThread("Step_Grass");
+        sonidoCaminar2 = new SoundThread("Step_Grass_2");
     }
 
     public void ganarExperiencia(int puntos) {
@@ -816,6 +822,8 @@ public class Jugador implements EntidadCurable {
         else if (velocidadY == -1) {
             direccion = 3;
         }
+
+        sonidoCaminar1.reproducir(0.7f);
     }
 
     private int evaluarVelocidadX() {

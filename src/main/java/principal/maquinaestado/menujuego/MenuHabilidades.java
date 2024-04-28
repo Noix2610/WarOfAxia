@@ -300,7 +300,7 @@ public class MenuHabilidades extends SeccionMenu {
         Rectangle posicionRaton = GestorPrincipal.sd.getRaton().getPosicionRectangle();
 
         if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(panelAccesoRapido))
-                && habilidadSeleccionada != null && TipoObjeto.ACTIVA == habilidadSeleccionada.getTipoHabilidad()
+                && habilidadSeleccionada != null && TipoObjeto.ACTIVA == habilidadSeleccionada.getActivaPasiva()
                 && GestorPrincipal.sd.getRaton().isClick()) {
             for (int i = 0; i < rectangulosAccesosRapidos.size(); i++) {
                 Rectangle rectangulo = rectangulosAccesosRapidos.get(i);

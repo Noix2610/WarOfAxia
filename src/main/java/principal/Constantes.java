@@ -52,7 +52,7 @@ public class Constantes {
     public static String RUTA_ORC_AXE = "/personajes/enemigos/AxeOrc.png";
     public static String RUTA_SATIRO = "/personajes/enemigos/Satiro.png";
     
-    public static String RUTA_PERSONAJE = "/personajes/personajesJugables/pjinicial.png";
+    public static String RUTA_PERSONAJE = "/personajes/personajesJugables/pj2.png";
     public static String RUTA_PERSONAJE_TRANSPARENTE = "/personajes/personajesJugables/pj2T.png";
     public static String RUTA_ARMA_ARCO = "/personajes/personajesJugables/PjBow.png";
     public static String RUTA_ARMA_ESPADA = "/personajes/personajesJugables/PjSword.png";

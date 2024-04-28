@@ -34,12 +34,11 @@ public abstract class Habilidad {
     private final Object objetivo;
     private int montoTotal;
 
-    public Habilidad(String nombre, int duracion, int tiempoReutilizacion,
+    public Habilidad(String nombre, int duracion,
             Object objetivo, int manaUtilizado, int vidaUtilizada, int indiceSprite, TipoObjeto activaPasiva,
             TipoObjeto tipoHabilidad) {
         this.nombre = nombre;
         this.duracion = duracion;
-        this.tiempoReutilizacion = tiempoReutilizacion;
         this.objetivo = objetivo;
         this.manaUtilizado = manaUtilizado;
         this.vidaUtilizada = vidaUtilizada;

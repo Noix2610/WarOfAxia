@@ -75,33 +75,33 @@ public class RegistroObjetos {
             case 400:
                 objeto = new ArmaUnaMano(idObjeto, "BUSCADORA DE JUSTICIA", "", 2, 7, 8,
                         1, 1, TipoObjeto.ESPADA_LIGERA, true, false,
-                        0.7, "arrow", Constantes.RUTA_ARMA_ESPADA, 1550, 780);
+                        0.7, "sword_clash.1", Constantes.RUTA_ARMA_ESPADA, 1550, 780);
                 break;
             case 401:
                 objeto = new ArmaUnaMano(idObjeto, "ESPADA DE ACERO NEGRO", "", 4, 10, 15,
                         2, 2, TipoObjeto.ESPADA_PESADA, false, true,
-                        1.3, "arrow", Constantes.RUTA_ARMA_ESPADA, 1550, 600);
+                        1.3, "sword_clash.1", Constantes.RUTA_ARMA_ESPADA, 1550, 600);
                 break;
             case 402:
                 objeto = new ArmaUnaMano(idObjeto, "ESPADA CORRUPTA", "", 2, 9,
                         12, 1, 1, TipoObjeto.ESPADA_MEDIA,
-                        true, false, 0.8, "arrow",
+                        true, false, 0.8, "sword_clash.1",
                         Constantes.RUTA_ARMA_ESPADA, 1550, 750);
                 break;
             case 403:
                 objeto = new ArmaUnaMano(idObjeto, "OXIDIANA", "", 1, 5, 6,
                         1, 1, TipoObjeto.ESPADA_LIGERA, true, false, 0.9,
-                        "arrow", Constantes.RUTA_ARMA_ESPADA, 1550, 400);
+                        "sword_clash.1", Constantes.RUTA_ARMA_ESPADA, 1550, 400);
                 break;
             case 404:
                 objeto = new ArmaUnaMano(idObjeto, "OBSIDIANA", "", 2, 10, 12,
                         1, 1, TipoObjeto.ESPADA_LIGERA, true, false,
-                        0.8, "arrow", Constantes.RUTA_ARMA_ESPADA, 1550, 900);
+                        0.8, "sword_clash.1", Constantes.RUTA_ARMA_ESPADA, 1550, 900);
                 break;
             case 405:
                 objeto = new ArmaUnaMano(idObjeto, "KOBRA", "", 1, 7, 12,
                         1, 1, TipoObjeto.ESPADA_LIGERA, true, false,
-                        0.8, "arrow", Constantes.RUTA_ARMA_ESPADA, 1550, 900);
+                        0.8, "sword_clash.1", Constantes.RUTA_ARMA_ESPADA, 1550, 900);
                 break;
             case 406:
                 objeto = new ArmaUnaMano(idObjeto, "ARCO DE NELISS", "", 2, 7, 14,

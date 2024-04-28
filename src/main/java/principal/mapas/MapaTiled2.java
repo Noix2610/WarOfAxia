@@ -230,13 +230,13 @@ public class MapaTiled2 {
             }
         }
 
-        DibujoDebug.dibujarRectanguloContorno(g, zonaSalida1, Color.red);
+        /*DibujoDebug.dibujarRectanguloContorno(g, zonaSalida1, Color.red);
         DibujoDebug.dibujarRectanguloContorno(g, zonaSalida2, Color.red);
         DibujoDebug.dibujarRectanguloContorno(g, zonaSalida3, Color.red);
         DibujoDebug.dibujarRectanguloContorno(g, zonaSalida4, Color.red);
         DibujoDebug.dibujarRectanguloContorno(g, zonaSalida5, Color.red);
         DibujoDebug.dibujarRectanguloContorno(g, zonaSalida6, Color.red);
-        DibujoDebug.dibujarRectanguloContorno(g, zonaSalida7, Color.red);
+        DibujoDebug.dibujarRectanguloContorno(g, zonaSalida7, Color.red);*/
 
         for (Tienda tiendaActual : tiendas) {
             DibujoDebug.dibujarRectanguloContorno(g, tiendaActual.getAreaTienda());

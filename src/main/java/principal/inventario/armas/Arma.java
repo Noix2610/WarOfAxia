@@ -7,7 +7,6 @@ package principal.inventario.armas;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Random;
-import principal.Constantes;
 import principal.ElementosPrincipales;
 import principal.entes.Enemigo;
 import principal.entes.Jugador;
@@ -98,6 +97,7 @@ public abstract class Arma extends Objeto {
                 enemigo.perderVida(danioTotal, esCritico);
             }
         }
+        
 
     }
 
