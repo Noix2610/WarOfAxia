@@ -25,7 +25,7 @@ public class GestorPrincipal {
     private Ventana ventana;
     private GestorEstados ge;
 
-    public static SoundThread sonido = new SoundThread("Ala Flair");
+    public static SoundThread musica;
 
     private static int fps = 0;
     private static int aps = 0;
@@ -34,10 +34,11 @@ public class GestorPrincipal {
         this.titulo = titulo;
         this.alto = alto;
         this.ancho = ancho;
+        musica = new SoundThread("Ala Flair");
     }
 
     public static void main(String[] args) throws InterruptedException {
-        
+
         System.setProperty("sun.java2d.opengl", "true");
         GestorPrincipal gp = new GestorPrincipal("Juego", Constantes.ANCHO_PANTALLA_COMPLETA,
                 Constantes.ALTO_PANTALLA_COMPLETA);
@@ -47,17 +48,22 @@ public class GestorPrincipal {
     }
 
     private void iniciarJuego() {
-        
+
         enFuncionamiento = true;
         inicializar();
-        sonido.repetir(0.7f);
+        if(pantallaTitulo){
+        musica.run();
+        }else{
+            musica.detener();
+        }
+
     }
 
     private void inicializar() {
         sd = new SuperficieDibujo(ancho, alto);
         ventana = new Ventana(titulo, sd);
         ge = new GestorEstados(sd);
-        
+
     }
 
     private void iniciarBuclePrincipal() throws InterruptedException {
@@ -102,21 +108,24 @@ public class GestorPrincipal {
     }
 
     private void actualizar() throws InterruptedException {
-        if(pantallaTitulo){
+        if (pantallaTitulo) {
             ge.cambiarEstadoActual(3);
+
         }
         else if (GestorControles.teclado.inventarioActivo) {
             ge.cambiarEstadoActual(1);
             GestorControles.teclado.tiendaActiva = false;
         }
-        else if(GestorControles.teclado.tiendaActiva){
+        else if (GestorControles.teclado.tiendaActiva) {
             ge.cambiarEstadoActual(2);
             GestorControles.teclado.inventarioActivo = false;
-        }else{
+        }
+        else {
             ge.cambiarEstadoActual(0);
         }
         ge.actualizar();
         sd.actualizar();
+        
     }
 
     private void dibujar() {

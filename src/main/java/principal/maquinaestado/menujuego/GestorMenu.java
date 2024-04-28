@@ -6,6 +6,7 @@ package principal.maquinaestado.menujuego;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import principal.GestorPrincipal;
 import principal.graficos.SuperficieDibujo;
 import principal.maquinaestado.EstadoJuego;
 
@@ -15,15 +16,14 @@ import principal.maquinaestado.EstadoJuego;
  */
 public class GestorMenu implements EstadoJuego {
 
-    private final SuperficieDibujo sd;
 
     private final SeccionMenu[] secciones;
     private SeccionMenu seccionActual;
 
     private final EstructuraMenu estructuraMenu;
 
-    public GestorMenu(final SuperficieDibujo sd) {
-        this.sd = sd;
+    public GestorMenu() {
+        
         estructuraMenu = new EstructuraMenu();
 
         secciones = new SeccionMenu[5]; // Ajusta la longitud del arreglo según la cantidad de secciones
@@ -70,8 +70,8 @@ public class GestorMenu implements EstadoJuego {
     @Override
     public void actualizar() {
         for (int i = 0; i < secciones.length; i++) {
-            if (sd.getRaton().isClick()
-                    && sd.getRaton().getPosicionRectangle().intersects(secciones[i].getEtiquetaMenuEscalada())) {
+            if (GestorPrincipal.sd.getRaton().isClick()
+                    && GestorPrincipal.sd.getRaton().getPosicionRectangle().intersects(secciones[i].getEtiquetaMenuEscalada())) {
 
                 if (secciones[i] instanceof MenuEquipo) {
                     MenuEquipo seccion = (MenuEquipo) secciones[i];
@@ -104,7 +104,7 @@ public class GestorMenu implements EstadoJuego {
         for (int i = 0; i < secciones.length; i++) {
 
             if (seccionActual == secciones[i]) {
-                if (sd.getRaton().getPosicionRectangle().intersects(secciones[i].getEtiquetaMenuEscalada())) {
+                if (GestorPrincipal.sd.getRaton().getPosicionRectangle().intersects(secciones[i].getEtiquetaMenuEscalada())) {
                     secciones[i].dibujarEtiquetaActivaResaltada(g);
                 }
                 else {
@@ -112,7 +112,7 @@ public class GestorMenu implements EstadoJuego {
                 }
             }
             else {
-                if (sd.getRaton().getPosicionRectangle().intersects(secciones[i].getEtiquetaMenuEscalada())) {
+                if (GestorPrincipal.sd.getRaton().getPosicionRectangle().intersects(secciones[i].getEtiquetaMenuEscalada())) {
                     secciones[i].dibujarEtiquetaInactResaltada(g);
                 }
                 else {
@@ -122,7 +122,7 @@ public class GestorMenu implements EstadoJuego {
 
             }
         }
-        seccionActual.dibujar(g, sd);
+        seccionActual.dibujar(g,GestorPrincipal.sd);
     }
 
 }

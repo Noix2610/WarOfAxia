@@ -41,6 +41,7 @@ import principal.inventario.consumibles.Consumible;
 import principal.inventario.joyas.Accesorio;
 import principal.inventario.joyas.Joya;
 import principal.maquinaestado.juego.menu_tienda.Tienda;
+import principal.sonido.SoundThread;
 import principal.sprites.HojaSprites;
 import principal.sprites.Sprite;
 
@@ -56,6 +57,7 @@ public class MapaTiled2 {
     private Point puntoInicial;
     public Rectangle recMapa;
     public Tienda tiendaActiva;
+    private boolean reproducirMusica;
 
     long ultimoTiempoRecogida = 0;
     long tiempoDebouncing = 50; // 50 milisegundos de tiempo de debouncing
@@ -79,7 +81,7 @@ public class MapaTiled2 {
     private ArrayList<Rectangle> areaColisionOriginales;
     private Sprite[] paletaSprites1;
     private Sprite[] paletaSprites2;
-    public final ArrayList<Objeto> objetosTiendaMapa;
+    public ArrayList<Objeto> objetosTiendaMapa;
     public ArrayList<Objeto> objetosTiendaActual;
     private boolean contenedorAbierto = false;
 
@@ -95,6 +97,7 @@ public class MapaTiled2 {
     public ArrayList<Tienda> tiendas;
 
     public MapaTiled2(final String ruta) {
+
         Salida.getSalidas().clear();
 
         String contenido = CargadorRecursos.leerArchivoTexto(ruta);
@@ -128,6 +131,7 @@ public class MapaTiled2 {
         objetosTiendaMapa = new ArrayList<>();
         objetosTiendaActual = new ArrayList<>();
         tiendaActiva = new Tienda();
+        
 
     }
 
@@ -146,6 +150,11 @@ public class MapaTiled2 {
         Point puntoCoincidente = dijkstra.getCoordenadasNodoCoincidente(punto);
         dijkstra.reiniciarYEvaluar(puntoCoincidente);
         mostrarElementoscontenedor();
+        
+        if(!GestorPrincipal.pantallaTitulo){
+        GestorPrincipal.musica.setFilename("Lively Meadow");
+        GestorPrincipal.musica.reproducir(0.7f);
+        }
 
     }
 
@@ -237,7 +246,6 @@ public class MapaTiled2 {
         DibujoDebug.dibujarRectanguloContorno(g, zonaSalida5, Color.red);
         DibujoDebug.dibujarRectanguloContorno(g, zonaSalida6, Color.red);
         DibujoDebug.dibujarRectanguloContorno(g, zonaSalida7, Color.red);*/
-
         for (Tienda tiendaActual : tiendas) {
             DibujoDebug.dibujarRectanguloContorno(g, tiendaActual.getAreaTienda());
 
@@ -891,7 +899,6 @@ public class MapaTiled2 {
 
     private int getIntJson(JsonNode objSon, String clave) {
         JsonNode valorNode = objSon.get(clave);
-        
 
         int valor = 0;
         if (valorNode != null) {

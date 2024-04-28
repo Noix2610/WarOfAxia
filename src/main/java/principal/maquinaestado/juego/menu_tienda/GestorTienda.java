@@ -10,6 +10,7 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import principal.Constantes;
 import principal.ElementosPrincipales;
+import principal.GestorPrincipal;
 import principal.control.GestorControles;
 import principal.graficos.SuperficieDibujo;
 import principal.herramientas.DibujoDebug;
@@ -27,8 +28,6 @@ import principal.maquinaestado.EstadoJuego;
  */
 public class GestorTienda implements EstadoJuego {
 
-    private final SuperficieDibujo sd;
-
     private final SeccionTienda[] secciones;
     private SeccionTienda seccionActual;
 
@@ -42,8 +41,7 @@ public class GestorTienda implements EstadoJuego {
     private final Rectangle etiquetaPociones;
     public final Rectangle salir;
 
-    public GestorTienda(final SuperficieDibujo sd) {
-        this.sd = sd;
+    public GestorTienda() {
         estructuraTienda = new EstructuraTienda();
 
         secciones = new SeccionTienda[7]; // Ajusta la longitud del arreglo según la cantidad de secciones
@@ -113,8 +111,8 @@ public class GestorTienda implements EstadoJuego {
         
         
         for (int i = 0; i < secciones.length; i++) {
-            if (sd.getRaton().isClick()
-                    && sd.getRaton().getPosicionRectangle().intersects(secciones[i].getEtiquetaMenuEscalada())) {
+            if (GestorPrincipal.sd.getRaton().isClick()
+                    && GestorPrincipal.sd.getRaton().getPosicionRectangle().intersects(secciones[i].getEtiquetaMenuEscalada())) {
 
                 /*else if(secciones[i] instanceof MenuInventario){
                     MenuInventario seccion = (MenuInventario) secciones[i];
@@ -135,7 +133,7 @@ public class GestorTienda implements EstadoJuego {
         for (int i = 0; i < secciones.length; i++) {
 
             if (seccionActual == secciones[i]) {
-                if (sd.getRaton().getPosicionRectangle().intersects(secciones[i].getEtiquetaMenuEscalada())) {
+                if (GestorPrincipal.sd.getRaton().getPosicionRectangle().intersects(secciones[i].getEtiquetaMenuEscalada())) {
                     secciones[i].dibujarEtiquetaActivaResaltada(g);
                 }
                 else {
@@ -143,7 +141,7 @@ public class GestorTienda implements EstadoJuego {
                 }
             }
             else {
-                if (sd.getRaton().getPosicionRectangle().intersects(secciones[i].getEtiquetaMenuEscalada())) {
+                if (GestorPrincipal.sd.getRaton().getPosicionRectangle().intersects(secciones[i].getEtiquetaMenuEscalada())) {
                     secciones[i].dibujarEtiquetaInactResaltada(g);
                 }
                 else {
@@ -154,17 +152,17 @@ public class GestorTienda implements EstadoJuego {
             }
         }
 
-        seccionActual.dibujar(g, sd);
+        seccionActual.dibujar(g, GestorPrincipal.sd);
 
         DibujoDebug.dibujarRectanguloRelleno(g, this.salir, Color.WHITE);
 
-        if (sd.getRaton().getPosicionRectangle().intersects(EscaladorElementos.escalarRectangleArriba(salir))) {
+        if (GestorPrincipal.sd.getRaton().getPosicionRectangle().intersects(EscaladorElementos.escalarRectangleArriba(salir))) {
             g.setFont(g.getFont().deriveFont(14f));
             DibujoDebug.dibujarString(g, "SALIR", salir.x + Constantes.LADO_SPRITE / 2 - 4,
                     salir.y + salir.height - Constantes.LADO_SPRITE / 4, Color.black);
             final Rectangle etiquetaResaltadaSalir = new Rectangle(salir.x + salir.width - 10, salir.y + 5, 5, salir.height - 10);
             DibujoDebug.dibujarRectanguloRelleno(g, etiquetaResaltadaSalir, Color.RED);
-            if (sd.getRaton().isClick()) {
+            if (GestorPrincipal.sd.getRaton().isClick()) {
                 GestorControles.teclado.tiendaActiva = false;
             }
         }

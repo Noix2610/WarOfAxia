@@ -8,9 +8,11 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import javax.swing.Timer;
 import principal.Constantes;
+import principal.GestorPrincipal;
 import principal.graficos.SuperficieDibujo;
 import principal.herramientas.DibujoDebug;
 import principal.maquinaestado.EstadoJuego;
+import principal.sonido.SoundThread;
 import principal.sprites.HojaSprites;
 
 /**
@@ -25,8 +27,9 @@ public class PantallaTitulo implements EstadoJuego {
     private final HojaSprites s2;
     private BufferedImage start;
     private final Timer timer;
+    
 
-    public PantallaTitulo(SuperficieDibujo sd) {
+    public PantallaTitulo() {
         s1 = new HojaSprites("/fondos/Start1.png", 79, 46, false);
         s2 = new HojaSprites("/fondos/Start2.png", 79, 46, false);
         ht = new HojaSprites("/fondos/titulo.png", 639, 353, true);
@@ -36,6 +39,7 @@ public class PantallaTitulo implements EstadoJuego {
         // Crear un temporizador que cambie la imagen cada 1000 ms (1 segundo)
         timer = new Timer(1000, e -> cambiarImagen());
         timer.start();
+        
     }
 
     private void cambiarImagen() {
@@ -49,7 +53,7 @@ public class PantallaTitulo implements EstadoJuego {
 
     @Override
     public void actualizar() {
-        // No es necesario hacer nada en este método para este caso
+        
     }
 
     @Override

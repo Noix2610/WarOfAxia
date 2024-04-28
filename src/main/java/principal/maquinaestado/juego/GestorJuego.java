@@ -122,27 +122,28 @@ public class GestorJuego implements EstadoJuego {
         }
     }*/
     public void recargarJuego() {
-        if(recargar){
-        ElementosPrincipales.mapa = new MapaTiled2("textos/" + ElementosPrincipales.mapa.getSiguienteMapa());
+        if (recargar) {
+            ElementosPrincipales.mapa = new MapaTiled2("textos/" + ElementosPrincipales.mapa.getSiguienteMapa());
 
-        // Establecer la posición del jugador en el nuevo mapa
-        ElementosPrincipales.jugador.setPosicionX(ElementosPrincipales.mapa.getPuntoInicial().x);
-        ElementosPrincipales.jugador.setPosicionY(ElementosPrincipales.mapa.getPuntoInicial().y);
-        recargar = false;
+            // Establecer la posición del jugador en el nuevo mapa
+            ElementosPrincipales.jugador.setPosicionX(ElementosPrincipales.mapa.getPuntoInicial().x);
+            ElementosPrincipales.jugador.setPosicionY(ElementosPrincipales.mapa.getPuntoInicial().y);
+            recargar = false;
         }
 
     }
 
     @Override
     public void dibujar(Graphics2D g) {
-        
+
         ElementosPrincipales.mapa.dibujar(g);
         ElementosPrincipales.jugador.dibujar(g);
         ElementosPrincipales.mapa.dibujar2daCapa(g);
         menuInferior.dibujar(g);
         DibujoDebug.dibujarImagen(g, logo, Constantes.ANCHO_JUEGO - logo.getWidth(), 0);
-        if(ElementosPrincipales.jugador.dibujarHabilidad){
-                ElementosPrincipales.jugador.dibujarHabilidad(g);}
+        if (ElementosPrincipales.jugador.dibujarHabilidad) {
+            ElementosPrincipales.jugador.dibujarHabilidad(g);
+        }
         //g.fillRect((int) ElementosPrincipales.mapa.getZonaSalida().getX(), (int) ElementosPrincipales.mapa.getZonaSalida().getY(), (int) ElementosPrincipales.mapa.getZonaSalida().getWidth(), (int) ElementosPrincipales.mapa.getZonaSalida().getHeight());
     }
 
@@ -159,7 +160,7 @@ public class GestorJuego implements EstadoJuego {
                 ElementosPrincipales.mapa.setSiguienteMapa(salidaActual.getNombreSiguienteMapa());
                 GestorPrincipal.sd.cambioMapa = true;
                 recargar = true;
-                
+
                 break;  // Salir del bucle una vez que se ha detectado la intersección
             }
         }

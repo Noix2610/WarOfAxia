@@ -70,29 +70,31 @@ public class SoundThread implements Runnable {
     }
 
     public void reproducir(float volumen) {
-    if (clip != null && !clip.isActive()) {
-        // Vuelve a cargar y reproducir el sonido
-        new Thread(() -> {
-            try {
-                InputStream in = getClass().getResourceAsStream("/sonidos/" + filename + ".wav");
+        if (clip != null && !clip.isActive()) {
+            // Vuelve a cargar y reproducir el sonido
+            new Thread(() -> {
+                try {
+                    InputStream in = getClass().getResourceAsStream("/sonidos/" + filename + ".wav");
 
-                if (in != null) {
-                    AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(in));
-                    clip = AudioSystem.getClip();
-                    clip.open(ais);
-                    // Ajustar el volumen antes de iniciar la reproducción
-                    ajustarVolumen(clip, volumen);
-                    // Iniciar la reproducción
-                    clip.start();
-                } else {
-                    System.err.println("No se pudo cargar el recurso de sonido: " + filename);
+                    if (in != null) {
+                        AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(in));
+                        clip = AudioSystem.getClip();
+                        clip.open(ais);
+                        // Ajustar el volumen antes de iniciar la reproducción
+                        ajustarVolumen(clip, volumen);
+                        // Iniciar la reproducción
+                        clip.start();
+                    }
+                    else {
+                        System.err.println("No se pudo cargar el recurso de sonido: " + filename);
+                    }
                 }
-            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-                e.printStackTrace();
-            }
-        }).start();
+                catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
     }
-}
 
     public void repetir(float volumen) {
         if (clip != null && !clip.isActive()) {
@@ -155,6 +157,12 @@ public class SoundThread implements Runnable {
 
     public void setVolumeScale(float volumeScale) {
         this.volumeScale = volumeScale;
+    }
+
+    public void detener() {
+        if (clip != null && clip.isRunning()) {
+            clip.stop(); // Detiene la reproducción del sonido
+        }
     }
 
 }

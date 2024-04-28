@@ -25,7 +25,7 @@ public class Teclado implements KeyListener {
     public Tecla aumentar = new Tecla();
     public Tecla disminuir = new Tecla();
     public Tecla enter = new Tecla();
-    public GestorHabilidades  gh = new GestorHabilidades();
+    public GestorHabilidades gh = new GestorHabilidades();
 
     public boolean recogiendo = false;
     public boolean corriendo = false;
@@ -72,12 +72,12 @@ public class Teclado implements KeyListener {
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_ENTER:
-                if(GestorPrincipal.pantallaTitulo){
-                    GestorPrincipal.pantallaTitulo = false;
-                }else if(!GestorPrincipal.pantallaTitulo && !ElementosPrincipales.jugador.estaVivo){
+
+                GestorPrincipal.pantallaTitulo = false;
+                if (!GestorPrincipal.pantallaTitulo && !ElementosPrincipales.jugador.estaVivo) {
                     GestorPrincipal.pantallaTitulo = true;
                 }
-                 
+
                 break;
             case KeyEvent.VK_W:
                 arriba.teclaPulsada();
@@ -102,13 +102,13 @@ public class Teclado implements KeyListener {
             case KeyEvent.VK_DOWN:
                 disminuir.teclaPulsada();
                 break;
-            
+
             case KeyEvent.VK_F1:
                 debug = !debug;
                 break;
             case KeyEvent.VK_I:
                 inventarioActivo = !inventarioActivo;
-                
+
                 break;
             case KeyEvent.VK_T:
                 tiendaActiva = !tiendaActiva;
@@ -163,8 +163,7 @@ public class Teclado implements KeyListener {
             case KeyEvent.VK_DOWN:
                 disminuir.teclaLiberada();
                 break;
-                
-                    
+
         }
 
     }
