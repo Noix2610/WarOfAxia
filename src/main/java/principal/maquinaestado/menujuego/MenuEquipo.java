@@ -47,7 +47,6 @@ public class MenuEquipo extends SeccionMenu {
     private final ArrayList<Rectangle> etiquetasEquipables;
     public static boolean mostrarTooltip = true;
     private int etiquetaEquipo;
-    
 
     final Rectangle panelObjetos = new Rectangle(em.FONDO.x + margenGeneral,
             barraPeso.y + barraPeso.height + margenGeneral,
@@ -317,7 +316,7 @@ public class MenuEquipo extends SeccionMenu {
                     if (ElementosPrincipales.jugador.getAe().equipoActual.contains(anillo1)) {
                         ElementosPrincipales.jugador.getAe().equipoActual.remove(anillo1);
                     }
-                    ElementosPrincipales.jugador.getAe().setAnillo((Joya) objetoSeleccionado);
+                    ElementosPrincipales.jugador.getAe().setAnillo1((Joya) objetoSeleccionado);
 
                     if (anillo2 != null && sonMismosAnillos(anillo2, (Joya) objetoSeleccionado)) {
                         ae.setAnillo2(null);
@@ -336,7 +335,7 @@ public class MenuEquipo extends SeccionMenu {
                     ElementosPrincipales.jugador.getAe().setAnillo2((Joya) objetoSeleccionado);
 
                     if (anillo1 != null && sonMismosAnillos(anillo1, (Joya) objetoSeleccionado)) {
-                        ae.setAnillo(null);
+                        ae.setAnillo1(null);
                         ae.equipoActual.remove(anillo1);
                     }
                 }
@@ -548,7 +547,7 @@ public class MenuEquipo extends SeccionMenu {
                         break;
                     }
                 }
-                ElementosPrincipales.jugador.getAe().setAnillo(null);
+                ElementosPrincipales.jugador.getAe().setAnillo1(null);
             }
 
             else if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(contenedorAnillo2))

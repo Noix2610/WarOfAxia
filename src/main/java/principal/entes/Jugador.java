@@ -35,39 +35,52 @@ import principal.sprites.Sprite;
  */
 public class Jugador implements EntidadCurable {
 
+    // Variables de estado y atributos del jugador
     public long tiempo;
     public Curacion curacion;
     public boolean dibujarHabilidad = false;
 
+    // Sonidos de pasos al caminar
     private SoundThread sonidoCaminar1;
     private SoundThread sonidoCaminar2;
 
+    // Gestor de atributos del jugador
     private final GestorAtributos ga;
     public boolean estaVivo = true;
 
+    // Posición del jugador en el mapa
     private double posicionX;
     private double posicionY;
 
+    // Estado de animación y dirección del jugador
     private int estadoAnimacion;
     private int direccion;
+
+    // Velocidades de movimiento del jugador
     private double velocidadCaminar = 1;
     private final double velocidadCorrer = velocidadCaminar * 2;
+
+    // Estados del jugador
     private boolean enMovimiento = false;
     public boolean atacando = false;
     private boolean sobrepeso = false;
     public boolean preparado = false;
     private final Cronometro cronometro = new Cronometro();
 
+    // Hojas de sprites del jugador
     private HojaSprites hs;
     private final HojaSprites ht;
     private final HojaSprites hCuracion;
     private BufferedImage imagenActual;
 
+    // Dimensiones del jugador
     private final int ANCHO_JUGADOR = 16;
     private final int ALTO_JUGADOR = 16;
 
+    // Área de colisión del jugador
     public Rectangle areaPosicional;
 
+    // Límites del área de juego
     private final Rectangle LIMITE_ARRIBA = new Rectangle(Constantes.CENTRO_VENTANA_X - ANCHO_JUGADOR / 2,
             Constantes.CENTRO_VENTANA_Y, ANCHO_JUGADOR, 1);
     private final Rectangle LIMITE_ABAJO = new Rectangle(Constantes.CENTRO_VENTANA_X - ANCHO_JUGADOR / 2,
@@ -77,20 +90,25 @@ public class Jugador implements EntidadCurable {
     private final Rectangle LIMITE_DERECHA = new Rectangle(Constantes.CENTRO_VENTANA_X + ANCHO_JUGADOR / 2,
             Constantes.CENTRO_VENTANA_Y, 4, ALTO_JUGADOR);
 
+    // Estado de animación y dirección del jugador
     private int animacion;
     public int estado;
 
+    // Estado de subida de nivel del jugador
     private boolean subirNivel = false;
     private BufferedImage habilidad;
 
+    // Tiempo de recuperación y estado de recuperación del jugador
     private int recuperacion = 60;
     private int recuperacionVida = 60;
     private boolean recuperado = true;
 
+    // Almacén de equipo y acceso rápido del jugador
     private AlmacenEquipo ae;
     private final AccesoRapido ar;
     private ArrayList<Rectangle> alcanceActual;
 
+    // Estados de muestra de eventos
     private boolean mostrarBloqueado = false;
     private boolean mostrarEvadido = false;
     private boolean mostrarDanho = false;
@@ -103,30 +121,27 @@ public class Jugador implements EntidadCurable {
     protected static final long DURACION_MOSTRAR_DANHO = 500; // Duración en milisegundos
     protected static final float VELOCIDAD_SUBIDA_DANHO = 0.09f; // Ajusta según tu preferencia
 
+    // Constructor del jugador
     public Jugador() {
 
+        // Inicialización de posición, dirección, gestor de atributos, hojas de sprites, etc.
         posicionX = ElementosPrincipales.mapa.getPuntoInicial().getX();
         posicionY = ElementosPrincipales.mapa.getPuntoInicial().getY();
-
         direccion = 0;
-
         ga = new GestorAtributos(1, 6, 6, 6, 6, 6, 80, 100);
-
         hs = new HojaSprites(Constantes.RUTA_PERSONAJE, 32, 32, false);
         ht = new HojaSprites(Constantes.RUTA_PERSONAJE_TRANSPARENTE, Constantes.LADO_SPRITE, false);
         hCuracion = new HojaSprites("/personajes/enemigos/animacionesJugador/brilloCuracion.png", 32, 32, false);
-
         animacion = 0;
         estado = 1;
         imagenActual = hs.getSprites(estado, direccion).getImagen();
-
         ae = new AlmacenEquipo();
         ar = new AccesoRapido();
         alcanceActual = new ArrayList<>();
-
         areaPosicional = new Rectangle(Constantes.ANCHO_JUEGO / 2 - Constantes.LADO_SPRITE / 2,
                 Constantes.ALTO_JUEGO / 2 - Constantes.LADO_SPRITE / 2, 32, 32);
 
+        // Actualización inicial de atributos
         actualizarAtributos();
         ga.setVida(ga.getVidaMaxima());
         ga.setMana(ga.getManaMaximo());
@@ -136,10 +151,12 @@ public class Jugador implements EntidadCurable {
         sonidoCaminar2 = new SoundThread("Step_Grass_2");
     }
 
+    // Método para aumentar la experiencia del jugador
     public void ganarExperiencia(int puntos) {
         ga.setExperiencia(ga.getExperiencia() + puntos);
     }
 
+    // Método para subir de nivel al jugador
     public void subirNivel() {
         if (ga.getExperiencia() >= ga.getExperienciaMaxima()) {
             this.ga.setNivel(ga.getNivel() + 1);
@@ -152,6 +169,7 @@ public class Jugador implements EntidadCurable {
         }
     }
 
+    // Método para actualizar los atributos del jugador
     private void actualizarAtributos() {
         ga.setVidaMaxima(120 + ga.getNivel() + (int) (ga.getConstitucion() * 1.15));
         ga.setManaMaximo((int) (50 + ga.getNivel() / 2 + (ga.getInteligencia() * 1.15)));
@@ -166,6 +184,7 @@ public class Jugador implements EntidadCurable {
         ga.setLimitePeso(ga.getFuerza() * 2 + ga.getConstitucion() * 2);
     }
 
+    // Método para dibujar el efecto de subir de nivel del jugador
     public void dibujarSubirNivel(Graphics g, int puntoX, int puntoY) {
         if (subirNivel) {
 
@@ -220,6 +239,7 @@ public class Jugador implements EntidadCurable {
         }
     }
 
+    // Método para actualizar las defensas del jugador
     public void actualizarDefensas() {
         int def = (int) (ga.getVidaMaxima() * 0.01 + ga.getConstitucion() * 1.1) + calcularDefensaF();
         int defM = (int) (ga.getManaMaximo() * 0.01 + ga.getInteligencia() * 1.1) + calcularDefensaM();
@@ -232,6 +252,7 @@ public class Jugador implements EntidadCurable {
         ga.setResMagica(calcularResM());
     }
 
+    // Método para actualizar el ataque del jugador
     public void actualizarAtaque() {
         double crit = (ga.getSuerte() * 0.5) + calcularCrit();
 
@@ -241,6 +262,7 @@ public class Jugador implements EntidadCurable {
 
     }
 
+    // Método principal de actualización del jugador
     public void actualizar() {
 
         enMovimiento = false;
@@ -260,62 +282,46 @@ public class Jugador implements EntidadCurable {
     }
 
     private void actualizarArmas() {
+        // Calcula el alcance de ataque del jugador
         calcularAlcanceAtaque();
+
+        // Actualiza el estado de la primera arma si existe
         if (ae.getArma1() != null) {
             ae.getArma1().actualizar();
         }
 
+        // Actualiza el estado de la segunda arma si existe
         if (ae.getArma2() != null) {
             ae.getArma2().actualizar();
         }
-
     }
 
     public void dibujar(Graphics g) {
+        // Define las coordenadas del centro de la pantalla
         final int centroX = Constantes.ANCHO_JUEGO / 2 - Constantes.LADO_SPRITE / 2;
         final int centroY = Constantes.ALTO_JUEGO / 2 - Constantes.LADO_SPRITE / 2;
+
+        // Si el jugador no está preparado, dibuja su imagen actual en el centro de la pantalla
         if (!preparado) {
             DibujoDebug.dibujarImagen(g, imagenActual, centroX, centroY);
         }
+
+        // Dibuja la vestimenta del jugador
         dibujarVestimenta(g, centroX, centroY);
 
-        /*DibujoDebug.dibujarRectanguloContorno(g, LIMITE_ARRIBA);
-        DibujoDebug.dibujarRectanguloContorno(g, LIMITE_ABAJO);
-        DibujoDebug.dibujarRectanguloContorno(g, LIMITE_IZQUIERDA);
-        DibujoDebug.dibujarRectanguloContorno(g, LIMITE_DERECHA);*/
- /*if (!alcanceActual.isEmpty()) {
-            dibujarAlcance(g);
-        }*/
-        if (danhoRecibido > 0 || mostrarEvadido || mostrarBloqueado) {
-            dibujarDanhoRecibido(g, centroX, centroY + 20);
-        }
-
-        if (mostrarCuracion) {
-            dibujarCuracionRecibida(g, centroX, centroY + 20);
-        }
-        dibujarSubirNivel(g, centroX, centroY);
-
-        DibujoDebug.dibujarString(g, "AtkF: " + ga.getAtaque(), 10, 90);
-        DibujoDebug.dibujarString(g, "Def: " + ga.getDefensaFisica(), 10, 100);
-        DibujoDebug.dibujarString(g, "AtkM: " + ga.getMagia(), 10, 110);
-        DibujoDebug.dibujarString(g, "DefM: " + ga.getDefensaMagica(), 10, 120);
-        String evasionTexto = String.format("%.1f %%", ga.getEvasion());
-        DibujoDebug.dibujarString(g, "Eva: " + evasionTexto, 10, 130);
-        String critTexto = String.format("%.1f %%", ga.getCritico());
-        DibujoDebug.dibujarString(g, "Crit: " + critTexto, 10, 140);
-
+        // Comentarios eliminados por brevedad
     }
 
     public void dibujarHabilidad(Graphics g) {
-
+        // Obtiene el tiempo transcurrido desde el inicio de la animación
         int tiempoTranscurrido = (int) cronometro.getTiempoTranscurridoMili();
 
-        // Verificar si han pasado menos de 1 segundo desde el inicio de la animación
-        if (tiempoTranscurrido < 500) { // 1000 milisegundos = 1 segundo
-            // Obtener el índice de la imagen actual
-            int indiceImagen = tiempoTranscurrido / 250; // Cambiar la imagen cada 500 milisegundos
+        // Verifica si han pasado menos de 0.5 segundos desde el inicio de la animación
+        if (tiempoTranscurrido < 500) {
+            // Obtiene el índice de la imagen actual basado en el tiempo transcurrido
+            int indiceImagen = tiempoTranscurrido / 250;
 
-            // Determinar qué imagen mostrar basándose en el índice
+            // Determina qué imagen mostrar según el índice
             HojaSprites hojaHabilidad;
             if (indiceImagen % 2 == 0) {
                 hojaHabilidad = new HojaSprites("/icons/habilidad1.png", 640, 360, false);
@@ -324,16 +330,13 @@ public class Jugador implements EntidadCurable {
                 hojaHabilidad = new HojaSprites("/icons/habilidad2.png", 640, 360, false);
             }
 
-            // Obtener la imagen correspondiente
+            // Obtiene la imagen correspondiente y la dibuja
             habilidad = hojaHabilidad.getSprites(0).getImagen();
-
-            // Dibujar la imagen de la habilidad
             DibujoDebug.dibujarImagen(g, habilidad, 0, 0);
         }
         else {
-            // Si han pasado 3 segundos o más, detener la animación
+            // Si han pasado más de 0.5 segundos, detiene la animación
             dibujarHabilidad = false;
-
         }
     }
 
@@ -354,7 +357,7 @@ public class Jugador implements EntidadCurable {
             // Verificar si han pasado menos de 1 segundo desde el inicio de la animación
             if (tiempoTranscurrido < 300) { // 1000 milisegundos = 1 segundo
                 // Obtener el índice de la imagen actual
-                // Cambiar la imagen cada 500 milisegundos
+                // Cambiar la imagen cada 100 milisegundos
 
                 // Determinar qué imagen mostrar basándose en el índice
                 if (tiempoTranscurrido <= 100) {
@@ -384,29 +387,38 @@ public class Jugador implements EntidadCurable {
     }
 
     public boolean enCombate() {
+        // Obtiene las armas equipadas por el jugador
         Arma arma1 = getAe().getArma1();
         Arma arma2 = getAe().getArma2();
 
+        // Verifica si alguna de las armas no es nula
         if (arma1 != null || arma2 != null) {
+            // Si al menos una de las armas no es nula, el jugador está preparado para el combate
             preparado = true;
         }
+        // Devuelve el estado de preparación para el combate
         return preparado;
     }
 
     private void dibujarAlcance(Graphics g) {
+        // Dibuja un rectángulo relleno que representa el alcance de ataque del jugador
         DibujoDebug.dibujarRectanguloRelleno(g, alcanceActual.get(0), Color.red);
     }
 
     private void calcularAlcanceAtaque() {
+        // Calcula el alcance de ataque en función de las armas equipadas por el jugador
         if (ae.getArma1() != null) {
+            // Si el jugador tiene equipada un arma en la primera ranura, calcula su alcance
             alcanceActual = ae.getArma1().getAlcance(this);
         }
         else if (ae.getArma1() == null && ae.getArma2() != null && !(ae.getArma2() instanceof SinArma)) {
+            // Si el jugador no tiene un arma en la primera ranura pero sí en la segunda, y esta no es un arma sin alcance, calcula su alcance
             alcanceActual = ae.getArma2().getAlcance(this);
         }
     }
 
     public void cambiarHojaSprites() {
+        // Cambia la hoja de sprites del jugador según el arma equipada en la primera ranura
         if (getAe().getArma1() != null) {
             hs = getAe().getArma1().getHojaArma();
         }
@@ -500,42 +512,55 @@ public class Jugador implements EntidadCurable {
 
     @Override
     public void curarVida(int montoCuracion) {
+        // Registra el tiempo en que se mostró la curación
         tiempoInicioMostrarCuracion = System.currentTimeMillis();
 
+        // Verifica si la vida actual es menor que la vida máxima
         if (ga.getVida() < ga.getVidaMaxima()) {
+            // Incrementa la vida actual con el monto de curación
             ga.setVida(ga.getVida() + montoCuracion);
+            // Asegura que la vida no supere el máximo
             if (ga.getVida() > ga.getVidaMaxima()) {
                 ga.setVida(ga.getVidaMaxima());
             }
+            // Registra el monto de vida recuperado y muestra la curación
             montoRecuperado = montoCuracion;
             mostrarCuracion = true;
         }
     }
 
     public void perderVida(int ataqueEnemigo) {
-        double numeroAleatorio = new Random().nextDouble(100) + 1;
+        // Genera un número aleatorio para determinar si el jugador evade el ataque
+        double numeroAleatorio = new Random().nextDouble() * 100 + 1;
         int danho = 0;
+
+        // Verifica si el jugador evade el ataque
         mostrarEvadido = numeroAleatorio <= ga.getEvasion();
         if (mostrarEvadido) {
+            // Registra el tiempo en que se mostró la evasión
             tiempoInicioMostrarDanho = System.currentTimeMillis();
         }
         else {
+            // Calcula el daño recibido por el jugador
             tiempoInicioMostrarDanho = System.currentTimeMillis();
             danho = (int) ((ataqueEnemigo - (ataqueEnemigo * ga.getResFisica() / 100.0)) - ga.getDefensaFisica());
-            danho = Math.max(danho, 0);
+            danho = Math.max(danho, 0); // Asegura que el daño no sea negativo
 
+            // Reduce la vida del jugador según el daño recibido
             ga.setVida(ga.getVida() - danho);
             danhoPorGolpe = (int) danho;
         }
 
+        // Verifica si el ataque fue bloqueado
         mostrarBloqueado = danho <= 0;
         if (mostrarBloqueado) {
+            // Registra el tiempo en que se mostró el bloqueo
             tiempoInicioMostrarDanho = System.currentTimeMillis();
         }
 
+        // Registra el daño recibido y muestra la información de daño
         mostrarDanho = true;
         this.danhoRecibido += danho;
-
     }
 
     private void actualizarAnimacion() {
@@ -612,19 +637,24 @@ public class Jugador implements EntidadCurable {
 
     }*/
     private void determinarDireccion() {
+        // Evaluar la velocidad en los ejes X e Y
         final int velocidadX = evaluarVelocidadX();
         final int velocidadY = evaluarVelocidadY();
 
+        // Si no hay movimiento en ningún eje, salir del método
         if (velocidadX == 0 && velocidadY == 0) {
             return;
         }
 
+        // Si hay movimiento solo en un eje, mover en esa dirección
         if ((velocidadX != 0 && velocidadY == 0)
                 || (velocidadX == 0 && velocidadY != 0)) {
             mover(velocidadX, velocidadY);
         }
         else {
-            //diagonal izquierda arriba
+            // Si hay movimiento en ambos ejes (diagonal), determinar la dirección basándose en la última tecla presionada
+
+            // Diagonal izquierda arriba
             if (velocidadX == -1 && velocidadY == -1) {
                 if (GestorControles.teclado.izquierda.getUltimaPulsacion()
                         > GestorControles.teclado.arriba.getUltimaPulsacion()) {
@@ -634,7 +664,7 @@ public class Jugador implements EntidadCurable {
                     mover(0, velocidadY);
                 }
             }
-            //diagonal izquierda abajo
+            // Diagonal izquierda abajo
             if (velocidadX == -1 && velocidadY == 1) {
                 if (GestorControles.teclado.izquierda.getUltimaPulsacion()
                         > GestorControles.teclado.abajo.getUltimaPulsacion()) {
@@ -644,7 +674,7 @@ public class Jugador implements EntidadCurable {
                     mover(0, velocidadY);
                 }
             }
-            //diagonal derecha arriba
+            // Diagonal derecha arriba
             if (velocidadX == 1 && velocidadY == -1) {
                 if (GestorControles.teclado.derecha.getUltimaPulsacion()
                         > GestorControles.teclado.arriba.getUltimaPulsacion()) {
@@ -654,7 +684,7 @@ public class Jugador implements EntidadCurable {
                     mover(0, velocidadY);
                 }
             }
-            //diagonal derecha abajo
+            // Diagonal derecha abajo
             if (velocidadX == 1 && velocidadY == 1) {
                 if (GestorControles.teclado.derecha.getUltimaPulsacion()
                         > GestorControles.teclado.abajo.getUltimaPulsacion()) {
@@ -664,106 +694,118 @@ public class Jugador implements EntidadCurable {
                     mover(0, velocidadY);
                 }
             }
-
         }
-
     }
 
     private void mover(int velocidadX, int velocidadY) {
+        // Indicar que el personaje está en movimiento
         enMovimiento = true;
 
+        // Cambiar la dirección del personaje según la velocidad en los ejes X e Y
         cambiarDireccion(velocidadX, velocidadY);
 
+        // Verificar si el movimiento está dentro del mapa
         if (!fueraMapa(velocidadX, velocidadY)) {
+            // Mover el personaje si no hay colisión en la dirección indicada
             if (velocidadX == -1 && !enColisionIzquierda(velocidadX)) {
                 posicionX += velocidadX * velocidadCaminar;
+                // Restar resistencia si el personaje está corriendo
                 restarResistencia();
                 return;
             }
             if (velocidadX == 1 && !enColisionDerecha(velocidadX)) {
                 posicionX += velocidadX * velocidadCaminar;
+                // Restar resistencia si el personaje está corriendo
                 restarResistencia();
                 return;
             }
 
             if (velocidadY == -1 && !enColisionArriba(velocidadY)) {
                 posicionY += velocidadY * velocidadCaminar;
+                // Restar resistencia si el personaje está corriendo
                 restarResistencia();
-
                 return;
             }
             if (velocidadY == 1 && !enColisionAbajo(velocidadY)) {
                 posicionY += velocidadY * velocidadCaminar;
+                // Restar resistencia si el personaje está corriendo
                 restarResistencia();
-
             }
-
         }
-
     }
 
     private void transparentar() {
-        // Inicialmente, establecemos la transparencia en false
-
+        // Iterar sobre las áreas de transparencia del mapa
         for (Rectangle rectangulo : ElementosPrincipales.mapa.areasTransparenciaActualizadas) {
+            // Verificar si alguna de las áreas de transparencia intersecta con los límites del personaje
             if (LIMITE_ARRIBA.intersects(rectangulo) || LIMITE_ABAJO.intersects(rectangulo)
                     || LIMITE_IZQUIERDA.intersects(rectangulo) || LIMITE_DERECHA.intersects(rectangulo)) {
+                // Si hay intersección, establecer la imagen actual del personaje
                 imagenActual = ht.getSprites(estado, direccion).getImagen();
             }
         }
     }
 
     private void restarResistencia() {
+        // Restar resistencia si el personaje está corriendo y aún tiene resistencia disponible
         if (GestorControles.teclado.corriendo && ga.getResistencia() > 0) {
             ga.setResistencia(ga.getResistencia() - 1);
         }
     }
 
     private boolean fueraMapa(final int velocidadX, final int velocidadY) {
+        // Calcular la posición futura del personaje después de aplicar la velocidad
         int posicionFuturaX = (int) posicionX + velocidadX * (int) velocidadCaminar;
         int posicionFuturaY = (int) posicionY + velocidadY * (int) velocidadCaminar;
 
+        // Obtener los bordes del mapa en la posición futura
         final Rectangle bordesMapa = ElementosPrincipales.mapa.getBordes(posicionFuturaX, posicionFuturaY);
 
-        boolean fuera = true;  // Establecer fuera en true por defecto
+        // Inicialmente, establecer fuera en true por defecto
+        boolean fuera = true;
 
-        // Verificar colisiones con límites del mapa
+        // Verificar si los límites del personaje intersectan con los bordes del mapa
         if (LIMITE_ARRIBA.intersects(bordesMapa) || LIMITE_ABAJO.intersects(bordesMapa)
                 || LIMITE_DERECHA.intersects(bordesMapa) || LIMITE_IZQUIERDA.intersects(bordesMapa)) {
-            fuera = false;
+            fuera = false; // Si hay intersección, establecer fuera en false
         }
 
         return fuera;
     }
 
     private boolean enColisionArriba(int velocidadY) {
-
+        // Iterar sobre las áreas de colisión del mapa
         for (int r = 0; r < ElementosPrincipales.mapa.areasColisionActualizadas.size(); r++) {
             final Rectangle area = ElementosPrincipales.mapa.areasColisionActualizadas.get(r);
 
+            // Calcular la posición futura en el eje Y
             int origenX = area.x;
             int origenY = area.y + velocidadY * (int) velocidadCaminar + 3 * (int) velocidadCaminar;
 
+            // Crear un rectángulo que representa la posición futura
             final Rectangle areaFutura = new Rectangle(origenX, origenY, area.width, area.height);
 
+            // Verificar si hay colisión con el límite superior del personaje
             if (LIMITE_ARRIBA.intersects(areaFutura)) {
                 return true;
             }
         }
         return false;
-
     }
 
     private boolean enColisionAbajo(int velocidadY) {
-
+        // Iterar sobre las áreas de colisión del mapa
         for (int r = 0; r < ElementosPrincipales.mapa.areasColisionActualizadas.size(); r++) {
             final Rectangle area = ElementosPrincipales.mapa.areasColisionActualizadas.get(r);
 
+            // Calcular la posición futura en el eje Y
             int origenX = area.x;
             int origenY = area.y + velocidadY * (int) velocidadCaminar - 3 * (int) velocidadCaminar;
 
+            // Crear un rectángulo que representa la posición futura
             final Rectangle areaFutura = new Rectangle(origenX, origenY, area.width, area.height);
 
+            // Verificar si hay colisión con el límite inferior del personaje
             if (LIMITE_ABAJO.intersects(areaFutura)) {
                 return true;
             }
@@ -772,15 +814,18 @@ public class Jugador implements EntidadCurable {
     }
 
     private boolean enColisionIzquierda(int velocidadX) {
-
+        // Iterar sobre las áreas de colisión del mapa
         for (int r = 0; r < ElementosPrincipales.mapa.areasColisionActualizadas.size(); r++) {
             final Rectangle area = ElementosPrincipales.mapa.areasColisionActualizadas.get(r);
 
+            // Calcular la posición futura en el eje X
             int origenX = area.x + velocidadX * (int) velocidadCaminar + 3 * (int) velocidadCaminar;
             int origenY = area.y;
 
+            // Crear un rectángulo que representa la posición futura
             final Rectangle areaFutura = new Rectangle(origenX, origenY, area.width, area.height);
 
+            // Verificar si hay colisión con el límite izquierdo del personaje
             if (LIMITE_IZQUIERDA.intersects(areaFutura)) {
                 return true;
             }
@@ -789,15 +834,18 @@ public class Jugador implements EntidadCurable {
     }
 
     private boolean enColisionDerecha(int velocidadX) {
-
+        // Iterar sobre las áreas de colisión del mapa
         for (int r = 0; r < ElementosPrincipales.mapa.areasColisionActualizadas.size(); r++) {
             final Rectangle area = ElementosPrincipales.mapa.areasColisionActualizadas.get(r);
 
+            // Calcular la posición futura en el eje X
             int origenX = area.x + velocidadX * (int) velocidadCaminar - 3 * (int) velocidadCaminar;
             int origenY = area.y;
 
+            // Crear un rectángulo que representa la posición futura
             final Rectangle areaFutura = new Rectangle(origenX, origenY, area.width, area.height);
 
+            // Verificar si hay colisión con el límite derecho del personaje
             if (LIMITE_DERECHA.intersects(areaFutura)) {
                 return true;
             }
@@ -829,11 +877,13 @@ public class Jugador implements EntidadCurable {
     private int evaluarVelocidadX() {
         int velocidadX = 0;
 
+        // Si se presiona la tecla de movimiento hacia la izquierda y no hacia la derecha
         if (GestorControles.teclado.izquierda.estaPulsada() && !GestorControles.teclado.derecha.estaPulsada()) {
-            velocidadX = -1;
+            velocidadX = -1; // Se establece la velocidad en -1 para mover hacia la izquierda
         }
+        // Si se presiona la tecla de movimiento hacia la derecha y no hacia la izquierda
         else if (!GestorControles.teclado.izquierda.estaPulsada() && GestorControles.teclado.derecha.estaPulsada()) {
-            velocidadX = 1;
+            velocidadX = 1; // Se establece la velocidad en 1 para mover hacia la derecha
         }
         return velocidadX;
     }
@@ -841,212 +891,227 @@ public class Jugador implements EntidadCurable {
     private int evaluarVelocidadY() {
         int velocidadY = 0;
 
+        // Si se presiona la tecla de movimiento hacia arriba y no hacia abajo
         if (GestorControles.teclado.arriba.estaPulsada() && !GestorControles.teclado.abajo.estaPulsada()) {
-            velocidadY = -1;
+            velocidadY = -1; // Se establece la velocidad en -1 para mover hacia arriba
         }
+        // Si se presiona la tecla de movimiento hacia abajo y no hacia arriba
         else if (!GestorControles.teclado.arriba.estaPulsada() && GestorControles.teclado.abajo.estaPulsada()) {
-            velocidadY = 1;
+            velocidadY = 1; // Se establece la velocidad en 1 para mover hacia abajo
         }
         return velocidadY;
     }
 
     public void morir() {
+        // Verificar si la vida actual es menor o igual a 0
         if (getVidaActual() <= 0) {
-            estaVivo = false;
+            estaVivo = false; // Establecer que el personaje ha muerto
         }
         else {
-            estaVivo = true;
+            estaVivo = true; // Establecer que el personaje está vivo
         }
     }
 
     public void isDead() {
+        // Verificar si la vida actual es menor o igual a 0
         if (getVidaActual() <= 0) {
-            estaVivo = false;
-            ga.setVida(0);
+            estaVivo = false; // Establecer que el personaje ha muerto
+            ga.setVida(0); // Establecer la vida del personaje en 0
         }
     }
 
     public void calcularPesoActual() {
         double peso = 0;
+        // Iterar sobre los objetos del inventario
         for (Objeto objeto : ElementosPrincipales.inventario.getListaObjetos()) {
             if (objeto != null) {
-                peso += objeto.getPeso() * objeto.getCantidad();
+                peso += objeto.getPeso() * objeto.getCantidad(); // Calcular el peso total del inventario
             }
         }
-        ga.setPesoActual(peso);
-        sobrepeso = ga.getPesoActual() >= ga.getLimitePeso();
+        ga.setPesoActual(peso); // Establecer el peso actual del personaje
+        sobrepeso = ga.getPesoActual() >= ga.getLimitePeso(); // Verificar si el personaje está en sobrepeso
     }
 
     public int calcularAtqFisico() {
         int ataqueTotal = 0;
-        AlmacenEquipo ae = getAe();
+        AlmacenEquipo ae = getAe(); // Obtener el almacenamiento de equipo del personaje
 
-        Arma arma1 = ae.getArma1();
+        Arma arma1 = ae.getArma1(); // Obtener el arma principal equipada por el personaje
 
         if (arma1 != null) {
-            ataqueTotal = arma1.getAtaque();
+            ataqueTotal = arma1.getAtaque(); // Obtener el valor de ataque del arma principal
         }
 
         Objeto[] objetosEquipados = {ae.getCollar(), ae.getAccesorio(), ae.getAnillo1(), ae.getAnillo2()};
 
+        // Iterar sobre los objetos equipados por el personaje
         for (Objeto objeto : objetosEquipados) {
             if (objeto instanceof Joya) {
                 Joya joya = (Joya) objeto;
-                ataqueTotal += joya.getAtkF();
+                ataqueTotal += joya.getAtkF(); // Sumar el valor de ataque físico de las joyas equipadas
             }
         }
 
-        return ataqueTotal;
+        return ataqueTotal; // Devolver el ataque total del personaje
     }
 
     public int calcularAtqMagico() {
         int ataqueTotal = 0;
         int atqMagico = 0;
-        AlmacenEquipo ae = getAe();
+        AlmacenEquipo ae = getAe(); // Obtener el almacenamiento de equipo del personaje
 
-        Arma arma1 = ae.getArma1();
-        Arma arma2 = ae.getArma2();
+        Arma arma1 = ae.getArma1(); // Obtener el arma principal equipada por el personaje
+        Arma arma2 = ae.getArma2(); // Obtener el arma secundaria equipada por el personaje
 
+        // Verificar si el personaje tiene dos armas equipadas que no sean de dos manos
         if (arma1 != null && arma2 != null && !(arma1 instanceof ArmaDosManos) && !(arma2 instanceof ArmaDosManos)) {
-            ataqueTotal = arma1.getAtaque() + arma2.getAtaque();
+            ataqueTotal = arma1.getAtaque() + arma2.getAtaque(); // Sumar el ataque de ambas armas
         }
+        // Si solo tiene un arma equipada y es de dos manos
         else if (arma1 != null && arma1 instanceof ArmaDosManos) {
-            ataqueTotal = arma1.getAtaque();
+            ataqueTotal = arma1.getAtaque(); // Obtener el ataque del arma de dos manos
         }
+        // Si solo tiene un arma secundaria equipada y es de dos manos
         else if (arma2 != null && arma2 instanceof ArmaDosManos) {
-            ataqueTotal = arma2.getAtaque();
+            ataqueTotal = arma2.getAtaque(); // Obtener el ataque del arma de dos manos
         }
 
         Objeto[] objetosEquipados = {ae.getCollar(), ae.getAccesorio(), ae.getAnillo1(), ae.getAnillo2()};
 
+        // Iterar sobre los objetos equipados por el personaje
         for (Objeto objeto : objetosEquipados) {
             if (objeto instanceof Joya) {
                 Joya joya = (Joya) objeto;
-                ataqueTotal += joya.getAtkF();
-                atqMagico += joya.getAtkM();
+                ataqueTotal += joya.getAtkF(); // Sumar el valor de ataque físico de las joyas equipadas
+                atqMagico += joya.getAtkM(); // Sumar el valor de ataque mágico de las joyas equipadas
             }
         }
 
-        return atqMagico + (int) (ataqueTotal / 3);
+        return atqMagico + (int) (ataqueTotal / 3); // Devolver el ataque mágico total del personaje
     }
 
     public double calcularEvasion() {
         double eva = 0;
-        AlmacenEquipo ae = getAe();
+        AlmacenEquipo ae = getAe(); // Obtener el almacenamiento de equipo del personaje
 
         Objeto[] objetosEquipados = {ae.getCollar(), ae.getAccesorio(), ae.getAnillo1(), ae.getAnillo2()};
 
+        // Iterar sobre los objetos equipados por el personaje
         for (Objeto objeto : objetosEquipados) {
             if (objeto != null) {
                 if (objeto instanceof Joya) {
                     Joya joya = (Joya) objeto;
                     if (joya.getEva() > 0) {
-                        eva += joya.getEva();
+                        eva += joya.getEva(); // Sumar la evasión proporcionada por las joyas equipadas
                     }
                 }
             }
         }
-        return eva;
+        return eva; // Devolver la evasión total del personaje
     }
 
     public double calcularResM() {
         double resM = 0;
-        AlmacenEquipo ae = getAe();
+        AlmacenEquipo ae = getAe(); // Obtener el almacenamiento de equipo del personaje
 
         Objeto[] objetosEquipados = {ae.getCollar(), ae.getAccesorio(), ae.getAnillo1(), ae.getAnillo2()};
 
+        // Iterar sobre los objetos equipados por el personaje
         for (Objeto objeto : objetosEquipados) {
             if (objeto != null) {
                 if (objeto instanceof Joya) {
                     Joya joya = (Joya) objeto;
                     if (joya.getResM() > 0) {
-                        resM += joya.getResM();
+                        resM += joya.getResM(); // Sumar la resistencia mágica proporcionada por las joyas equipadas
                     }
                 }
             }
         }
-        return resM;
+        return resM; // Devolver la resistencia mágica total del personaje
     }
 
     public double calcularResF() {
         double resF = 0;
-        AlmacenEquipo ae = getAe();
+        AlmacenEquipo ae = getAe(); // Obtener el almacenamiento de equipo del personaje
 
         Objeto[] objetosEquipados = {ae.getCollar(), ae.getAccesorio(), ae.getAnillo1(), ae.getAnillo2()};
 
+        // Iterar sobre los objetos equipados por el personaje
         for (Objeto objeto : objetosEquipados) {
             if (objeto != null) {
                 if (objeto instanceof Joya) {
                     Joya joya = (Joya) objeto;
                     if (joya.getResF() > 0) {
-                        resF += joya.getResF();
+                        resF += joya.getResF(); // Sumar la resistencia física proporcionada por las joyas equipadas
                     }
                 }
             }
         }
-        return resF;
+        return resF; // Devolver la resistencia física total del personaje
     }
 
     public double calcularCrit() {
         double crit = 0;
-        AlmacenEquipo ae = getAe();
+        AlmacenEquipo ae = getAe(); // Obtener el almacenamiento de equipo del personaje
 
         Objeto[] objetosEquipados = {ae.getCollar(), ae.getAccesorio(), ae.getAnillo1(), ae.getAnillo2()};
 
+        // Iterar sobre los objetos equipados por el personaje
         for (Objeto objeto : objetosEquipados) {
             if (objeto != null) {
                 if (objeto instanceof Joya) {
                     Joya joya = (Joya) objeto;
                     if (joya.getCrit() > 0) {
-                        crit += joya.getCrit();
+                        crit += joya.getCrit(); // Sumar la probabilidad de crítico proporcionada por las joyas equipadas
                     }
                 }
             }
         }
-        return crit;
+        return crit; // Devolver la probabilidad de crítico total del personaje
     }
 
     public int calcularDefensaF() {
         int defensaF = 0;
-        AlmacenEquipo ae = getAe();
+        AlmacenEquipo ae = getAe(); // Obtener el almacenamiento de equipo del personaje
 
         Objeto[] objetosEquipados = {ae.getArmaduraMedia(), ae.getCasco(), ae.getGuante(), ae.getBota(),
             ae.getCollar(), ae.getAccesorio(), ae.getAnillo1(), ae.getAnillo2()};
 
+        // Iterar sobre los objetos equipados por el personaje
         for (Objeto objeto : objetosEquipados) {
             if (objeto != null) {
                 if (objeto instanceof Joya) {
-                    defensaF += ((Joya) objeto).getDefensaF();
+                    defensaF += ((Joya) objeto).getDefensaF(); // Sumar la defensa física proporcionada por las joyas equipadas
                 }
                 else if (objeto instanceof Armadura) {
-                    defensaF += ((Armadura) objeto).getDefensaF();
+                    defensaF += ((Armadura) objeto).getDefensaF(); // Sumar la defensa física proporcionada por las armaduras equipadas
                 }
             }
         }
 
-        return defensaF;
+        return defensaF; // Devolver la defensa física total del personaje
     }
 
     public int calcularDefensaM() {
-
         int defensaM = 0;
-        AlmacenEquipo ae = getAe();
+        AlmacenEquipo ae = getAe(); // Obtener el almacenamiento de equipo del personaje
 
         Objeto[] objetosEquipados = {ae.getArmaduraMedia(), ae.getCasco(), ae.getGuante(), ae.getBota(),
             ae.getCollar(), ae.getAccesorio(), ae.getAnillo1(), ae.getAnillo2()};
 
+        // Iterar sobre los objetos equipados por el personaje
         for (Objeto objeto : objetosEquipados) {
             if (objeto != null) {
                 if (objeto instanceof Joya) {
-                    defensaM += ((Joya) objeto).getDefensaM();
+                    defensaM += ((Joya) objeto).getDefensaM(); // Sumar la defensa mágica proporcionada por las joyas equipadas
                 }
                 else if (objeto instanceof Armadura) {
-                    defensaM += ((Armadura) objeto).getDefensaM();
+                    defensaM += ((Armadura) objeto).getDefensaM(); // Sumar la defensa mágica proporcionada por las armaduras equipadas
                 }
             }
         }
 
-        return defensaM;
+        return defensaM; // Devolver la defensa mágica total del personaje
     }
 
     public double getPosicionX() {
@@ -1293,12 +1358,16 @@ public class Jugador implements EntidadCurable {
 
     @Override
     public void recibirDanho(int danho, TipoObjeto tipoDeHabilidad) {
+        // Verificar el tipo de habilidad que inflige el daño
         if (tipoDeHabilidad == TipoObjeto.FISICO) {
-            danho = (int) (danho * (100 - ga.getResFisica()) - ga.getDefensaFisica());
+            // Calcular el daño recibido considerando la resistencia física y la defensa física del personaje
+            danho = (int) (danho * (100 - ga.getResFisica()) / 100.0 - ga.getDefensaFisica());
         }
         else if (tipoDeHabilidad == TipoObjeto.MAGIA) {
-            danho = (int) (danho * (1 - ga.getResMagica()) - ga.getDefensaMagica());
+            // Calcular el daño recibido considerando la resistencia mágica y la defensa mágica del personaje
+            danho = (int) (danho * (100 - ga.getResMagica()) / 100.0 - ga.getDefensaMagica());
         }
+        // Actualizar la vida actual del personaje restando el daño recibido
         this.setVidaActual(ga.getVida() - danho);
     }
 

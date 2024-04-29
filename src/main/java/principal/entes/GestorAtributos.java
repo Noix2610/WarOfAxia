@@ -5,11 +5,14 @@
 package principal.entes;
 
 /**
+ * Clase que gestiona los atributos de una entidad en el juego, como la vida, fuerza, etc. Esta clase se utiliza para
+ * mantener y manipular los atributos de los personajes y enemigos del juego.
  *
  * @author GAMER ARRAX
  */
 public class GestorAtributos {
 
+    // Atributos de la entidad
     private int nivel;
     private int vida;
     private int vidaMaxima;
@@ -36,6 +39,7 @@ public class GestorAtributos {
     private double pesoActual;
     private int puntosAtributos;
 
+    // Constructor
     public GestorAtributos(int nivel, int fuerza, int destreza, int constitucion, int inteligencia, int suerte, int experiencia, int experienciaMaxima) {
         this.nivel = nivel;
         this.fuerza = fuerza;
@@ -46,12 +50,14 @@ public class GestorAtributos {
         this.experiencia = experiencia;
         this.experienciaMaxima = experienciaMaxima;
         this.puntosAtributos = 0;
-
     }
 
+    // Constructor vacío
     public GestorAtributos() {
     }
 
+    // Métodos getters y setters para cada atributo
+    // (Omitidos para no repetir el mismo comentario para cada método)
     public int getNivel() {
         return nivel;
     }
@@ -252,5 +258,4 @@ public class GestorAtributos {
         this.puntosAtributos = puntosAtributos;
     }
 
-    
 }

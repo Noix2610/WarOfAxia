@@ -60,15 +60,6 @@ public class MapaTiled2 {
 
     long ultimoTiempoRecogida = 0;
     long tiempoDebouncing = 50; // 50 milisegundos de tiempo de debouncing
-
-    public Rectangle zonaSalida1 ;
-    public Rectangle zonaSalida2 ;
-    public Rectangle zonaSalida3 ;
-    public Rectangle zonaSalida4 ;
-    public Rectangle zonaSalida5 ;
-    public Rectangle zonaSalida6 ;
-    public Rectangle zonaSalida7 ;
-    public Rectangle zonaSalida8 ;
     public ArrayList<Rectangle> zonasSalida;
 
     private ArrayList<CapaSprites> capaSprites1;
@@ -94,16 +85,9 @@ public class MapaTiled2 {
     public ArrayList<ContenedorObjetos> listaContenedores;
     private ContenedorObjetos contenedorActual;
     public ArrayList<Tienda> tiendas;
+    private String rutaMusica;
 
     public MapaTiled2(final String ruta) {
-        zonaSalida1 = new Rectangle();
-        zonaSalida2 = new Rectangle();
-        zonaSalida3 = new Rectangle();
-        zonaSalida4 = new Rectangle();
-        zonaSalida5 = new Rectangle();
-        zonaSalida6 = new Rectangle();
-        zonaSalida7 = new Rectangle();
-        zonaSalida8 = new Rectangle();
         zonasSalida = new ArrayList<>();
 
         Salida.getSalidas().clear();
@@ -134,14 +118,13 @@ public class MapaTiled2 {
         obtenerContenedoresMapa(globalJSON);
 
         obtenerTiendas(globalJSON);
+        obtenerRutaMusica(globalJSON);
+        System.out.println("" + rutaMusica);
         areasColisionActualizadas = new ArrayList<>();
         areasTransparenciaActualizadas = new ArrayList<>();
         objetosTiendaMapa = new ArrayList<>();
         objetosTiendaActual = new ArrayList<>();
         tiendaActiva = new Tienda();
-        
-        
-        
 
     }
 
@@ -160,17 +143,15 @@ public class MapaTiled2 {
         Point puntoCoincidente = dijkstra.getCoordenadasNodoCoincidente(punto);
         dijkstra.reiniciarYEvaluar(puntoCoincidente);
         mostrarElementoscontenedor();
-        
+
         if (!GestorPrincipal.pantallaTitulo) {
-            if(!reproducirMusica){
-            GestorPrincipal.musica.cambiarArchivo("Lively Meadow");
-            GestorPrincipal.musica.repetir(0.7f);
-            reproducirMusica= true;
+            if (!reproducirMusica) {
+                GestorPrincipal.musica.cambiarArchivo("" + rutaMusica);
+                GestorPrincipal.musica.repetir(0.7f);
+                reproducirMusica = true;
             }
 
         }
-
-        
 
     }
 
@@ -557,6 +538,11 @@ public class MapaTiled2 {
         }
     }
 
+    private void obtenerRutaMusica(JsonNode globalJSON) {
+        JsonNode ruta = globalJSON.get("ruta");
+        rutaMusica = ruta.toString().replaceAll("\"", ""); // Eliminar comillas dobles
+    }
+
     private void obtenerInformacionSiguienteMapa(JsonNode globalJSON) {
         JsonNode salidasJSON = globalJSON.get("salidas");
 
@@ -582,7 +568,7 @@ public class MapaTiled2 {
             }
         }
         else {
-            System.err.println("La clave 'salidas' no está presente o está vacía en el JSON.");
+            System.err.println("La clave 'salida' no está presente o está vacía en el JSON.");
         }
     }
 
@@ -934,38 +920,27 @@ public class MapaTiled2 {
         return valor;
     }
 
+    public static JsonNode getNodeFromJsonObject(JsonNode jsonObject, String key) {
+        // Verificar si el JSON contiene la clave
+        if (jsonObject.has(key)) {
+            return jsonObject.get(key);
+        }
+        else {
+            // Manejar el caso en el que la clave no está presente en el JSON
+            System.out.println("La clave '" + key + "' no está presente en el JSON.");
+            // Devolver null u otro valor predeterminado según tus necesidades
+            return null;
+        }
+    }
+
     public void actualizarZonaSalida() {
 
-        for (int i = 0; i < zonasSalida.size(); i++) {
-            int puntoX = zonasSalida.get(i).x - ElementosPrincipales.jugador.getPosicionXInt() + Constantes.MARGEN_X;
-            int puntoY = zonasSalida.get(i).y - ElementosPrincipales.jugador.getPosicionYInt() + Constantes.MARGEN_Y;
-            switch (i) {
-                case 0:
-                    zonaSalida1 = new Rectangle(puntoX - 18, puntoY, Constantes.LADO_SPRITE, Constantes.LADO_SPRITE);
-                    break;
-                case 1:
-                    zonaSalida2 = new Rectangle(puntoX - 18, puntoY, Constantes.LADO_SPRITE, Constantes.LADO_SPRITE);
-                    break;
-                case 2:
-                    zonaSalida3 = new Rectangle(puntoX - 18, puntoY, Constantes.LADO_SPRITE, Constantes.LADO_SPRITE);
-                    break;
-                case 3:
-                    zonaSalida4 = new Rectangle(puntoX - 18, puntoY, Constantes.LADO_SPRITE, Constantes.LADO_SPRITE);
-                    break;
-                case 4:
-                    zonaSalida5 = new Rectangle(puntoX - 18, puntoY, Constantes.LADO_SPRITE, Constantes.LADO_SPRITE);
-                    break;
-                case 5:
-                    zonaSalida6 = new Rectangle(puntoX - 18, puntoY, Constantes.LADO_SPRITE, Constantes.LADO_SPRITE);
-                    break;
-                case 6:
-                    zonaSalida7 = new Rectangle(puntoX - 18, puntoY, Constantes.LADO_SPRITE, Constantes.LADO_SPRITE);
-                    break;
-                case 7:
-                    zonaSalida8 = new Rectangle(puntoX - 18, puntoY, Constantes.LADO_SPRITE, Constantes.LADO_SPRITE);
-                    break;
+        for (Rectangle zonaSalida : zonasSalida) {
+            int puntoX = zonaSalida.x - ElementosPrincipales.jugador.getPosicionXInt() + Constantes.MARGEN_X;
+            int puntoY = zonaSalida.y - ElementosPrincipales.jugador.getPosicionYInt() + Constantes.MARGEN_Y;
 
-            }
+            zonaSalida = new Rectangle(puntoX - 18, puntoY, Constantes.LADO_SPRITE, Constantes.LADO_SPRITE);
+
         }
     }
 
@@ -1030,19 +1005,6 @@ public class MapaTiled2 {
         int alto = this.altoMapaTiles * Constantes.LADO_SPRITE - ElementosPrincipales.jugador.getALTO_JUGADOR() * 2;
 
         return new Rectangle(x, y, ancho, alto);
-    }
-
-    public static JsonNode getNodeFromJsonObject(JsonNode jsonObject, String key) {
-        // Verificar si el JSON contiene la clave
-        if (jsonObject.has(key)) {
-            return jsonObject.get(key);
-        }
-        else {
-            // Manejar el caso en el que la clave no está presente en el JSON
-            System.out.println("La clave '" + key + "' no está presente en el JSON.");
-            // Devolver null u otro valor predeterminado según tus necesidades
-            return null;
-        }
     }
 
     private void dibujarTooltipObjetosMapa(final Graphics g, final SuperficieDibujo sd) {

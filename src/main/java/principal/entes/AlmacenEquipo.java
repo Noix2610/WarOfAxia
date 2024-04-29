@@ -1,6 +1,5 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package principal.entes;
 
@@ -12,6 +11,7 @@ import principal.inventario.armas.Arma;
 
 public class AlmacenEquipo {
 
+    // Variables para almacenar los objetos equipados
     private Arma arma1;
     private Arma arma2;
     private Armadura armadura;
@@ -22,8 +22,11 @@ public class AlmacenEquipo {
     private Joya accesorio;
     private Joya anillo1;
     private Joya anillo2;
+
+    // Lista para almacenar el equipo actual
     public ArrayList<Objeto> equipoActual;
 
+    // Constructor que inicializa el equipo con objetos pasados como parámetros
     public AlmacenEquipo(Arma arma1, Arma arma2, Armadura armadura, Armadura casco, Armadura guante, Armadura bota,
             Joya collar, Joya accesorio, Joya anillo1, Joya anillo2) {
         this.arma1 = arma1;
@@ -36,20 +39,24 @@ public class AlmacenEquipo {
         this.accesorio = accesorio;
         this.anillo1 = anillo1;
         this.anillo2 = anillo2;
-        equipoActual = new ArrayList<>();
-    }
-    
-    public AlmacenEquipo() {
+
+        // Inicializar la lista de equipo actual
         equipoActual = new ArrayList<>();
     }
 
+    // Constructor que inicializa el equipo sin objetos
+    public AlmacenEquipo() {
+        // Inicializar la lista de equipo actual
+        equipoActual = new ArrayList<>();
+    }
+
+    // Métodos para obtener y cambiar los objetos equipados
     public Arma getArma1() {
         return arma1;
     }
 
     public void cambiarArma1(Arma arma1) {
         this.arma1 = arma1;
-
     }
 
     public Arma getArma2() {
@@ -58,15 +65,14 @@ public class AlmacenEquipo {
 
     public void cambiarArma2(Arma arma2) {
         this.arma2 = arma2;
-
     }
 
     public Armadura getArmaduraMedia() {
         return armadura;
     }
 
-    public void setArmaduraMedia(Armadura armaduraMedia) {
-        this.armadura = armaduraMedia;
+    public void setArmaduraMedia(Armadura armadura) {
+        this.armadura = armadura;
     }
 
     public Armadura getCasco() {
@@ -75,10 +81,6 @@ public class AlmacenEquipo {
 
     public void setCasco(Armadura casco) {
         this.casco = casco;
-    }
-
-    public ArrayList<Objeto> getEquipoActual() {
-        return equipoActual;
     }
 
     public Armadura getGuante() {
@@ -117,8 +119,9 @@ public class AlmacenEquipo {
         return anillo1;
     }
 
-    public void setAnillo(Joya anillo1) {
+    public void setAnillo1(Joya anillo1) {
         this.anillo1 = anillo1;
+
     }
 
     public Joya getAnillo2() {
@@ -128,4 +131,13 @@ public class AlmacenEquipo {
     public void setAnillo2(Joya anillo2) {
         this.anillo2 = anillo2;
     }
+
+    public ArrayList<Objeto> getEquipoActual() {
+        return equipoActual;
+    }
+
+    public void setEquipoActual(ArrayList<Objeto> equipoActual) {
+        this.equipoActual = equipoActual;
+    }
+
 }
