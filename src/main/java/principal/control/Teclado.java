@@ -11,6 +11,7 @@ import principal.GestorPrincipal;
 import principal.habilidades.GestorHabilidades;
 import principal.habilidades.Habilidad;
 import principal.maquinaestado.menujuego.MenuEquipo;
+import principal.pantallaInicial.PantallaTitulo;
 
 /**
  *
@@ -72,12 +73,10 @@ public class Teclado implements KeyListener {
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_ENTER:
-
-                GestorPrincipal.pantallaTitulo = false;
-                if (!GestorPrincipal.pantallaTitulo && !ElementosPrincipales.jugador.estaVivo) {
-                    GestorPrincipal.pantallaTitulo = true;
+                if (GestorPrincipal.pantallaTitulo) {
+                    // Establecer la bandera para indicar que se debe iniciar el juego
+                    GestorPrincipal.pantallaTitulo = false;
                 }
-
                 break;
             case KeyEvent.VK_W:
                 arriba.teclaPulsada();

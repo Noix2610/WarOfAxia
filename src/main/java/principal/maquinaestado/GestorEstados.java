@@ -25,17 +25,17 @@ public class GestorEstados {
     }
 
     private void iniciarEstados() {
-        estados = new EstadoJuego[4];
+        estados = new EstadoJuego[3];
         estados[0] = new GestorJuego();
         estados[1] = new GestorMenu();
         estados[2] = new GestorTienda();
-        estados[3] = new PantallaTitulo();
+        
        
         //Añadir e iniciar los demas estados a medida que los creemos
     }
 
     private void iniciarEstadoActual() {
-        estadoActual = estados[3];
+        estadoActual = estados[0];
         
     }
     

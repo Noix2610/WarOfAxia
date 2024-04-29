@@ -16,8 +16,8 @@ public class Constantes {
 
     public static final int LADO_SPRITE = 32;
 
-    public static int ANCHO_JUEGO = 640;
-    public static int ALTO_JUEGO = 360;
+    public static int ANCHO_JUEGO = 1280;
+    public static int ALTO_JUEGO = 720;
 
     public static int LADO_CURSOR = 0;
 

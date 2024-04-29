@@ -41,7 +41,6 @@ import principal.inventario.consumibles.Consumible;
 import principal.inventario.joyas.Accesorio;
 import principal.inventario.joyas.Joya;
 import principal.maquinaestado.juego.menu_tienda.Tienda;
-import principal.sonido.SoundThread;
 import principal.sprites.HojaSprites;
 import principal.sprites.Sprite;
 
@@ -57,20 +56,20 @@ public class MapaTiled2 {
     private Point puntoInicial;
     public Rectangle recMapa;
     public Tienda tiendaActiva;
-    private boolean reproducirMusica;
+    private boolean reproducirMusica = false;
 
     long ultimoTiempoRecogida = 0;
     long tiempoDebouncing = 50; // 50 milisegundos de tiempo de debouncing
 
-    public Rectangle zonaSalida1 = new Rectangle();
-    public Rectangle zonaSalida2 = new Rectangle();
-    public Rectangle zonaSalida3 = new Rectangle();
-    public Rectangle zonaSalida4 = new Rectangle();
-    public Rectangle zonaSalida5 = new Rectangle();
-    public Rectangle zonaSalida6 = new Rectangle();
-    public Rectangle zonaSalida7 = new Rectangle();
-    public Rectangle zonaSalida8 = new Rectangle();
-    public ArrayList<Rectangle> zonasSalida = new ArrayList<>();
+    public Rectangle zonaSalida1 ;
+    public Rectangle zonaSalida2 ;
+    public Rectangle zonaSalida3 ;
+    public Rectangle zonaSalida4 ;
+    public Rectangle zonaSalida5 ;
+    public Rectangle zonaSalida6 ;
+    public Rectangle zonaSalida7 ;
+    public Rectangle zonaSalida8 ;
+    public ArrayList<Rectangle> zonasSalida;
 
     private ArrayList<CapaSprites> capaSprites1;
     private ArrayList<CapaSprites> capaSprites2;
@@ -97,6 +96,15 @@ public class MapaTiled2 {
     public ArrayList<Tienda> tiendas;
 
     public MapaTiled2(final String ruta) {
+        zonaSalida1 = new Rectangle();
+        zonaSalida2 = new Rectangle();
+        zonaSalida3 = new Rectangle();
+        zonaSalida4 = new Rectangle();
+        zonaSalida5 = new Rectangle();
+        zonaSalida6 = new Rectangle();
+        zonaSalida7 = new Rectangle();
+        zonaSalida8 = new Rectangle();
+        zonasSalida = new ArrayList<>();
 
         Salida.getSalidas().clear();
 
@@ -132,6 +140,8 @@ public class MapaTiled2 {
         objetosTiendaActual = new ArrayList<>();
         tiendaActiva = new Tienda();
         
+        
+        
 
     }
 
@@ -151,10 +161,16 @@ public class MapaTiled2 {
         dijkstra.reiniciarYEvaluar(puntoCoincidente);
         mostrarElementoscontenedor();
         
-        if(!GestorPrincipal.pantallaTitulo){
-        GestorPrincipal.musica.setFilename("Lively Meadow");
-        GestorPrincipal.musica.reproducir(0.7f);
+        if (!GestorPrincipal.pantallaTitulo) {
+            if(!reproducirMusica){
+            GestorPrincipal.musica.cambiarArchivo("Lively Meadow");
+            GestorPrincipal.musica.repetir(0.7f);
+            reproducirMusica= true;
+            }
+
         }
+
+        
 
     }
 

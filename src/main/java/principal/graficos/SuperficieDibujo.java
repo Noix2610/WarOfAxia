@@ -20,6 +20,7 @@ import principal.herramientas.DatosDebug;
 import principal.herramientas.DibujoDebug;
 import principal.maquinaestado.GestorEstados;
 import principal.maquinaestado.juego.GestorJuego;
+import principal.pantallaInicial.PantallaTitulo;
 
 /**
  *
@@ -57,6 +58,74 @@ public class SuperficieDibujo extends Canvas {
     }
 
     public void dibujar(final GestorEstados ge) {
+        if (GestorPrincipal.pantallaTitulo) {
+            // Si pantallaTitulo es true, dibuja la pantalla de título
+            dibujarPantallaTitulo(new PantallaTitulo());
+        }
+        else {
+            // Si no, dibuja el juego normalmente
+            BufferStrategy buffer = getBufferStrategy();
+            if (buffer == null) {
+                createBufferStrategy(3);
+                return;
+            }
+
+            final Graphics2D g = (Graphics2D) buffer.getDrawGraphics();
+            DibujoDebug.reiniciarContadorObjetos();
+
+            g.setFont(Constantes.FUENTE_POR_DEFECTO);
+            /*DibujoDebug.dibujarRectanguloRelleno(g, 0, 0, Constantes.ANCHO_PANTALLA_COMPLETA,
+                    Constantes.ALTO_PANTALLA_COMPLETA, Color.black);
+
+            if (Constantes.FACTOR_ESCALADO_X != 1.0 || Constantes.FACTOR_ESCALADO_Y != 1.0) {
+                g.scale(Constantes.FACTOR_ESCALADO_X, Constantes.FACTOR_ESCALADO_Y);
+            }*/
+
+            DibujoDebug.dibujarRectanguloRelleno(g, 0, 0, Constantes.ANCHO_JUEGO,
+                    Constantes.ALTO_JUEGO, Color.black);
+
+            ge.dibujar(g);
+
+            g.setColor(Color.white);
+
+            DibujoDebug.dibujarString(g, "FPS:  " + GestorPrincipal.getFps(), 20, 20);
+            DibujoDebug.dibujarString(g, "APS:  " + GestorPrincipal.getAps(), 20, 30);
+            raton.dibujar(g);
+            if (GestorControles.teclado.debug) {
+                DatosDebug.dibujarDatos(g);
+            }
+            else {
+                DatosDebug.vaciarDatos();
+            }
+
+            Toolkit.getDefaultToolkit().sync();
+            if (!ElementosPrincipales.jugador.estaVivo) {
+                efectosVisuales.dibujarTransicionNegro(g, getWidth(), getHeight());
+                g.setColor(Color.WHITE);
+                g.setFont(new Font("Arial", Font.BOLD, 30));
+                String mensajeMuerte = "¡ESTÁS MUERTO!";
+                int anchoTexto = g.getFontMetrics().stringWidth(mensajeMuerte);
+                int xTexto = (Constantes.ANCHO_JUEGO - anchoTexto) / 2;
+                int yTexto = Constantes.ALTO_JUEGO / 2;
+                g.drawString(mensajeMuerte, xTexto, yTexto);
+
+                // Verificar si se ha presionado alguna tecla
+                // Establecer la variable de control para mostrar la pantalla de título
+                ElementosPrincipales.jugador.getGa().setVida(ElementosPrincipales.jugador.getGa().getVidaMaxima());
+                GestorJuego.recargar = true;
+
+                GestorPrincipal.pantallaTitulo = true;
+            }
+
+            g.dispose();
+
+            buffer.show();
+
+            g.setFont(g.getFont().deriveFont(8f));
+        }
+    }
+
+    public void dibujarPantallaTitulo(PantallaTitulo pantallaTitulo) {
         BufferStrategy buffer = getBufferStrategy();
         if (buffer == null) {
             createBufferStrategy(3);
@@ -64,76 +133,14 @@ public class SuperficieDibujo extends Canvas {
         }
 
         final Graphics2D g = (Graphics2D) buffer.getDrawGraphics();
-        DibujoDebug.reiniciarContadorObjetos();
 
-        g.setFont(Constantes.FUENTE_POR_DEFECTO);
-        DibujoDebug.dibujarRectanguloRelleno(g, 0, 0, Constantes.ANCHO_PANTALLA_COMPLETA,
-                Constantes.ALTO_PANTALLA_COMPLETA, Color.black);
+        // Dibujar la pantalla de título
+        g.scale(2, 2);
 
-        if (Constantes.FACTOR_ESCALADO_X != 1.0 || Constantes.FACTOR_ESCALADO_Y != 1.0) {
-            g.scale(Constantes.FACTOR_ESCALADO_X, Constantes.FACTOR_ESCALADO_Y);
-        }
+        pantallaTitulo.dibujar(g);
 
-        ge.dibujar(g);
-        g.setColor(Color.white);
-
-        DibujoDebug.dibujarString(g, "FPS:  " + GestorPrincipal.getFps(), 20, 20);
-        DibujoDebug.dibujarString(g, "APS:  " + GestorPrincipal.getAps(), 20, 30);
-        raton.dibujar(g);
-        if (GestorControles.teclado.debug) {
-            DatosDebug.dibujarDatos(g);
-        }
-        else {
-            DatosDebug.vaciarDatos();
-        }
-
-        Toolkit.getDefaultToolkit().sync();
-        if (!ElementosPrincipales.jugador.estaVivo) {
-            efectosVisuales.dibujarTransicionNegro(g, getWidth(), getHeight());
-            g.setColor(Color.WHITE);
-            g.setFont(new Font("Arial", Font.BOLD, 30));
-            String mensajeMuerte = "¡ESTÁS MUERTO!";
-            int anchoTexto = g.getFontMetrics().stringWidth(mensajeMuerte);
-            int xTexto = (Constantes.ANCHO_JUEGO - anchoTexto) / 2;
-            int yTexto = Constantes.ALTO_JUEGO / 2;
-            g.drawString(mensajeMuerte, xTexto, yTexto);
-
-            // Verificar si se ha presionado alguna tecla
-            // Establecer la variable de control para mostrar la pantalla de título
-            ElementosPrincipales.jugador.getGa().setVida(ElementosPrincipales.jugador.getGa().getVidaMaxima());
-            GestorJuego.recargar = true;
-            
-            GestorPrincipal.pantallaTitulo = true;
-
-        }
-        /*if (cambioMapa) {
-            efectosVisuales.dibujarTransicionNegro(g, getWidth(), getHeight());
-
-            // Iniciar el cronómetro solo cuando cambioMapa es verdadero
-            if (!cronometroIniciado) {
-                cronoMapa = new Cronometro();
-                cronometroIniciado = true;
-            }
-
-            // Obtener el tiempo transcurrido desde el inicio del cronómetro
-            long tiempoTranscurrido = cronoMapa.obtenerTiempoTranscurrido();
-
-            // Esperar 1 segundo (1000 milisegundos)
-            int tiempoEspera = 300;
-
-            // Realizar el cambio de mapa cuando haya pasado 1 segundo
-            if (tiempoTranscurrido > tiempoEspera) {
-                cambioMapa = false;
-                cronometroIniciado = false; // Reiniciar el cronómetro
-                cronoMapa.reiniciar();
-            }
-        }*/
         g.dispose();
-
         buffer.show();
-
-        g.setFont(g.getFont().deriveFont(8f));
-
     }
 
     public BufferedImage cargarImagen(String ruta) {

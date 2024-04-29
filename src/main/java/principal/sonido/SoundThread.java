@@ -1,31 +1,18 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package principal.sonido;
 
+import javax.sound.sampled.*;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.Control;
-import javax.sound.sampled.FloatControl;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
-/**
- *
- * @author GAMER ARRAX
- */
-public class SoundThread implements Runnable {
+public class SoundThread extends Thread {
 
     private String filename;
     private Clip clip;
     private float volumeScale; // Variable para ajuste de volumen
+    private boolean isPlaying;
 
     public SoundThread(String filename) {
         try {
@@ -37,7 +24,9 @@ public class SoundThread implements Runnable {
         }
     }
 
+    @Override
     public void run() {
+        isPlaying = true;
         try {
             InputStream in = getClass().getResourceAsStream("/sonidos/" + filename + ".wav");
 
@@ -58,19 +47,14 @@ public class SoundThread implements Runnable {
         }
         catch (UnsupportedAudioFileException | IOException | LineUnavailableException | InterruptedException e) {
             e.printStackTrace();
+        } finally {
+            isPlaying = false;
         }
     }
 
-    public String getFilename() {
-        return filename;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
-
+    // Método para iniciar la reproducción del sonido
     public void reproducir(float volumen) {
-        if (clip != null && !clip.isActive()) {
+        if (!isPlaying && clip != null && !clip.isActive()) {
             // Vuelve a cargar y reproducir el sonido
             new Thread(() -> {
                 try {
@@ -96,8 +80,9 @@ public class SoundThread implements Runnable {
         }
     }
 
+    // Método para repetir la reproducción del sonido de forma continua
     public void repetir(float volumen) {
-        if (clip != null && !clip.isActive()) {
+        if (!isPlaying && clip != null && !clip.isActive()) {
             // Vuelve a cargar y reproducir el sonido
             new Thread(() -> {
                 try {
@@ -124,7 +109,7 @@ public class SoundThread implements Runnable {
         }
     }
 
-// Método para ajustar el volumen en un Clip dado
+    // Método para ajustar el volumen en un Clip dado
     private void ajustarVolumen(Clip clip, float volumen) {
         if (clip != null) {
             // Obtener el control de volumen
@@ -136,33 +121,21 @@ public class SoundThread implements Runnable {
         }
     }
 
-    public Long getDuracion() {
+    // Método para obtener la duración del sonido en microsegundos
+    public long getDuracion() {
         return clip.getMicrosecondLength();
     }
 
-    public void adjustVolume(AudioInputStream ais) throws IOException, LineUnavailableException {
-        // Crear un control de volumen para el Clip
-        if (clip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
-            FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-
-            // Ajustar el volumen
-            float range = gainControl.getMaximum() - gainControl.getMinimum();
-            float gain = (range * volumeScale) + gainControl.getMinimum();
-            gainControl.setValue(gain);
-        }
-        else {
-            System.out.println("El control de volumen no es compatible.");
-        }
-    }
-
-    public void setVolumeScale(float volumeScale) {
-        this.volumeScale = volumeScale;
-    }
-
+    // Método para detener la reproducción del sonido
     public void detener() {
         if (clip != null && clip.isRunning()) {
             clip.stop(); // Detiene la reproducción del sonido
+            isPlaying = false;
         }
     }
-
+    
+    public void cambiarArchivo(String nuevoArchivo) {
+        detener(); // Detener la reproducción actual antes de cambiar el archivo
+        this.filename = nuevoArchivo;
+    }
 }

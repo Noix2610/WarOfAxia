@@ -6,6 +6,7 @@ package principal.interfaz_usuario;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class MenuInferior {
         llenarListaDeRanuras();
     }
 
-    public void dibujar(final Graphics g) {
+    public void dibujar(final Graphics2D g) {
         
         dibujarAreaInventario(g);
         dibujarBarraVitalidad(g);
@@ -78,7 +79,8 @@ public class MenuInferior {
         dibujarRanuraObjetos(g);
     }
 
-    public void dibujarAreaInventario(final Graphics g) {
+    public void dibujarAreaInventario(final Graphics2D g) {
+        
         g.drawImage(areaInvent, areaInventario.x, areaInventario.y, areaInventario.width, areaInventario.height, null);
         // Dibuja el fondo con el color calculado
         //DibujoDebug.dibujarRectanguloRelleno(g, areaInventario, Color.BLACK);
