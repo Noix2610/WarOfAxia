@@ -21,7 +21,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
-
 /**
  *
  * @author GAMER ARRAX
@@ -63,7 +62,7 @@ public class CargadorRecursos {
 
             GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment()
                     .getDefaultScreenDevice().getDefaultConfiguration();
-            BufferedImage imagenAcelerada = gc.createCompatibleImage(imagen.getWidth(null), 
+            BufferedImage imagenAcelerada = gc.createCompatibleImage(imagen.getWidth(null),
                     imagen.getHeight(null), Transparency.TRANSLUCENT);
 
             Graphics g = imagenAcelerada.getGraphics();
@@ -81,27 +80,28 @@ public class CargadorRecursos {
     }
 
     public static String leerArchivoTexto(final String ruta) {
-    String contenido = "";
+        String contenido = "";
 
-    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-    InputStream entradaBytes = classLoader.getResourceAsStream(ruta);
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        InputStream entradaBytes = classLoader.getResourceAsStream(ruta);
 
-    if (entradaBytes == null) {
-        System.err.println("No se pudo abrir el flujo de entrada para el archivo: " + ruta);
+        if (entradaBytes == null) {
+            System.err.println("No se pudo abrir el flujo de entrada para el archivo: " + ruta);
+            return contenido;
+        }
+
+        try (BufferedReader lector = new BufferedReader(new InputStreamReader(entradaBytes, StandardCharsets.UTF_8))) {
+            String linea;
+            while ((linea = lector.readLine()) != null) {
+                contenido += linea + "\n";
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return contenido;
     }
-
-    try (BufferedReader lector = new BufferedReader(new InputStreamReader(entradaBytes, StandardCharsets.UTF_8))) {
-        String linea;
-        while ((linea = lector.readLine()) != null) {
-            contenido += linea + "\n";
-        }
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
-
-    return contenido;
-}
 
     public static Font cargarFuente(final String ruta, float tamanho) {
         Font fuente = null;
@@ -126,6 +126,5 @@ public class CargadorRecursos {
 
         return fuente;
     }
-
 
 }

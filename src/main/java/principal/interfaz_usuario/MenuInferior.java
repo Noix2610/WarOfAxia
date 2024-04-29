@@ -70,7 +70,7 @@ public class MenuInferior {
     }
 
     public void dibujar(final Graphics2D g) {
-        
+
         dibujarAreaInventario(g);
         dibujarBarraVitalidad(g);
         dibujarBarraMana(g);
@@ -80,7 +80,7 @@ public class MenuInferior {
     }
 
     public void dibujarAreaInventario(final Graphics2D g) {
-        
+
         g.drawImage(areaInvent, areaInventario.x, areaInventario.y, areaInventario.width, areaInventario.height, null);
         // Dibuja el fondo con el color calculado
         //DibujoDebug.dibujarRectanguloRelleno(g, areaInventario, Color.BLACK);
@@ -162,7 +162,7 @@ public class MenuInferior {
         int i = 1;
         for (Rectangle ranura : ranuraObjetos) {
 
-            DibujoDebug.dibujarImagen(g, bordesRanuras.getSprites(0).getImagen(), ranura.x-3, ranura.y-4);
+            DibujoDebug.dibujarImagen(g, bordesRanuras.getSprites(0).getImagen(), ranura.x - 3, ranura.y - 4);
             if (i > 9) {
                 DibujoDebug.dibujarString(g, "0", ranuraObjetos.get(i - 1).x + 13, areaInventario.height + areaInventario.y - 8, Color.BLACK);
             }
@@ -179,7 +179,7 @@ public class MenuInferior {
 
                 // Dibujar el consumible en la ranura
                 DibujoDebug.dibujarImagen(g, consumible.getSprite().getImagen(), ranura.x, ranura.y);
-                Color colorTexto = Color.black;
+                Color colorTexto = Color.white;
                 if (consumible.getCantidad() < 4) {
                     colorTexto = Color.red;
                 }
@@ -192,7 +192,7 @@ public class MenuInferior {
 
                 // Dibujar el consumible en la ranura
                 DibujoDebug.dibujarImagen(g, habilidad.getImagenActual(), ranura.x, ranura.y);
-                Color colorTexto = Color.black;
+                Color colorTexto = Color.white;
                 int tiempoRestante = habilidad.getTiempoRestante();
                 if (tiempoRestante > 0) {
                     if (tiempoRestante < 10) {

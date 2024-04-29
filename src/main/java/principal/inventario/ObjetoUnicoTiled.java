@@ -1,30 +1,28 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Esta clase representa un objeto único en una ubicación específica del mapa.
+ * Contiene atributos como la posición, el objeto en sí y la cantidad del objeto.
  */
 package principal.inventario;
 
 import java.awt.Point;
 import java.awt.Rectangle;
 
-/**
- *
- * @author GAMER ARRAX
- */
 public class ObjetoUnicoTiled {
 
-    private Point posicion;
-    private Objeto objeto;
-    private int cantidad;
-    private Rectangle area;
+    // Atributos de la clase
+    private Point posicion; // Posición del objeto en el mapa
+    private Objeto objeto; // El objeto en sí
+    private int cantidad; // Cantidad del objeto en esta ubicación
+    private Rectangle area; // Área del objeto en el mapa
 
+    // Constructor con parámetros
     public ObjetoUnicoTiled(Point posicion, Objeto objeto, int cantidad) {
         this.posicion = posicion;
         this.objeto = objeto;
         this.cantidad = cantidad;
-        
     }
 
+    // Métodos getter y setter para los atributos
     public Point getPosicion() {
         return posicion;
     }

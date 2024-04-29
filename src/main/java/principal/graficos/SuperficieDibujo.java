@@ -15,7 +15,6 @@ import principal.ElementosPrincipales;
 import principal.GestorPrincipal;
 import principal.control.GestorControles;
 import principal.control.Raton;
-import principal.herramientas.Cronometro;
 import principal.herramientas.DatosDebug;
 import principal.herramientas.DibujoDebug;
 import principal.maquinaestado.GestorEstados;
@@ -23,30 +22,43 @@ import principal.maquinaestado.juego.GestorJuego;
 import principal.pantallaInicial.PantallaTitulo;
 
 /**
- *
- * @author GAMER ARRAX
+ * Superficie de dibujo donde se renderiza todo el juego.
  */
 public class SuperficieDibujo extends Canvas {
 
+    // SerialVersionUID para compatibilidad entre versiones
     private static final long serialVersionUID = 123456789L;
-    private EfectosVisuales efectosVisuales;
+
+    // Efectos visuales para transiciones
+    private final EfectosVisuales efectosVisuales;
+
+    // Variables para controlar cambios de mapa y el inicio del cronómetro
     public boolean cambioMapa = false;
     public boolean cronometroIniciado = false;
-    Cronometro cronoMapa;
 
-    private int ancho;
-    private int alto;
-    int incremento = 0;
+    // Ancho y alto de la superficie de dibujo
+    private final int ancho;
+    private final int alto;
 
+    // Variable para controlar la posición del ratón
     Raton raton = new Raton(this);
+    PantallaTitulo pantallaInicial;
 
+    /**
+     * Constructor de la superficie de dibujo.
+     *
+     * @param ancho El ancho de la superficie.
+     * @param alto El alto de la superficie.
+     */
     public SuperficieDibujo(final int ancho, final int alto) {
         this.alto = alto;
         this.ancho = ancho;
 
+        // Inicialización del ratón y efectos visuales
         this.raton = new Raton(this);
         this.efectosVisuales = new EfectosVisuales();
 
+        // Configuración de la superficie de dibujo
         setIgnoreRepaint(true);
         this.setCursor(raton.getCursor());
         setPreferredSize(new Dimension(ancho, alto));
@@ -54,43 +66,49 @@ public class SuperficieDibujo extends Canvas {
         addMouseListener(raton);
         setFocusable(true);
         requestFocus();
-
+        pantallaInicial = new PantallaTitulo();
     }
 
+    /**
+     * Método para dibujar en la superficie de dibujo.
+     *
+     * @param ge El gestor de estados del juego.
+     */
     public void dibujar(final GestorEstados ge) {
+        // Si estamos en la pantalla de título, dibujamos la pantalla de título
         if (GestorPrincipal.pantallaTitulo) {
-            // Si pantallaTitulo es true, dibuja la pantalla de título
-            dibujarPantallaTitulo(new PantallaTitulo());
+            dibujarPantallaTitulo(pantallaInicial);
         }
         else {
-            // Si no, dibuja el juego normalmente
+            // Si no, dibujamos el juego normalmente
+
+            // Obtener la estrategia de buffer
             BufferStrategy buffer = getBufferStrategy();
             if (buffer == null) {
                 createBufferStrategy(3);
                 return;
             }
 
+            // Obtener el contexto gráfico
             final Graphics2D g = (Graphics2D) buffer.getDrawGraphics();
             DibujoDebug.reiniciarContadorObjetos();
 
+            // Configuración inicial del contexto gráfico
             g.setFont(Constantes.FUENTE_POR_DEFECTO);
-            /*DibujoDebug.dibujarRectanguloRelleno(g, 0, 0, Constantes.ANCHO_PANTALLA_COMPLETA,
+            DibujoDebug.dibujarRectanguloRelleno(g, 0, 0, Constantes.ANCHO_PANTALLA_COMPLETA,
                     Constantes.ALTO_PANTALLA_COMPLETA, Color.black);
 
-            if (Constantes.FACTOR_ESCALADO_X != 1.0 || Constantes.FACTOR_ESCALADO_Y != 1.0) {
-                g.scale(Constantes.FACTOR_ESCALADO_X, Constantes.FACTOR_ESCALADO_Y);
-            }*/
-
-            DibujoDebug.dibujarRectanguloRelleno(g, 0, 0, Constantes.ANCHO_JUEGO,
-                    Constantes.ALTO_JUEGO, Color.black);
-
+            // Dibujar el juego mediante el gestor de estados
+            g.scale(Constantes.FACTOR_ESCALADO_X, Constantes.FACTOR_ESCALADO_Y);
             ge.dibujar(g);
 
+            // Dibujar FPS y APS
             g.setColor(Color.white);
-
             DibujoDebug.dibujarString(g, "FPS:  " + GestorPrincipal.getFps(), 20, 20);
             DibujoDebug.dibujarString(g, "APS:  " + GestorPrincipal.getAps(), 20, 30);
             raton.dibujar(g);
+
+            // Dibujar datos de debug si está activado
             if (GestorControles.teclado.debug) {
                 DatosDebug.dibujarDatos(g);
             }
@@ -98,7 +116,10 @@ public class SuperficieDibujo extends Canvas {
                 DatosDebug.vaciarDatos();
             }
 
+            // Sincronizar la pantalla
             Toolkit.getDefaultToolkit().sync();
+
+            // Si el jugador está muerto, mostrar transición de pantalla de muerte
             if (!ElementosPrincipales.jugador.estaVivo) {
                 efectosVisuales.dibujarTransicionNegro(g, getWidth(), getHeight());
                 g.setColor(Color.WHITE);
@@ -109,60 +130,86 @@ public class SuperficieDibujo extends Canvas {
                 int yTexto = Constantes.ALTO_JUEGO / 2;
                 g.drawString(mensajeMuerte, xTexto, yTexto);
 
-                // Verificar si se ha presionado alguna tecla
-                // Establecer la variable de control para mostrar la pantalla de título
+                // Recargar el juego y volver a la pantalla de título al presionar una tecla
                 ElementosPrincipales.jugador.getGa().setVida(ElementosPrincipales.jugador.getGa().getVidaMaxima());
                 GestorJuego.recargar = true;
-
                 GestorPrincipal.pantallaTitulo = true;
             }
 
+            // Liberar recursos
             g.dispose();
 
+            // Mostrar la siguiente imagen del buffer
             buffer.show();
-
-            g.setFont(g.getFont().deriveFont(8f));
         }
     }
 
+    /**
+     * Método para dibujar la pantalla de título.
+     *
+     * @param pantallaTitulo La pantalla de título a dibujar.
+     */
     public void dibujarPantallaTitulo(PantallaTitulo pantallaTitulo) {
+        // Obtener la estrategia de buffer
         BufferStrategy buffer = getBufferStrategy();
         if (buffer == null) {
             createBufferStrategy(3);
             return;
         }
 
+        // Obtener el contexto gráfico
         final Graphics2D g = (Graphics2D) buffer.getDrawGraphics();
 
-        // Dibujar la pantalla de título
+        // Escalar la pantalla de título
         g.scale(2, 2);
 
+        // Dibujar la pantalla de título
         pantallaTitulo.dibujar(g);
 
+        // Liberar recursos
         g.dispose();
+
+        // Mostrar la siguiente imagen del buffer
         buffer.show();
     }
 
+    /**
+     * Método para cargar una imagen desde una ruta.
+     *
+     * @param ruta La ruta de la imagen.
+     * @return La imagen cargada.
+     */
     public BufferedImage cargarImagen(String ruta) {
         try {
             return ImageIO.read(getClass().getResource(ruta));
         }
         catch (IOException e) {
-            e.printStackTrace();
             return null;
         }
     }
 
+    /**
+     * Método para dibujar una imagen en la superficie de dibujo.
+     *
+     * @param x La coordenada X de la posición de la imagen.
+     * @param y La coordenada Y de la posición de la imagen.
+     * @param imagen La imagen a dibujar.
+     */
     public void dibujarImagen(int x, int y, BufferedImage imagen) {
         if (imagen != null) {
             getGraphics().drawImage(imagen, x, y, this);
         }
     }
 
+    /**
+     * Método para actualizar la superficie de dibujo.
+     */
     public void actualizar() {
         raton.actualizar(this);
+        pantallaInicial.actualizar();
     }
 
+    // Getters y Setters
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }

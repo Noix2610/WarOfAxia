@@ -41,8 +41,8 @@ public class GestorPrincipal {
     public static void main(String[] args) throws InterruptedException {
 
         System.setProperty("sun.java2d.opengl", "true"); // Configuración de OpenGL
-        GestorPrincipal gp = new GestorPrincipal("Juego", Constantes.ANCHO_JUEGO,
-                Constantes.ALTO_JUEGO); // Creación de una instancia del gestor principal
+        GestorPrincipal gp = new GestorPrincipal("Juego", Constantes.ANCHO_PANTALLA_COMPLETA,
+                Constantes.ALTO_PANTALLA_COMPLETA); // Creación de una instancia del gestor principal
 
         gp.iniciarJuego(); // Inicio del juego
         gp.iniciarBuclePrincipal(); // Inicio del bucle principal del juego

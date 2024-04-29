@@ -1,6 +1,6 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Esta clase proporciona un método estático para obtener objetos del juego según su identificador.
+ * Cada identificador de objeto está asociado a un objeto específico del juego.
  */
 package principal.inventario;
 
@@ -18,12 +18,9 @@ import principal.inventario.joyas.Accesorio;
 import principal.inventario.joyas.Anillo;
 import principal.inventario.joyas.Collar;
 
-/**
- *
- * @author GAMER ARRAX
- */
 public class RegistroObjetos {
 
+    // Método estático para obtener un objeto según su identificador
     public static Objeto obtenerObjeto(final int idObjeto) {
         Objeto objeto = null;
         switch (idObjeto) {

@@ -1,22 +1,19 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * SeccionTienda.java
+ * Clase abstracta que representa una sección de la tienda en el juego.
  */
 package principal.maquinaestado.juego.menu_tienda;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+
 import principal.Constantes;
 import principal.ElementosPrincipales;
 import principal.graficos.SuperficieDibujo;
 import principal.herramientas.DibujoDebug;
 import principal.inventario.Objeto;
 
-/**
- *
- * @author GAMER ARRAX
- */
 public abstract class SeccionTienda {
 
     protected int margenGeneral = 8;
@@ -26,6 +23,7 @@ public abstract class SeccionTienda {
     protected EstructuraTienda et;
     protected Objeto objetoSeleccionado;
 
+    // Constructor
     public SeccionTienda(final String nombreSeccion, final Rectangle etiquetaMenu, final EstructuraTienda et) {
         this.nombreSeccion = nombreSeccion;
         this.etiquetaMenu = etiquetaMenu;
@@ -38,14 +36,15 @@ public abstract class SeccionTienda {
     public SeccionTienda() {
     }
 
+    // Métodos abstractos que deben ser implementados por las clases hijas
     public abstract void actualizar();
 
     public abstract void dibujar(final Graphics g, final SuperficieDibujo sd);
 
+    // Métodos de dibujo de etiquetas de secciones
     public void dibujarEtiquetaInactiva(final Graphics g) {
         DibujoDebug.dibujarRectanguloRelleno(g, etiquetaMenu, Color.white);
         DibujoDebug.dibujarString(g, nombreSeccion, etiquetaMenu.x + 16, etiquetaMenu.y + 12, Color.black);
-
     }
 
     public void dibujarEtiquetaActiva(Graphics g) {
@@ -55,7 +54,6 @@ public abstract class SeccionTienda {
         DibujoDebug.dibujarRectanguloRelleno(g, marcaActiva, new Color(0xff6700));
 
         DibujoDebug.dibujarString(g, nombreSeccion, etiquetaMenu.x + 16, etiquetaMenu.y + 12, Color.black);
-
     }
 
     public void dibujarEtiquetaInactResaltada(final Graphics g) {
@@ -65,7 +63,6 @@ public abstract class SeccionTienda {
                 5, etiquetaMenu.height - 10);
         DibujoDebug.dibujarRectanguloRelleno(g, etiquetaResaltada, new Color(0x2a2a2a));
         DibujoDebug.dibujarString(g, nombreSeccion, etiquetaMenu.x + 15, etiquetaMenu.y + 12, Color.black);
-
     }
 
     public void dibujarEtiquetaActivaResaltada(final Graphics g) {
@@ -80,6 +77,7 @@ public abstract class SeccionTienda {
         DibujoDebug.dibujarString(g, nombreSeccion, etiquetaMenu.x + 15, etiquetaMenu.y + 12, Color.black);
     }
 
+    // Método para obtener la etiqueta de menú escalada
     public Rectangle getEtiquetaMenuEscalada() {
         final int x = (int) (etiquetaMenu.x * Constantes.FACTOR_ESCALADO_X);
         final int y = (int) (etiquetaMenu.y * Constantes.FACTOR_ESCALADO_Y);
@@ -91,6 +89,7 @@ public abstract class SeccionTienda {
         return etiquetaEscalada;
     }
 
+    // Método para dibujar la barra de peso
     protected void dibujarLimitePeso(final Graphics g) {
         ElementosPrincipales.jugador.calcularPesoActual();
 
@@ -117,7 +116,7 @@ public abstract class SeccionTienda {
             color = Color.yellow;
         }
         else if (porcentajePeso >= 50 && porcentajePeso < 100) {
-            color = new Color(255,100,50);
+            color = new Color(255, 100, 50);
         }
         else {
             color = Color.red;
@@ -129,11 +128,12 @@ public abstract class SeccionTienda {
 
         DibujoDebug.dibujarRectanguloRelleno(g, contenidoBarra, color);
     }
-    
-    public boolean objetoNoVendible(int idObjeto){
+
+    // Método para verificar si un objeto es no vendible
+    public boolean objetoNoVendible(int idObjeto) {
         boolean flag = false;
-        for(Objeto objetoEquipado : ElementosPrincipales.jugador.getAe().getEquipoActual()){
-            if(objetoEquipado.getId() == idObjeto){
+        for (Objeto objetoEquipado : ElementosPrincipales.jugador.getAe().getEquipoActual()) {
+            if (objetoEquipado.getId() == idObjeto) {
                 flag = true;
                 break;
             }
@@ -141,6 +141,7 @@ public abstract class SeccionTienda {
         return flag;
     }
 
+    // Getters
     public Rectangle getEtiquetaMenu() {
         return etiquetaMenu;
     }
@@ -148,5 +149,4 @@ public abstract class SeccionTienda {
     public String getNombreSeccion() {
         return nombreSeccion;
     }
-
 }

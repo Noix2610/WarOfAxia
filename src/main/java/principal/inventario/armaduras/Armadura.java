@@ -1,6 +1,6 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Esta clase abstracta representa una armadura en el juego.
+ * Proporciona métodos y atributos comunes a todas las armaduras.
  */
 package principal.inventario.armaduras;
 
@@ -10,39 +10,28 @@ import principal.inventario.TipoObjeto;
 import principal.sprites.HojaSprites;
 import principal.sprites.Sprite;
 
-/**
- *
- * @author GAMER ARRAX
- */
 public abstract class Armadura extends Objeto {
 
+    // Hoja de sprites que contiene las imágenes de las armaduras
     public static HojaSprites hojaArmaduras = new HojaSprites(Constantes.RUTA_HOJA_ARMADURAS, 32, false);
-    public int defensaF;
-    public int defensaM;
 
+    // Atributos de la armadura
+    public int defensaF; // Defensa física
+    public int defensaM; // Defensa mágica
+
+    // Constructor de la clase Armadura
     public Armadura(int id, String nombre, int defensaF, int defensaM, double peso, String descripcion, TipoObjeto tipoObjeto,
             int precioCompra, int precioVenta) {
         super(id, nombre, peso, descripcion, tipoObjeto, precioCompra, precioVenta);
         this.defensaF = defensaF;
         this.defensaM = defensaM;
         this.peso = peso;
-
     }
 
-    public Sprite getSprite() {
+    // Método abstracto para obtener el sprite de la armadura
+    public abstract Sprite getSprite();
 
-        return hojaArmaduras.getSprites(id - 600);
-
-    }
-
-    public static HojaSprites getHojaArmaduras() {
-        return hojaArmaduras;
-    }
-
-    public static void setHojaArmaduras(HojaSprites hojaArmaduras) {
-        Armadura.hojaArmaduras = hojaArmaduras;
-    }
-
+    // Métodos getter y setter para los atributos de la armadura
     public int getDefensaF() {
         if (this != null) {
             return defensaF;
@@ -69,13 +58,24 @@ public abstract class Armadura extends Objeto {
         this.defensaM = defensaM;
     }
 
+    // Método getter para el peso de la armadura
     @Override
     public double getPeso() {
         return peso;
     }
 
+    // Método setter para el peso de la armadura
     public void setPeso(double peso) {
         this.peso = peso;
     }
 
+    // Método estático getter para obtener la hoja de sprites de las armaduras
+    public static HojaSprites getHojaArmaduras() {
+        return hojaArmaduras;
+    }
+
+    // Método estático setter para establecer la hoja de sprites de las armaduras
+    public static void setHojaArmaduras(HojaSprites hojaArmaduras) {
+        Armadura.hojaArmaduras = hojaArmaduras;
+    }
 }

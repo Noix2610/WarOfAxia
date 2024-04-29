@@ -295,6 +295,39 @@ public class Enemigo implements EntidadCurable {
         DibujoDebug.dibujarImagen(g, imagenActual, puntoX, puntoY);
     }
 
+    public void idlePosition(Graphics g, Rectangle posMenu, int id) {
+        // Incrementa la animación para cambiar progresivamente entre los sprites de reposo
+
+        // Cambia el estado para representar un estado de reposo
+        if (this.getIdEnemigo() == id) {
+            animacion++;
+            int animacionBase = 500;
+
+            if (animacion <= animacionBase / 2) {
+                estado = 0;
+            }
+            else if (animacion > animacionBase / 2 && animacion <= animacionBase) {
+                estado = 2;
+            }
+
+            else {
+                animacion = 0;
+            }
+
+            // Obtiene la sprite correspondiente a la animación y el estado actual
+            Sprite sprite = hs.getSprites(estado, 0);
+
+            if (sprite != null) {
+                imagenActual = sprite.getImagen();
+            }
+            else {
+                imagenActual = null; // o imagen por defecto
+            }
+        }
+        DibujoDebug.dibujarImagen(g, imagenActual, posMenu.x, posMenu.y);
+
+    }
+
     // Método para dibujar la vida actual del enemigo en la posición especificada
     private void dibujarVidaActual(final Graphics g, final int puntoX, final int puntoY) {
         DibujoDebug.dibujarString(g, "" + Float.toString(vidaActual), puntoX, puntoY - 8);

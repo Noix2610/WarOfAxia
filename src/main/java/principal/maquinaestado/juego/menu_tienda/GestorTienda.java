@@ -1,31 +1,20 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * GestorTienda.java
+ * Clase que gestiona la visualización y funcionalidad de la tienda en el juego.
  */
 package principal.maquinaestado.juego.menu_tienda;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.util.ArrayList;
+
 import principal.Constantes;
-import principal.ElementosPrincipales;
 import principal.GestorPrincipal;
 import principal.control.GestorControles;
-import principal.graficos.SuperficieDibujo;
 import principal.herramientas.DibujoDebug;
 import principal.herramientas.EscaladorElementos;
-import principal.inventario.Objeto;
-import principal.inventario.RegistroObjetos;
-import principal.inventario.RegistroTiendas;
-import principal.inventario.armaduras.Armadura;
-import principal.inventario.armas.Arma;
 import principal.maquinaestado.EstadoJuego;
 
-/**
- *
- * @author GAMER ARRAX
- */
 public class GestorTienda implements EstadoJuego {
 
     private final SeccionTienda[] secciones;
@@ -41,12 +30,13 @@ public class GestorTienda implements EstadoJuego {
     private final Rectangle etiquetaPociones;
     public final Rectangle salir;
 
+    // Constructor
     public GestorTienda() {
         estructuraTienda = new EstructuraTienda();
 
         secciones = new SeccionTienda[7]; // Ajusta la longitud del arreglo según la cantidad de secciones
-        
-        
+
+        // Definir las etiquetas para cada sección de la tienda
         etiquetaArmas = new Rectangle(estructuraTienda.BANNER_LATERAL.x
                 + estructuraTienda.MARGEN_HORIZONTAL_ETIQUETAS, estructuraTienda.BANNER_LATERAL.y
                 + estructuraTienda.MARGEN_VERTICAL_ETIQUETAS, estructuraTienda.ANCHO_ETIQUETAS,
@@ -97,41 +87,35 @@ public class GestorTienda implements EstadoJuego {
 
         secciones[6] = new TiendaPociones("POCIONES", etiquetaPociones, estructuraTienda);
 
+        // Etiqueta para salir de la tienda
         salir = new Rectangle(estructuraTienda.BANNER_LATERAL.x
                 + estructuraTienda.MARGEN_HORIZONTAL_ETIQUETAS,
                 etiquetaPociones.y + etiquetaPociones.height + estructuraTienda.MARGEN_VERTICAL_ETIQUETAS,
                 estructuraTienda.ANCHO_ETIQUETAS, estructuraTienda.ALTO_ETIQUETAS);
 
         seccionActual = secciones[0];
-
     }
 
+    // Método para actualizar el estado de la tienda
     @Override
     public void actualizar() {
-        
-        
         for (int i = 0; i < secciones.length; i++) {
             if (GestorPrincipal.sd.getRaton().isClick()
                     && GestorPrincipal.sd.getRaton().getPosicionRectangle().intersects(secciones[i].getEtiquetaMenuEscalada())) {
-
-                /*else if(secciones[i] instanceof MenuInventario){
-                    MenuInventario seccion = (MenuInventario) secciones[i];
-                    if(seccion.getObjetoSeleccionado() != null){
-                        seccion.eliminarObjetoSeleccionado();
-                    }
-                }*/
                 seccionActual = secciones[i];
             }
         }
-
         seccionActual.actualizar();
     }
 
+    // Método para dibujar la tienda en pantalla
     @Override
     public void dibujar(Graphics2D g) {
+        // Dibujar la estructura visual de la tienda
         estructuraTienda.dibujar(g);
-        for (int i = 0; i < secciones.length; i++) {
 
+        // Dibujar las etiquetas de las secciones de la tienda
+        for (int i = 0; i < secciones.length; i++) {
             if (seccionActual == secciones[i]) {
                 if (GestorPrincipal.sd.getRaton().getPosicionRectangle().intersects(secciones[i].getEtiquetaMenuEscalada())) {
                     secciones[i].dibujarEtiquetaActivaResaltada(g);
@@ -146,14 +130,14 @@ public class GestorTienda implements EstadoJuego {
                 }
                 else {
                     secciones[i].dibujarEtiquetaInactiva(g);
-
                 }
-
             }
         }
 
+        // Dibujar la sección actual de la tienda
         seccionActual.dibujar(g, GestorPrincipal.sd);
 
+        // Dibujar el botón de salir de la tienda
         DibujoDebug.dibujarRectanguloRelleno(g, this.salir, Color.WHITE);
 
         if (GestorPrincipal.sd.getRaton().getPosicionRectangle().intersects(EscaladorElementos.escalarRectangleArriba(salir))) {
@@ -172,7 +156,5 @@ public class GestorTienda implements EstadoJuego {
                     salir.y + salir.height - Constantes.LADO_SPRITE / 4, Color.black);
         }
     }
-
-    
 
 }

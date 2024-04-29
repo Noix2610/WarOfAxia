@@ -1,6 +1,6 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Esta clase abstracta representa un arma en el juego.
+ * Proporciona métodos y atributos comunes a todas las armas.
  */
 package principal.inventario.armas;
 
@@ -16,30 +16,25 @@ import principal.sonido.SoundThread;
 import principal.sprites.HojaSprites;
 import principal.sprites.Sprite;
 
-/**
- *
- * @author GAMER ARRAX
- */
 public abstract class Arma extends Objeto {
 
+    // Atributos comunes a todas las armas
     protected int alcanceFrontal;
     protected int alcanceLateral;
-    public SoundThread disparo;
-    public HojaSprites hojaArmas;
-    public int ataqueMin;
-    public int ataqueMax;
+    protected SoundThread disparo;
+    protected HojaSprites hojaArmas;
+    protected int ataqueMin;
+    protected int ataqueMax;
     protected boolean automatica;
     protected boolean penetrante;
     protected double ataqueXSegundo;
     protected int actualizacionesParaSgteAtaque;
     protected HojaSprites hojaArma;
-    // Duración en milisegundos
 
+    // Constructor de la clase Arma
     public Arma(int id, String nombre, String descripcion, int peso, int ataqueMin, int ataqueMax, int alcanceFrontal,
-            int alcanceLateral, final TipoObjeto tipoObjeto,
-            final boolean automatica, final boolean penetrante, final double ataquesXSegundo, final String rutaDisparo,
-            String rutaPersonaje, int precioCompra, int precioVenta
-    ) {
+            int alcanceLateral, final TipoObjeto tipoObjeto, final boolean automatica, final boolean penetrante, final double ataquesXSegundo, final String rutaDisparo,
+            String rutaPersonaje, int precioCompra, int precioVenta) {
         super(id, nombre, peso, descripcion, tipoObjeto, precioCompra, precioVenta);
         this.ataqueMin = ataqueMin;
         this.ataqueMax = ataqueMax;
@@ -53,19 +48,20 @@ public abstract class Arma extends Objeto {
         this.hojaArma = new HojaSprites(rutaPersonaje, 32, false);
     }
 
+    // Método abstracto para obtener el alcance del arma
     public abstract ArrayList<Rectangle> getAlcance(final Jugador jugador);
 
+    // Método para actualizar el arma
     public void actualizar() {
         if (this != null) {
             if (actualizacionesParaSgteAtaque > 0) {
                 actualizacionesParaSgteAtaque--;
             }
         }
-
     }
 
+    // Método para realizar un ataque con el arma
     public void atacar(final ArrayList<Enemigo> enemigos, int atributo) {
-
         if (!enemigos.isEmpty()) {
             if (actualizacionesParaSgteAtaque > 0) {
                 return;
@@ -75,18 +71,14 @@ public abstract class Arma extends Objeto {
 
             ElementosPrincipales.jugador.getCronometro().reiniciar();
             ElementosPrincipales.jugador.preparado = true;
-            // Generar un número aleatorio entre 1 y 100
+
             double numeroAleatorio = new Random().nextDouble(100) + 1;
             int multiplicadorCritico = 1;
-
-            // Verificar si es un golpe crítico
             boolean esCritico = numeroAleatorio <= ElementosPrincipales.jugador.getGa().getCritico();
             int rango = this.getAtaqueMax() - this.getAtaqueMin() + 1;
-            int ataquealeatorio = new Random().nextInt(rango) + this.getAtaqueMin();
-            // Calcular el daño base (ajusta según tus necesidades)
-            int danioBase = ataquealeatorio + atributo;
+            int ataqueAleatorio = new Random().nextInt(rango) + this.getAtaqueMin();
+            int danioBase = ataqueAleatorio + atributo;
 
-            // Aplicar multiplicador si es un golpe crítico
             if (esCritico) {
                 multiplicadorCritico = 2;
             }
@@ -97,10 +89,9 @@ public abstract class Arma extends Objeto {
                 enemigo.perderVida(danioTotal, esCritico);
             }
         }
-        
-
     }
 
+    // Métodos getter y setter para los atributos del arma
     public boolean isAutomatica() {
         return automatica;
     }
@@ -117,15 +108,13 @@ public abstract class Arma extends Objeto {
         this.penetrante = penetrante;
     }
 
-    public int getAtaquemedio() {
+    public int getAtaqueMedio() {
         return new Random().nextInt(ataqueMax - ataqueMin + 1) + ataqueMin;
     }
 
     @Override
     public Sprite getSprite() {
-
         return hojaArmas.getSprites(id - 500);
-
     }
 
     public int getAtaque() {
@@ -152,5 +141,4 @@ public abstract class Arma extends Objeto {
     public int getAtaqueMax() {
         return ataqueMax;
     }
-
 }

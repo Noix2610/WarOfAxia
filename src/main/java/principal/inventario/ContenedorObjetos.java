@@ -1,51 +1,49 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Esta clase representa un contenedor de objetos en el juego.
+ * Puede contener varios objetos y se dibuja en una posición determinada en la pantalla.
  */
 package principal.inventario;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import principal.Constantes;
-import principal.herramientas.CargadorRecursos;
 import principal.herramientas.DibujoDebug;
 import principal.sprites.HojaSprites;
 
-/**
- *
- * @author GAMER ARRAX
- */
 public class ContenedorObjetos {
 
-    private  Point  posicion;
-    private ArrayList<Objeto> objetos;
-    private int indiceSprite;
-    private HojaSprites hs;
-    private BufferedImage imagen;
-    private Rectangle area;
+    private Point posicion; // Posición del contenedor en la pantalla
+    private ArrayList<Objeto> objetos; // Lista de objetos contenidos en el contenedor
+    private int indiceSprite; // Índice del sprite que representa el contenedor
+    private HojaSprites hs; // Hoja de sprites que contiene las imágenes de los contenedores
+    private BufferedImage imagen; // Imagen del contenedor
+    private Rectangle area; // Área del contenedor en la pantalla
 
+    // Constructor por defecto
     public ContenedorObjetos() {
         this.objetos = new ArrayList<>();
     }
 
+    // Constructor con parámetros
     public ContenedorObjetos(Point posicion, int indiceSprite, Rectangle area) {
+        // Carga de la hoja de sprites y configuración de parámetros iniciales
         hs = new HojaSprites(Constantes.RUTA_HOJA_CONTENEDORES, 32, false);
         this.posicion = posicion;
         this.indiceSprite = indiceSprite;
         this.imagen = hs.getSprites(indiceSprite).getImagen();
         this.objetos = new ArrayList<>();
         this.area = area;
-        
     }
 
-    public void dibujar(final Graphics g, final int puntoX,final int puntoY) {
+    // Método para dibujar el contenedor en la pantalla
+    public void dibujar(final Graphics g, final int puntoX, final int puntoY) {
         DibujoDebug.dibujarImagen(g, imagen, puntoX, puntoY);
     }
 
+    // Getters y setters para los atributos de la clase
     public Point getPosicion() {
         return posicion;
     }
@@ -93,13 +91,4 @@ public class ContenedorObjetos {
     public void setArea(Rectangle area) {
         this.area = area;
     }
-    
-    
-    
-    
-    
-    
-    
-    
-
 }

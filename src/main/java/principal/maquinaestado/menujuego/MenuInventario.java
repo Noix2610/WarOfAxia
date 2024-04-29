@@ -5,6 +5,7 @@
 package principal.maquinaestado.menujuego;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -51,8 +52,6 @@ public class MenuInventario extends SeccionMenu {
     final Rectangle acceso1 = new Rectangle(titularPanelAccesoRapido.x + margenGeneral - 2, titularPanelAccesoRapido.y + Constantes.LADO_SPRITE - 2,
             Constantes.LADO_SPRITE + 2,
             Constantes.LADO_SPRITE + 2);
-
-    
 
     public MenuInventario(String nombreSeccion, Rectangle etiquetaMenu, EstructuraMenu em) {
         super(nombreSeccion, etiquetaMenu, em);
@@ -129,7 +128,7 @@ public class MenuInventario extends SeccionMenu {
 
     private void dibujarRectangulosAccesoRapido(Graphics g) {
         for (Rectangle rectangulo : rectangulosAccesoRapido) {
-            DibujoDebug.dibujarImagen(g, MenuInferior.bordesRanuras.getSprites(0).getImagen(), rectangulo.x-3, rectangulo.y-4);
+            DibujoDebug.dibujarImagen(g, MenuInferior.bordesRanuras.getSprites(0).getImagen(), rectangulo.x - 3, rectangulo.y - 4);
         }
     }
 
@@ -289,25 +288,43 @@ public class MenuInventario extends SeccionMenu {
 
     }
 
+    /**
+     * Método para dibujar los botones de paginación en el panel de consumibles.
+     *
+     * @param g Objeto Graphics para dibujar en el contexto gráfico.
+     */
     private void dibujarPaginador(final Graphics g) {
+        // Definir el ancho y alto de los botones
         final int anchoBoton = 24;
         final int altoBoton = 12;
 
+        // Calcular la posición del botón "anterior"
         int anteriorX = panelConsumibles.x + panelConsumibles.width - Constantes.LADO_SPRITE * 2 + 4;
-
         int anteriorY = panelConsumibles.y + panelConsumibles.height - (Constantes.LADO_SPRITE / 2);
 
+        // Crear los rectángulos para los botones "anterior" y "siguiente"
         final Rectangle anterior = new Rectangle(anteriorX - 4, anteriorY, anchoBoton, altoBoton);
         final Rectangle siguiente = new Rectangle(anterior.x + anterior.width + margenGeneral, anterior.y,
                 anchoBoton, altoBoton);
+
+        // Establecer el color de los botones
         g.setColor(Color.blue);
 
+        // Dibujar el contorno de los botones "anterior" y "siguiente"
         DibujoDebug.dibujarRectanguloContorno(g, anterior);
         DibujoDebug.dibujarRectanguloContorno(g, siguiente);
+
+        // Dibujar las flechas dentro de los botones
         DibujoDebug.dibujarString(g, "<<", anterior.x + anterior.width - 18, anterior.y + anterior.height - 5);
         DibujoDebug.dibujarString(g, ">>", siguiente.x + siguiente.width - 18, siguiente.y + siguiente.height - 5);
     }
 
+    /**
+     * Método para dibujar un tooltip que muestra información sobre la carga actual del jugador.
+     *
+     * @param g Objeto Graphics para dibujar en el contexto gráfico.
+     * @param sd SuperficieDibujo que contiene información sobre la posición del ratón.
+     */
     public void dibujarTooltipPeso(final Graphics g, SuperficieDibujo sd) {
         String textoCarga = String.format("%.1f", ElementosPrincipales.jugador.getGa().getPesoActual());
         String textoCargaTotal = String.format("%.1f", ElementosPrincipales.jugador.getGa().getLimitePeso());
@@ -338,23 +355,23 @@ public class MenuInventario extends SeccionMenu {
     }
 
     private void dibujarTooltipAccRapido(final Graphics g, final SuperficieDibujo sd) {
-    Rectangle posicionRaton = sd.getRaton().getPosicionRectangle();
+        Rectangle posicionRaton = sd.getRaton().getPosicionRectangle();
 
-    if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(panelAccesoRapido))) {
-        for (int i = 0; i < rectangulosAccesoRapido.size(); i++) {
-            Rectangle rectangulo = rectangulosAccesoRapido.get(i);
+        if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(panelAccesoRapido))) {
+            for (int i = 0; i < rectangulosAccesoRapido.size(); i++) {
+                Rectangle rectangulo = rectangulosAccesoRapido.get(i);
 
-            if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(rectangulo))) {
-                Object objeto = ElementosPrincipales.jugador.getAr().getAccesoEquipado(i);
-                
-                if (objeto != null) {
-                    dibujarTooltipObjetosAccRapido(g, sd, objeto);
-                    return; // Salir del método después de dibujar un solo tooltip
+                if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(rectangulo))) {
+                    Object objeto = ElementosPrincipales.jugador.getAr().getAccesoEquipado(i);
+
+                    if (objeto != null) {
+                        dibujarTooltipObjetosAccRapido(g, sd, objeto);
+                        return; // Salir del método después de dibujar un solo tooltip
+                    }
                 }
             }
         }
     }
-}
 
     private void dibujarTooltipClaves(final Graphics g, final SuperficieDibujo sd) {
         Rectangle posicionRaton = sd.getRaton().getPosicionRectangle();
@@ -463,35 +480,62 @@ public class MenuInventario extends SeccionMenu {
         }
     }
 
+    /**
+     * Método para actualizar la selección y uso de un objeto del inventario. Comprueba si se ha hecho clic en el botón
+     * "Usar" y realiza la acción correspondiente.
+     */
     private void actualizarSeleccionUsar() {
+        // Obtener la posición del ratón
         Rectangle posicionRaton = GestorPrincipal.sd.getRaton().getPosicionRectangle();
+
+        // Comprobar si el ratón está sobre el panel de consumibles, se ha seleccionado un objeto,
+        // se ha hecho clic y el ratón está sobre el botón "Usar"
         if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(panelConsumibles))
                 && objetoSeleccionado != null && objetoSeleccionado instanceof Consumible
                 && GestorPrincipal.sd.getRaton().isClick2()
                 && posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(botonUsar))) {
+            // Acción a realizar cuando se usa un objeto
             System.out.println("Usado");
         }
     }
 
+    /**
+     * Método para actualizar la posición del objeto seleccionado. Mueve el objeto seleccionado junto con el cursor del
+     * ratón.
+     */
     private void actualizarObjetoSeleccionado() {
+        // Comprobar si hay un objeto seleccionado
         if (objetoSeleccionado != null) {
-
+            // Comprobar si se ha hecho clic derecho para deseleccionar el objeto
             if (GestorPrincipal.sd.getRaton().isClick2()) {
-                objetoSeleccionado = null;
+                objetoSeleccionado = null; // Desseleccionar el objeto
                 return;
             }
+
+            // Obtener la posición del ratón y escalarla
             Point pr = EscaladorElementos.escalarAbajo(GestorPrincipal.sd.getRaton().getPosicion());
+
+            // Establecer la posición del objeto seleccionado junto al cursor del ratón
             objetoSeleccionado.setPosicionFlotante(
                     new Rectangle(pr.x, pr.y, Constantes.LADO_SPRITE, Constantes.LADO_SPRITE));
         }
     }
 
+    /**
+     * Método para actualizar la selección y tirado de un objeto del inventario. Comprueba si se ha hecho clic en el
+     * botón "Tirar" y realiza la acción correspondiente.
+     */
     private void actualizarSeleccionTirar() {
+        // Obtener la posición del ratón
         Rectangle posicionRaton = GestorPrincipal.sd.getRaton().getPosicionRectangle();
+
+        // Comprobar si el ratón está sobre el panel de consumibles, se ha seleccionado un objeto,
+        // se ha hecho clic y el ratón está sobre el botón "Tirar"
         if (posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(panelConsumibles))
                 && objetoSeleccionado != null && objetoSeleccionado instanceof Consumible
                 && GestorPrincipal.sd.getRaton().isClick()
                 && posicionRaton.intersects(EscaladorElementos.escalarRectangleArriba(botonTirar))) {
+            // Acción a realizar cuando se tira un objeto
             System.out.println("Tirado");
         }
     }
@@ -499,7 +543,7 @@ public class MenuInventario extends SeccionMenu {
     public String getNombreSeccion() {
         return nombreSeccion;
     }
-    
+
     public Object getTipoObjetoSeleccionado() {
         return objetoSeleccionado;
     }

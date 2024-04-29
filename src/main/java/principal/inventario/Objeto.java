@@ -1,37 +1,37 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Esta clase representa un objeto genérico en el juego.
+ * Contiene atributos como ID, nombre, descripción, cantidad, tipo de objeto, entre otros.
+ * Proporciona métodos para gestionar la cantidad de objetos, obtener su sprite y sus atributos.
  */
 package principal.inventario;
 
 import java.awt.Rectangle;
 import principal.sprites.Sprite;
 
-/**
- *
- * @author GAMER ARRAX
- */
 public abstract class Objeto {
 
-    protected final int id;
-    protected final String descripcion;
-    protected int cantidad;
-    protected int cantidadMaxima;
-    public double peso;
-    protected final String nombre;
-    protected TipoObjeto tipoObjeto;
+    // Atributos comunes a todos los objetos
+    protected final int id; // Identificador único del objeto
+    protected final String descripcion; // Descripción del objeto
+    protected int cantidad; // Cantidad de este objeto en posesión
+    protected int cantidadMaxima; // Cantidad máxima permitida
+    public double peso; // Peso del objeto
+    protected final String nombre; // Nombre del objeto
+    protected TipoObjeto tipoObjeto; // Tipo de objeto
 
+    // Rectángulos para posicionar el objeto en diferentes lugares del juego
     protected Rectangle posicionMenu;
     protected Rectangle posicionFlotante;
     protected Rectangle posicionMochila;
     protected Rectangle posicionTienda;
     protected Rectangle posicionVenta;
     protected Rectangle posicionCompra;
-    protected int cantidadCompra;
-    protected int cantidadVenta;
-    protected int precioCompra;
-    protected int precioVenta;
+    protected int cantidadCompra; // Cantidad a comprar en la tienda
+    protected int cantidadVenta; // Cantidad a vender en la tienda
+    protected int precioCompra; // Precio de compra en la tienda
+    protected int precioVenta; // Precio de venta en la tienda
 
+    // Constructor con parámetros
     public Objeto(final int id, final String nombre, double peso, final String descripcion, final TipoObjeto tipoObjeto,
             int precioCompra, int precioVenta) {
         this.id = id;
@@ -39,9 +39,9 @@ public abstract class Objeto {
         this.descripcion = descripcion;
         this.tipoObjeto = tipoObjeto;
         this.peso = peso;
-        //this.sprite = hojaObjetos.getSprites(id);
-        this.cantidadMaxima = 99;
+        this.cantidadMaxima = 99; // Cantidad máxima por defecto
 
+        // Inicialización de rectángulos y valores relacionados con la tienda
         posicionMenu = new Rectangle();
         posicionFlotante = new Rectangle();
         posicionTienda = new Rectangle();
@@ -54,18 +54,20 @@ public abstract class Objeto {
         this.precioVenta = precioVenta;
     }
 
+    // Constructor adicional con cantidad inicial
     public Objeto(final int id, final String nombre, double peso, final String descripcion, final int cantidad, final TipoObjeto tipoObjeto,
             int precioCompra, int precioVenta) {
         this(id, nombre, peso, descripcion, tipoObjeto, precioCompra, precioVenta);
         if (cantidad <= cantidadMaxima) {
             this.cantidad = cantidad;
-            this.cantidadMaxima = 99;
+            this.cantidadMaxima = 99; // Cantidad máxima por defecto
             this.peso = peso;
             this.precioCompra = precioCompra;
             this.precioVenta = precioVenta;
         }
     }
 
+    // Método para incrementar la cantidad de objetos
     public boolean incrementarCantidad(final int incremento) {
         boolean incrementado = false;
 
@@ -77,8 +79,8 @@ public abstract class Objeto {
         return incrementado;
     }
 
+    // Método para reducir la cantidad de objetos
     public boolean reducirCantidad(final int reduccion) {
-
         boolean reducido = false;
         if (cantidad - reduccion >= 0) {
             cantidad -= reduccion;
@@ -87,8 +89,10 @@ public abstract class Objeto {
         return reducido;
     }
 
+    // Método abstracto para obtener el sprite del objeto
     public abstract Sprite getSprite();
 
+    // Métodos getter y setter para diversos atributos del objeto
     public String getNombre() {
         return nombre;
     }

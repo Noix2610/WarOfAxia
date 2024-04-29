@@ -1,39 +1,47 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package principal.habilidades;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
-/**
- *
- * @author GAMER ARRAX
- */
 import principal.Constantes;
 import principal.herramientas.Cronometro;
 import principal.inventario.TipoObjeto;
 import principal.sprites.HojaSprites;
 
+/**
+ * Clase abstracta que representa una habilidad.
+ */
 public abstract class Habilidad {
-    private boolean efectoActivado;
-    Cronometro cronometro;
-    private TipoObjeto tipoHabilidad;
-    private TipoObjeto activaPasiva;
-    protected Rectangle posicionMenu;
-    protected Rectangle posicionFlotante;
-    HojaSprites hojaHabilidad;
-    private final BufferedImage imagenActual;
-    private String nombre;
-    private String descripcion;
-    private int duracion;
-    private int tiempoReutilizacion;
-    private int manaUtilizado;
-    private int vidaUtilizada;
-    private final Object objetivo;
-    private int montoTotal;
 
+    private boolean efectoActivado; // Indica si el efecto de la habilidad está activado
+    Cronometro cronometro; // Cronómetro para controlar el tiempo de reutilización de la habilidad
+    private TipoObjeto tipoHabilidad; // Tipo de la habilidad
+    private TipoObjeto activaPasiva; // Tipo de activación de la habilidad
+    protected Rectangle posicionMenu; // Posición de la habilidad en el menú
+    protected Rectangle posicionFlotante; // Posición flotante de la habilidad
+    HojaSprites hojaHabilidad; // Hoja de sprites que contiene la imagen de la habilidad
+    private final BufferedImage imagenActual; // Imagen actual de la habilidad
+    private String nombre; // Nombre de la habilidad
+    private String descripcion; // Descripción de la habilidad
+    private int duracion; // Duración de la habilidad
+    private int tiempoReutilizacion; // Tiempo de reutilización de la habilidad
+    private int manaUtilizado; // Cantidad de maná utilizado por la habilidad
+    private int vidaUtilizada; // Cantidad de vida utilizada por la habilidad
+    private final Object objetivo; // Objetivo de la habilidad
+    private int montoTotal; // Monto total de la habilidad
+
+    /**
+     * Constructor de la clase Habilidad.
+     *
+     * @param nombre El nombre de la habilidad.
+     * @param duracion La duración de la habilidad.
+     * @param objetivo El objetivo de la habilidad.
+     * @param manaUtilizado La cantidad de maná utilizado por la habilidad.
+     * @param vidaUtilizada La cantidad de vida utilizada por la habilidad.
+     * @param indiceSprite El índice del sprite de la habilidad.
+     * @param activaPasiva El tipo de activación de la habilidad.
+     * @param tipoHabilidad El tipo de habilidad.
+     */
     public Habilidad(String nombre, int duracion,
             Object objetivo, int manaUtilizado, int vidaUtilizada, int indiceSprite, TipoObjeto activaPasiva,
             TipoObjeto tipoHabilidad) {
@@ -50,7 +58,6 @@ public abstract class Habilidad {
         posicionFlotante = new Rectangle(0, 0, 0, 0);
         cronometro = new Cronometro();
         efectoActivado = false;
-
     }
 
     // Método abstracto que debe ser implementado por las subclases
@@ -139,7 +146,7 @@ public abstract class Habilidad {
     public void setTipoHabilidad(TipoObjeto tipoHabilidad) {
         this.tipoHabilidad = tipoHabilidad;
     }
-    
+
     public int getTiempoRestante() {
         int tiempoRestante = (int) ((getTiempoReutilizacion() - cronometro.getTiempoTranscurrido()));
         if (tiempoRestante > 0) {
@@ -175,13 +182,5 @@ public abstract class Habilidad {
     public void setActivaPasiva(TipoObjeto activaPasiva) {
         this.activaPasiva = activaPasiva;
     }
-    
-    
-    
-    
-    
-    
-    
-    
 
 }

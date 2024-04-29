@@ -5,7 +5,6 @@
 package principal.maquinaestado.menujuego;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.FontMetrics;
 import java.util.ArrayList;
 import java.util.List;

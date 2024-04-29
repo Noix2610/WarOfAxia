@@ -12,11 +12,20 @@ import principal.Constantes;
 import principal.graficos.SuperficieDibujo;
 
 /**
- *
- * @author GAMER ARRAX
+ * Clase que proporciona métodos para generar y dibujar tooltips en la pantalla. Un tooltip es un pequeño cuadro de
+ * texto que aparece alrededor del cursor del ratón para proporcionar información adicional. Esta clase proporciona
+ * métodos para generar, calcular la posición y dibujar tooltips en la pantalla, mejorados para soportar texto de varias
+ * líneas. Los tooltips son cuadros de texto pequeños que aparecen alrededor del cursor del ratón para proporcionar
+ * información adicional al usuario.
  */
 public class GeneradorTooltip {
 
+    /**
+     * Genera la posición del tooltip basado en la posición del cursor del ratón.
+     *
+     * @param pi La posición inicial del cursor del ratón.
+     * @return La posición del tooltip.
+     */
     public static Point generarTooltip(final Point pi) {
 
         final int x = pi.x;
@@ -55,6 +64,12 @@ public class GeneradorTooltip {
         return pf;
     }
 
+    /**
+     * Obtiene la posición del tooltip basado en la posición del cursor del ratón.
+     *
+     * @param pi La posición inicial del cursor del ratón.
+     * @return La posición del tooltip.
+     */
     public static String getPosicionTooltip(final Point pi) {
         final int x = pi.x;
         final int y = pi.y;
@@ -85,6 +100,13 @@ public class GeneradorTooltip {
         return posicion;
     }
 
+    /**
+     * Dibuja un tooltip en la pantalla.
+     *
+     * @param g El objeto Graphics utilizado para dibujar.
+     * @param sd La superficie de dibujo donde se dibujará el tooltip.
+     * @param texto El texto que se mostrará en el tooltip.
+     */
     public static void dibujarTooltip(final Graphics g, final SuperficieDibujo sd, final String texto) {
 
         final Point posicionRaton = sd.getRaton().getPosicion();
@@ -121,6 +143,13 @@ public class GeneradorTooltip {
         DibujoDebug.dibujarString(g, texto, new Point(tooltip.x + margenFuente, tooltip.y + tooltip.height), Color.white);
     }
 
+    /**
+     * Dibuja un tooltip mejorado en la pantalla, con soporte para texto de varias líneas.
+     *
+     * @param g El objeto Graphics utilizado para dibujar.
+     * @param sd La superficie de dibujo donde se dibujará el tooltip.
+     * @param texto El texto que se mostrará en el tooltip.
+     */
     public static void dibujarTooltipMejorado(Graphics g, SuperficieDibujo sd, String texto) {
         Point posicionRaton = sd.getRaton().getPosicion();
         Point posicionTooltip = GeneradorTooltip.generarTooltip(posicionRaton);
@@ -163,7 +192,7 @@ public class GeneradorTooltip {
         }
 
         g.setColor(Color.yellow);
-        g.drawRect(tooltip.x-1, tooltip.y-1, tooltip.width+2, tooltip.height+2);
+        g.drawRect(tooltip.x - 1, tooltip.y - 1, tooltip.width + 2, tooltip.height + 2);
         g.setColor(new Color(240, 240, 240));
         g.fillRect(tooltip.x, tooltip.y, tooltip.width, tooltip.height);
         g.setColor(Color.black);

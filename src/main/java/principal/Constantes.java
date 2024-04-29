@@ -15,8 +15,8 @@ public class Constantes {
 
     public static final int LADO_SPRITE = 32; // Define el tamaño de los sprites como 32x32 píxeles
 
-    public static int ANCHO_JUEGO = 1280; // Define el ancho del juego como 1280 píxeles
-    public static int ALTO_JUEGO = 720; // Define el alto del juego como 720 píxeles
+    public static int ANCHO_JUEGO = 640; // Define el ancho del juego como 1280 píxeles
+    public static int ALTO_JUEGO = 360; // Define el alto del juego como 720 píxeles
 
     public static int LADO_CURSOR = 0; // Inicializa el tamaño del cursor en 0 (quizás se ajuste más tarde)
 

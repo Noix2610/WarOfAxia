@@ -8,6 +8,8 @@ import java.awt.event.KeyListener; // Importa la clase KeyListener de awt.event
 import principal.ElementosPrincipales; // Importa la clase ElementosPrincipales del paquete principal
 import principal.GestorPrincipal; // Importa la clase GestorPrincipal del paquete principal
 import principal.habilidades.GestorHabilidades; // Importa la clase GestorHabilidades del paquete principal.habilidades
+import principal.habilidades.Habilidad;
+import principal.maquinaestado.menujuego.MenuEquipo;
 
 /**
  * Clase que maneja los eventos del teclado en el juego.
@@ -104,15 +106,39 @@ public class Teclado implements KeyListener {
             case KeyEvent.VK_DOWN:
                 disminuir.teclaPulsada();
                 break;
-            // Otros casos para manejar acciones específicas
+
+            case KeyEvent.VK_F1:
+                debug = !debug;
+                break;
+            case KeyEvent.VK_I:
+                inventarioActivo = !inventarioActivo;
+
+                break;
+            case KeyEvent.VK_T:
+                tiendaActiva = !tiendaActiva;
+                break;
+            case KeyEvent.VK_SPACE:
+                ElementosPrincipales.jugador.atacando = true;
+                break;
+            case KeyEvent.VK_F12:
+                MenuEquipo.mostrarTooltip = !MenuEquipo.mostrarTooltip;
+                break;
+            case KeyEvent.VK_1:
+                GestorHabilidades.usarHabilidad(0);
+                break;
+            case KeyEvent.VK_2:
+                GestorHabilidades.usarHabilidad(1);
+                break;
+            case KeyEvent.VK_F5:
+                Habilidad habilidad = gh.obtenerHabilidadPorNombre("Curacion Basica");
+                ElementosPrincipales.inventario.habilidades.add(habilidad);
+                break;
         }
         ultimaTeclaPulsada = e.getKeyCode(); // Actualiza la última tecla pulsada
     }
 
     // Método para manejar el evento de tecla liberada
-    @Override
     public void keyReleased(KeyEvent e) {
-        // Manejo de eventos para diferentes teclas liberadas
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W:
                 arriba.teclaLiberada();
@@ -126,11 +152,24 @@ public class Teclado implements KeyListener {
             case KeyEvent.VK_D:
                 derecha.teclaLiberada();
                 break;
+            case KeyEvent.VK_ESCAPE:
+                System.exit(0);
+                break;
             case KeyEvent.VK_SHIFT:
                 corriendo = false;
                 break;
-            // Otros casos para manejar acciones específicas
+            case KeyEvent.VK_SPACE:
+                ElementosPrincipales.jugador.atacando = false;
+                break;
+            case KeyEvent.VK_UP:
+                aumentar.teclaLiberada();
+                break;
+            case KeyEvent.VK_DOWN:
+                disminuir.teclaLiberada();
+                break;
+
         }
+
     }
 
     // Método para manejar el evento de tecla tipeada
